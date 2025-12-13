@@ -93,7 +93,7 @@ class PluginProcessor(
                     .addFunction(
                         FunSpec.builder("getPluginInfo")
                             .addParameter("className", String::class)
-                            .returns(ClassName("ireader.plugin.compiler", "PluginMetadata").copy(nullable = true))
+                            .returns(ClassName("ireader.plugin.generated", "PluginMetadata").copy(nullable = true))
                             .addCode(buildCodeBlock {
                                 beginControlFlow("return when (className)")
                                 pluginClasses.forEach { pluginClass ->
