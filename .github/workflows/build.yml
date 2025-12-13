@@ -2,7 +2,7 @@ name: Build Plugins
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths:
       - 'plugins/**'
       - 'annotations/**'
@@ -10,7 +10,7 @@ on:
       - 'buildSrc/**'
       - '.github/workflows/build.yml'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -51,7 +51,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     
     steps:
       - uses: actions/checkout@v4

@@ -28,5 +28,8 @@ tasks.register<PluginRepoTask>("repo") {
 tasks.register("buildAllPlugins") {
     group = "build"
     description = "Build all plugins"
-    dependsOn(subprojects.filter { it.path.startsWith(":plugins:") }.map { "${it.path}:assemble" })
+    // Only include actual plugin projects (3 segments: :plugins:category:pluginName)
+    dependsOn(subprojects.filter {
+        it.path.startsWith(":plugins:") && it.path.count { c -> c == ':' } == 3
+    }.map { "${it.path}:assemble" })
 }
