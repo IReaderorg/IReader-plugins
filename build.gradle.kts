@@ -22,6 +22,12 @@ tasks.register("clean", Delete::class) {
 tasks.register<PluginRepoTask>("repo") {
     group = "build"
     description = "Generate plugin repository index"
+    repoDir.set(layout.projectDirectory.dir("repo"))
+    pluginBuildDirs.set(
+        subprojects.filter {
+            it.path.startsWith(":plugins:") && it.path.count { c -> c == ':' } == 3
+        }.map { it.layout.buildDirectory.get().asFile.absolutePath }
+    )
 }
 
 // Build all plugins

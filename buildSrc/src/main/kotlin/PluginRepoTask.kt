@@ -2,6 +2,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.security.MessageDigest
@@ -10,29 +14,36 @@ import java.security.MessageDigest
  * Task to generate plugin repository index.json
  */
 abstract class PluginRepoTask : DefaultTask() {
-    
-    private val json = Json { 
-        prettyPrint = true 
+
+    @get:OutputDirectory
+    abstract val repoDir: DirectoryProperty
+
+    @get:Input
+    abstract val pluginBuildDirs: ListProperty<String>
+
+    private val json = Json {
+        prettyPrint = true
         encodeDefaults = true
     }
-    
+
     @TaskAction
     fun generate() {
-        val repoDir = File(project.rootDir, "repo")
-        repoDir.mkdirs()
-        
+        val outputDir = repoDir.get().asFile
+        outputDir.mkdirs()
+
         val plugins = mutableListOf<PluginIndexEntry>()
-        
+
         // Scan all plugin build outputs
-        project.subprojects.filter { it.path.startsWith(":plugins:") }.forEach { subproject ->
-            val manifestFile = File(subproject.layout.buildDirectory.get().asFile, "generated/plugin/plugin.json")
+        pluginBuildDirs.get().forEach { buildDirPath ->
+            val buildDir = File(buildDirPath)
+            val manifestFile = File(buildDir, "generated/plugin/plugin.json")
             if (manifestFile.exists()) {
                 try {
                     val manifest = json.decodeFromString<PluginManifestData>(manifestFile.readText())
-                    
+
                     // Find the built plugin file
-                    val pluginFile = findPluginFile(subproject.layout.buildDirectory.get().asFile)
-                    
+                    val pluginFile = findPluginFile(buildDir)
+
                     plugins.add(PluginIndexEntry(
                         id = manifest.id,
                         name = manifest.name,
@@ -50,39 +61,39 @@ abstract class PluginRepoTask : DefaultTask() {
                         fileSize = pluginFile?.length() ?: 0,
                         checksum = pluginFile?.let { calculateChecksum(it) }
                     ))
-                    
+
                     // Copy plugin file to repo
                     pluginFile?.let { file ->
-                        val destFile = File(repoDir, "plugins/${manifest.id}-${manifest.version}.iplugin")
+                        val destFile = File(outputDir, "plugins/${manifest.id}-${manifest.version}.iplugin")
                         destFile.parentFile.mkdirs()
                         file.copyTo(destFile, overwrite = true)
                     }
-                    
+
                     logger.lifecycle("Added plugin to index: ${manifest.name}")
                 } catch (e: Exception) {
-                    logger.warn("Failed to process plugin ${subproject.name}: ${e.message}")
+                    logger.warn("Failed to process plugin from $buildDirPath: ${e.message}")
                 }
             }
         }
-        
+
         val index = PluginIndex(
             version = 1,
             plugins = plugins
         )
-        
-        val indexFile = File(repoDir, "index.json")
+
+        val indexFile = File(outputDir, "index.json")
         indexFile.writeText(json.encodeToString(index))
-        
+
         logger.lifecycle("Generated plugin index with ${plugins.size} plugins: ${indexFile.absolutePath}")
     }
-    
+
     private fun findPluginFile(buildDir: File): File? {
         val outputsDir = File(buildDir, "outputs")
         return outputsDir.walkTopDown()
             .filter { it.isFile && it.extension == "iplugin" }
             .firstOrNull()
     }
-    
+
     private fun calculateChecksum(file: File): String {
         val digest = MessageDigest.getInstance("SHA-256")
         file.inputStream().use { input ->
