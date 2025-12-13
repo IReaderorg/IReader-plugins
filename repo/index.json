@@ -1,0 +1,133 @@
+{
+    "version": 1,
+    "plugins": [
+        {
+            "id": "io.github.ireaderorg.plugins.dictionary",
+            "name": "Dictionary Lookup",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Look up word definitions while reading",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "FEATURE",
+            "permissions": [
+                "READER_CONTEXT",
+                "NETWORK"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.dictionary-1.0.0.iplugin",
+            "fileSize": 5795,
+            "checksum": "sha256:e00d28e8e309ecb20271c5322d2289701885101e20b3f69b5c843da824a596f8"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.ocean-theme",
+            "name": "Ocean Theme",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "A calming ocean-inspired theme with blue tones",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
+            "fileSize": 10674,
+            "checksum": "sha256:11fe297f43da423b51197667ae5e7d2071c31200c58d70adcaacb65dc0865106"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.example-translation",
+            "name": "Example Translation",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Example translation plugin demonstrating the Translation plugin API",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "TRANSLATION",
+            "permissions": [
+                "NETWORK",
+                "PREFERENCES"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-translation-1.0.0.iplugin",
+            "fileSize": 6859,
+            "checksum": "sha256:f63206a142cabd6ec6f0d3130070df4c8a6ff3674897e9d9a81c68a5509cb9d5"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.example-tts",
+            "name": "Example TTS",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Example TTS plugin demonstrating the TTS plugin API",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "TTS",
+            "permissions": [
+                "NETWORK"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-tts-1.0.0.iplugin",
+            "fileSize": 5970,
+            "checksum": "sha256:1a9eb78a2db3e30b17ea41caf47e322e86af2047d7020e84d65aac8429674c5f"
+        }
+    ]
+}
