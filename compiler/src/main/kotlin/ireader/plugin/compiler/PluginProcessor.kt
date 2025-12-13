@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import ireader.plugin.annotations.IReaderPlugin
@@ -16,36 +17,36 @@ class PluginProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger
 ) : SymbolProcessor {
-    
+
     private var processed = false
-    
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (processed) return emptyList()
-        
+
         val pluginClasses = resolver
             .getSymbolsWithAnnotation(IReaderPlugin::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.validate() }
             .toList()
-        
+
         if (pluginClasses.isEmpty()) {
             return emptyList()
         }
-        
+
         processed = true
-        
+
         // Generate plugin factory
         generatePluginFactory(pluginClasses)
-        
+
         logger.info("Processed ${pluginClasses.size} plugin classes")
-        
+
         return emptyList()
     }
-    
+
     private fun generatePluginFactory(pluginClasses: List<KSClassDeclaration>) {
         val packageName = "ireader.plugin.generated"
         val className = "PluginFactory"
-        
+
         val fileSpec = FileSpec.builder(packageName, className)
             .addType(
                 TypeSpec.objectBuilder(className)
@@ -132,14 +133,14 @@ class PluginProcessor(
                     .build()
             )
             .build()
-        
+
         fileSpec.writeTo(codeGenerator, Dependencies(false, *pluginClasses.map { it.containingFile!! }.toTypedArray()))
     }
-    
+
     private fun extractPluginInfo(pluginClass: KSClassDeclaration): PluginInfoData {
         val pluginInfo = pluginClass.annotations
             .find { it.shortName.asString() == "PluginInfo" }
-        
+
         return PluginInfoData(
             id = pluginInfo?.arguments?.find { it.name?.asString() == "id" }?.value as? String ?: "",
             name = pluginInfo?.arguments?.find { it.name?.asString() == "name" }?.value as? String ?: pluginClass.simpleName.asString(),
@@ -147,7 +148,7 @@ class PluginProcessor(
             versionCode = pluginInfo?.arguments?.find { it.name?.asString() == "versionCode" }?.value as? Int ?: 1
         )
     }
-    
+
     private data class PluginInfoData(
         val id: String,
         val name: String,
