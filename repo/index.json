@@ -4,8 +4,8 @@
         {
             "id": "io.github.ireaderorg.plugins.graalvm-engine",
             "name": "GraalVM JavaScript Engine",
-            "version": "24.1.1",
-            "versionCode": 1,
+            "version": "25.0.1",
+            "versionCode": 2,
             "description": "GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support",
             "author": {
                 "name": "IReader Team",
@@ -27,9 +27,9 @@
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-24.1.1.iplugin",
-            "fileSize": 8736883,
-            "checksum": "sha256:89f012af10127da6d610cb146a896b153a60f16900790b15e4f94bb567650185"
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
+            "fileSize": 9185075,
+            "checksum": "sha256:156ed51368c7e8643dee67a3d9f294aea2abd9d0fb32954d3de0cd4554b1edf1"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -58,8 +58,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
-            "fileSize": 35028234,
-            "checksum": "sha256:f38acfd451712bcd7c61474a5f01a4e66a1cd1611eb33c4beba250bcbbc12f44"
+            "fileSize": 35201314,
+            "checksum": "sha256:5ab096ffa9f00bf3eadecc81f44b117c05cd83e1b9b49bc9d594a0aada23b27c"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,7 +89,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:8f00042a7210e36579e0988acae0fa56ce36c783fe94fef5bbceb37a526f2067"
+            "checksum": "sha256:172da8ad2fea67e17a2809760184aaaa8d50225c2711ad3a3a238e7d99345418"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -120,7 +120,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
             "fileSize": 22755096,
-            "checksum": "sha256:43fc4fd2d2229218a6bab7b958a2230ea160585e4831fce15a7e53ee3d6cd028"
+            "checksum": "sha256:a85347f0c6ffe3806bd2aee7058779a62fce0f07f77b8aae5f0f28e6330f4a08"
         }
     ]
 }
