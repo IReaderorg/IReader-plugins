@@ -12,6 +12,7 @@ pluginConfig {
     type.set(PluginType.TTS)
     permissions.set(listOf(PluginPermission.STORAGE, PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.pipertts.PiperTTSPlugin")
+    platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
 }
 
 // This plugin is Desktop-only - uses reflection to access Piper JNI at runtime

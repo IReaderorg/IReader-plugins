@@ -25,6 +25,7 @@ pluginConfig.apply {
     currency.convention("USD")
     trialDays.convention(0)
     mainClass.convention("")
+    platforms.convention(listOf(PluginPlatform.ANDROID, PluginPlatform.IOS, PluginPlatform.DESKTOP))
 }
 
 repositories {
@@ -76,6 +77,7 @@ val generateManifest = tasks.register<PluginManifestGenerator>("generatePluginMa
     currency.set(pluginConfig.currency)
     trialDays.set(pluginConfig.trialDays)
     mainClass.set(pluginConfig.mainClass)
+    pluginPlatforms.set(pluginConfig.platforms.map { list -> list.map { it.name } })
     outputDir.set(layout.buildDirectory.dir("generated/plugin"))
 }
 
@@ -95,10 +97,12 @@ val generateDex = tasks.register<Exec>("generateDex") {
     
     // Use d8 from Android SDK to convert JAR to DEX
     val androidHome = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: ""
+    val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+    val d8Executable = if (isWindows) "d8.bat" else "d8"
     val d8Path = if (androidHome.isNotEmpty()) {
-        "$androidHome/build-tools/${PluginConfig.buildToolsVersion}/d8"
+        File(androidHome, "build-tools/${PluginConfig.buildToolsVersion}/$d8Executable").absolutePath
     } else {
-        "d8" // Fallback to PATH
+        d8Executable // Fallback to PATH
     }
     
     commandLine(
@@ -112,7 +116,7 @@ val generateDex = tasks.register<Exec>("generateDex") {
     isIgnoreExitValue = true
 }
 
-// Package plugin as .iplugin (ZIP with manifest + JAR + DEX)
+// Package plugin as .iplugin (ZIP with manifest + JAR + DEX + native libs)
 val packagePlugin = tasks.register<Zip>("packagePlugin") {
     dependsOn(generateManifest, tasks.named("jar"))
     
@@ -142,6 +146,22 @@ val packagePlugin = tasks.register<Zip>("packagePlugin") {
     from(layout.buildDirectory.dir("dex")) {
         include("classes.dex")
         into("android")
+    }
+    
+    // Include native libraries for Android (jniLibs/<abi>/*.so)
+    val jniLibsDir = file("src/main/jniLibs")
+    if (jniLibsDir.exists()) {
+        from(jniLibsDir) {
+            into("native/android")
+        }
+    }
+    
+    // Include native libraries for Desktop (native/<platform>/*.dll|.so|.dylib)
+    val nativeDir = file("src/main/native")
+    if (nativeDir.exists()) {
+        from(nativeDir) {
+            into("native")
+        }
     }
     
     // Include KSP generated sources

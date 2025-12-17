@@ -66,6 +66,9 @@ abstract class PluginManifestGenerator : DefaultTask() {
     @get:Input
     abstract val mainClass: Property<String>
     
+    @get:Input
+    abstract val pluginPlatforms: ListProperty<String>
+    
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
     
@@ -90,7 +93,7 @@ abstract class PluginManifestGenerator : DefaultTask() {
             type = pluginType.get(),
             permissions = pluginPermissions.get(),
             minIReaderVersion = minIReaderVersion.get(),
-            platforms = listOf("ANDROID", "IOS", "DESKTOP"),
+            platforms = pluginPlatforms.get(),
             mainClass = mainClass.orNull?.takeIf { it.isNotBlank() },
             iconUrl = pluginIconUrl.orNull?.takeIf { it.isNotBlank() },
             monetization = createMonetization()

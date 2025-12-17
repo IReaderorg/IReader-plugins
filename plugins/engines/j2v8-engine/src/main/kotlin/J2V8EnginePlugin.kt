@@ -40,10 +40,10 @@ class J2V8EnginePlugin : JSEnginePlugin {
         minIReaderVersion = "2.0.0",
         platforms = listOf(Platform.ANDROID), // Android only!
         nativeLibraries = mapOf(
-            "android-arm64" to listOf("native/android-arm64/libj2v8.so"),
-            "android-arm32" to listOf("native/android-arm32/libj2v8.so"),
-            "android-x64" to listOf("native/android-x64/libj2v8.so"),
-            "android-x86" to listOf("native/android-x86/libj2v8.so")
+            "android-arm64" to listOf("native/android/arm64-v8a/libj2v8.so"),
+            "android-arm32" to listOf("native/android/armeabi-v7a/libj2v8.so"),
+            "android-x64" to listOf("native/android/x86_64/libj2v8.so"),
+            "android-x86" to listOf("native/android/x86/libj2v8.so")
         )
     )
     
@@ -57,20 +57,36 @@ class J2V8EnginePlugin : JSEnginePlugin {
             return
         }
         
-        // Try to load J2V8 classes via reflection
+        // Extract and load native libraries from plugin package
         isAvailable = try {
+            context.log(LogLevel.INFO, "Extracting J2V8 native libraries...")
+            val nativeDir = context.extractNativeLibraries()
+            
+            if (nativeDir != null) {
+                context.log(LogLevel.INFO, "Native libraries extracted to: $nativeDir")
+                // Load the J2V8 native library
+                context.loadNativeLibrary("j2v8")
+                context.log(LogLevel.INFO, "J2V8 native library loaded successfully")
+            } else {
+                context.log(LogLevel.WARN, "No native libraries found in plugin package")
+            }
+            
+            // Now try to load J2V8 classes via reflection
             v8Class = Class.forName("com.eclipsesource.v8.V8")
             val createRuntime = v8Class!!.getMethod("createV8Runtime")
             val testV8 = createRuntime.invoke(null)
             val releaseMethod = v8Class!!.getMethod("release")
             releaseMethod.invoke(testV8)
-            context.log(LogLevel.INFO, "J2V8 engine is available")
+            context.log(LogLevel.INFO, "J2V8 engine is available and working")
             true
+        } catch (e: UnsatisfiedLinkError) {
+            context.log(LogLevel.ERROR, "Failed to load J2V8 native library: ${e.message}")
+            false
         } catch (e: ClassNotFoundException) {
-            context.log(LogLevel.ERROR, "J2V8 library not found - please ensure it's bundled with the app")
+            context.log(LogLevel.ERROR, "J2V8 classes not found: ${e.message}")
             false
         } catch (e: Exception) {
-            context.log(LogLevel.ERROR, "J2V8 engine not available: ${e.message}")
+            context.log(LogLevel.ERROR, "J2V8 engine initialization failed: ${e.message}")
             false
         }
     }

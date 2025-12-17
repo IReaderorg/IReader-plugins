@@ -55,6 +55,15 @@ abstract class PluginExtension {
     
     /** Fully qualified main class name (auto-detected if not specified) */
     abstract val mainClass: Property<String>
+    
+    /** Supported platforms (defaults to all: ANDROID, IOS, DESKTOP) */
+    abstract val platforms: ListProperty<PluginPlatform>
+}
+
+enum class PluginPlatform {
+    ANDROID,
+    IOS,
+    DESKTOP
 }
 
 enum class PluginType {

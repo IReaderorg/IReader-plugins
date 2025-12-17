@@ -12,6 +12,7 @@ pluginConfig {
     type.set(PluginType.JS_ENGINE)
     permissions.set(listOf(PluginPermission.STORAGE))
     mainClass.set("io.github.ireaderorg.plugins.graalvmengine.GraalVMEnginePlugin")
+    platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
 }
 
 // This plugin is Desktop-only - uses reflection to access GraalVM at runtime

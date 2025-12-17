@@ -20,3 +20,7 @@ local.properties
 # Generated
 repo/
 .kotlin
+
+# Downloaded native libraries (downloaded during build)
+**/src/main/jniLibs/
+**/src/main/native/
