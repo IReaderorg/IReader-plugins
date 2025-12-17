@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.*
+import java.util.Properties
 
 /**
  * Convention plugin for IReader plugins
@@ -96,7 +97,29 @@ val generateDex = tasks.register<Exec>("generateDex") {
     }
     
     // Use d8 from Android SDK to convert JAR to DEX
-    val androidHome = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: ""
+    // Try multiple sources for Android SDK path
+    var androidHome = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: ""
+    
+    // If not found in env, try to read from local.properties
+    if (androidHome.isEmpty()) {
+        val localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            val props = Properties()
+            localPropsFile.inputStream().use { props.load(it) }
+            androidHome = props.getProperty("sdk.dir", "")
+        }
+    }
+    
+    // Also try parent project's local.properties (for IReader-plugins subproject)
+    if (androidHome.isEmpty()) {
+        val parentLocalPropsFile = rootProject.file("../local.properties")
+        if (parentLocalPropsFile.exists()) {
+            val props = Properties()
+            parentLocalPropsFile.inputStream().use { props.load(it) }
+            androidHome = props.getProperty("sdk.dir", "")
+        }
+    }
+    
     val isWindows = System.getProperty("os.name").lowercase().contains("windows")
     val d8Executable = if (isWindows) "d8.bat" else "d8"
     val d8Path = if (androidHome.isNotEmpty()) {

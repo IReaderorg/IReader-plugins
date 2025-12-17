@@ -18,15 +18,10 @@ pluginConfig {
 // J2V8 version
 val j2v8Version = "6.2.1"
 
-// Add J2V8 Java API as implementation dependency
-// This will be included in the plugin's DEX file
-// The native libraries are downloaded separately and included in native/android/<abi>/
-dependencies {
-    // J2V8 Java API - will be bundled in the plugin's DEX
-    // Note: We use the AAR but only the Java classes will be in DEX
-    // Native libraries are handled separately via downloadJ2V8Natives task
-    implementation("com.eclipsesource.j2v8:j2v8:$j2v8Version@aar")
-}
+// Note: We don't add J2V8 as a Gradle dependency because:
+// 1. It's an AAR which JVM plugin doesn't handle well
+// 2. We extract classes manually via ExtractAarClassesTask
+// 3. The extracted classes are added to the JAR which is then converted to DEX
 
 // Task to download J2V8 AAR and extract native libraries
 val downloadJ2V8Natives = tasks.register<DownloadAndExtractAarTask>("downloadJ2V8Natives") {
