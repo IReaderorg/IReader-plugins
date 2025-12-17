@@ -61,7 +61,8 @@ enum class PluginType {
     THEME,
     TTS,
     TRANSLATION,
-    FEATURE
+    FEATURE,
+    JS_ENGINE
 }
 
 enum class PluginPermission {
