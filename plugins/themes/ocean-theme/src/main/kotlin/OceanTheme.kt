@@ -1,13 +1,14 @@
 package io.github.ireaderorg.plugins.oceantheme
 
 import ireader.plugin.api.*
-import ireader.plugin.annotations.*
+import ireader.plugin.annotations.IReaderPlugin
+import ireader.plugin.annotations.PluginMetadata
 
 /**
  * Ocean Theme - A calming blue theme inspired by the ocean.
  */
 @IReaderPlugin
-@PluginInfo(
+@PluginMetadata(
     id = "io.github.ireaderorg.plugins.ocean-theme",
     name = "Ocean Theme",
     version = "1.0.0",

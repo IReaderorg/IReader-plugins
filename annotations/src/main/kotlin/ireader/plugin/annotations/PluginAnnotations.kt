@@ -23,10 +23,12 @@ annotation class IReaderPlugin
 /**
  * Specifies plugin metadata. Optional - can also be defined in build.gradle.kts.
  * If both are specified, annotation values take precedence.
+ * 
+ * Note: Named PluginMetadata to avoid conflict with ireader.plugin.api.PluginInfo data class.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
-annotation class PluginInfo(
+annotation class PluginMetadata(
     val id: String = "",
     val name: String = "",
     val version: String = "",

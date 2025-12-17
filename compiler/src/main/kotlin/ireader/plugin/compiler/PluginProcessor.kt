@@ -138,8 +138,9 @@ class PluginProcessor(
     }
 
     private fun extractPluginInfo(pluginClass: KSClassDeclaration): PluginInfoData {
+        // Look for PluginMetadata annotation (preferred) or legacy PluginInfo
         val pluginInfo = pluginClass.annotations
-            .find { it.shortName.asString() == "PluginInfo" }
+            .find { it.shortName.asString() == "PluginMetadata" || it.shortName.asString() == "PluginInfo" }
 
         return PluginInfoData(
             id = pluginInfo?.arguments?.find { it.name?.asString() == "id" }?.value as? String ?: "",
