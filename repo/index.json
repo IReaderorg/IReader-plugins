@@ -28,13 +28,13 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-24.1.1.iplugin",
-            "fileSize": 8755863,
-            "checksum": "sha256:be8969d0033901b0e907ff6b65cd2b1cb4945d698393be168673652bd15cd615"
+            "fileSize": 8736883,
+            "checksum": "sha256:89f012af10127da6d610cb146a896b153a60f16900790b15e4f94bb567650185"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
             "name": "J2V8 JavaScript Engine",
-            "version": "6.3.4",
+            "version": "6.2.1",
             "versionCode": 1,
             "description": "V8 JavaScript engine for Android - enables LNReader-compatible sources with full ES6+ support",
             "author": {
@@ -57,9 +57,9 @@
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.3.4.iplugin",
-            "fileSize": 35046603,
-            "checksum": "sha256:80304b09817fd22394093605b38c31424f0911f76046bb036da624b30bc62a0e"
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
+            "fileSize": 35028234,
+            "checksum": "sha256:f38acfd451712bcd7c61474a5f01a4e66a1cd1611eb33c4beba250bcbbc12f44"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,7 +89,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:919bf548c81578f7ca37e98f71aeb8afe9913a6aafbf1b1adccdae55897a2c66"
+            "checksum": "sha256:8f00042a7210e36579e0988acae0fa56ce36c783fe94fef5bbceb37a526f2067"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -119,8 +119,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
-            "fileSize": 22771631,
-            "checksum": "sha256:d7e798d5333f7953e5e20af4af5cea68357ac6370ba013fbf3a918813406222d"
+            "fileSize": 22755096,
+            "checksum": "sha256:43fc4fd2d2229218a6bab7b958a2230ea160585e4831fce15a7e53ee3d6cd028"
         }
     ]
 }
