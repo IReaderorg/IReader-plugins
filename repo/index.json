@@ -31,8 +31,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.dictionary-1.0.0.iplugin",
-            "fileSize": 5804,
-            "checksum": "sha256:f51767f356ef14dc6913f872468496bf83f0ee3c6a45da814196a50d6a2feaab"
+            "fileSize": 5815,
+            "checksum": "sha256:f07f506820676f32b020c444f87f61831f67aae91786fa158e4128e26c95b250"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -61,8 +61,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
-            "fileSize": 10683,
-            "checksum": "sha256:537858167606ae8fa9ad64b84c2b02e53be2c41f26b52ef00555656824ad4760"
+            "fileSize": 10687,
+            "checksum": "sha256:fd3985489774c13c544ab626eb57a65665447d47f0d475ab293ab1da4dbb00a7"
         },
         {
             "id": "io.github.ireaderorg.plugins.example-translation",
@@ -94,8 +94,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-translation-1.0.0.iplugin",
-            "fileSize": 6867,
-            "checksum": "sha256:46dfadd1386f1a5dd1c9dd90f7df67a9c5a405cb27101f5db38f149e3ef4b49e"
+            "fileSize": 6856,
+            "checksum": "sha256:a96eae671dba1c11b5ca36f09342df3661ec54d6a961bf2745cad8ee82d4a47e"
         },
         {
             "id": "io.github.ireaderorg.plugins.example-tts",
@@ -126,8 +126,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-tts-1.0.0.iplugin",
-            "fileSize": 5978,
-            "checksum": "sha256:dc72a76cd5fffecc34531fc06e9ce7508c0188ead886a1abe40f2db50a714dd8"
+            "fileSize": 5983,
+            "checksum": "sha256:721baed4c967c8fa848e0e1531ca7ae26e6f7e8d8a2140858393c7685c44f997"
         }
     ]
 }
