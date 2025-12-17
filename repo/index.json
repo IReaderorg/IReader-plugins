@@ -18,8 +18,6 @@
             ],
             "minIReaderVersion": "1.0.0",
             "platforms": [
-                "ANDROID",
-                "IOS",
                 "DESKTOP"
             ],
             "iconUrl": null,
@@ -30,8 +28,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 23419,
-            "checksum": "sha256:11c4d72ea029c52e452734427dd276484a319c250f845a0c6c9d604241ac417e"
+            "fileSize": 23406,
+            "checksum": "sha256:759b700293dba5f623e3642b967e5344a959cfcdf9de206ab12b641e4d127eaf"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -50,9 +48,7 @@
             ],
             "minIReaderVersion": "1.0.0",
             "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
+                "ANDROID"
             ],
             "iconUrl": null,
             "monetization": {
@@ -62,8 +58,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.3.4.iplugin",
-            "fileSize": 22679,
-            "checksum": "sha256:0a1c7a8a3ca3e41aa4cffe85adaaee36a49382a88354557cd8cb8f163a6e05fc"
+            "fileSize": 23273,
+            "checksum": "sha256:36679d9ed6b43ce30170774279ffa30f122497fb7a4bfe024901d10b5acdc2db"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -93,7 +89,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:f83f34637541dd9a2abe8330966eeaed018b3e2b1e564765135e47748be2b321"
+            "checksum": "sha256:45d100afedb82872c2101e9430f8e81bd63f24657487c9ce5b3d9b93fb8cf094"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -113,8 +109,6 @@
             ],
             "minIReaderVersion": "1.0.0",
             "platforms": [
-                "ANDROID",
-                "IOS",
                 "DESKTOP"
             ],
             "iconUrl": null,
@@ -125,8 +119,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
-            "fileSize": 22031,
-            "checksum": "sha256:e06c21596b7dce66385d2eef81f0351ee362aaa34ded99aa4d86532720a3958c"
+            "fileSize": 22018,
+            "checksum": "sha256:242d5ddcc47da813c2b3bd7a840d1ae51ae8b00d40cd5cb66c2fe5f0063f0fb0"
         }
     ]
 }
