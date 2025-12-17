@@ -11,6 +11,7 @@ pluginConfig {
     author.set("IReader Team")
     type.set(PluginType.JS_ENGINE)
     permissions.set(listOf(PluginPermission.STORAGE))
+    mainClass.set("io.github.ireaderorg.plugins.graalvmengine.GraalVMEnginePlugin")
 }
 
 // This plugin is Desktop-only - uses reflection to access GraalVM at runtime

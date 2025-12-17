@@ -11,6 +11,7 @@ pluginConfig {
     author.set("IReader Team")
     type.set(PluginType.TTS)
     permissions.set(listOf(PluginPermission.STORAGE, PluginPermission.NETWORK))
+    mainClass.set("io.github.ireaderorg.plugins.pipertts.PiperTTSPlugin")
 }
 
 // This plugin is Desktop-only - uses reflection to access Piper JNI at runtime
