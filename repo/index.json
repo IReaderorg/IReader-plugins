@@ -30,8 +30,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 23404,
-            "checksum": "sha256:cd2af706005460ac5c6598629eee1552eaa55f10c870055d6808584d2b8e3f7c"
+            "fileSize": 23419,
+            "checksum": "sha256:11c4d72ea029c52e452734427dd276484a319c250f845a0c6c9d604241ac417e"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -62,41 +62,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.3.4.iplugin",
-            "fileSize": 22664,
-            "checksum": "sha256:e3ddc750ac3af976817fe01de529c590f9e24603a65c6e7353b35a69f9eef76c"
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.dictionary",
-            "name": "Dictionary Lookup",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Look up word definitions while reading",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "FEATURE",
-            "permissions": [
-                "READER_CONTEXT",
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": null,
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.dictionary-1.0.0.iplugin",
-            "fileSize": 5830,
-            "checksum": "sha256:eba5f70e3124d0059036d1b0edf8cda2a8cc68afaad60b7604a9bd8d2621f5b5"
+            "fileSize": 22679,
+            "checksum": "sha256:0a1c7a8a3ca3e41aa4cffe85adaaee36a49382a88354557cd8cb8f163a6e05fc"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -126,72 +93,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:f316630e43615ae720a18e6236061de472729fadc9e8f6b7dd52ff87086a8d05"
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.example-translation",
-            "name": "Example Translation",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Example translation plugin demonstrating the Translation plugin API",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "TRANSLATION",
-            "permissions": [
-                "NETWORK",
-                "PREFERENCES"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": null,
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-translation-1.0.0.iplugin",
-            "fileSize": 6896,
-            "checksum": "sha256:65e039196635617329419ca9a38a41ffcce23ced55beafe87291c544d73a609e"
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.example-tts",
-            "name": "Example TTS",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Example TTS plugin demonstrating the TTS plugin API",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": null,
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-tts-1.0.0.iplugin",
-            "fileSize": 6009,
-            "checksum": "sha256:9128496b1b61fb883d9c1de48310048e17a051578ae42aa15aa9ced619e00445"
+            "checksum": "sha256:f83f34637541dd9a2abe8330966eeaed018b3e2b1e564765135e47748be2b321"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -223,8 +125,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
-            "fileSize": 22019,
-            "checksum": "sha256:07adc705915cf73c9a1ab8353b3bbdafb5f2d1244d9afb89fa02657264be12f0"
+            "fileSize": 22031,
+            "checksum": "sha256:e06c21596b7dce66385d2eef81f0351ee362aaa34ded99aa4d86532720a3958c"
         }
     ]
 }
