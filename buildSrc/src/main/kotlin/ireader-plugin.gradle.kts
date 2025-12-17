@@ -159,6 +159,11 @@ val packagePlugin = tasks.register<Zip>("packagePlugin") {
         into("native")
     }
     
+    // Include bundled JARs/libraries (libs/*.jar)
+    from("src/main/libs") {
+        into("libs")
+    }
+    
     // Include KSP generated sources
     from(layout.buildDirectory.dir("generated/ksp/main/kotlin")) {
         into("generated")

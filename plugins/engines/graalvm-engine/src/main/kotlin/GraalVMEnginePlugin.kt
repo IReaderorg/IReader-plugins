@@ -29,7 +29,7 @@ class GraalVMEnginePlugin : JSEnginePlugin {
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.graalvm-engine",
         name = "GraalVM JavaScript Engine",
-        version = "25.0.1",
+        version = "24.1.1",
         versionCode = 1,
         description = "GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support",
         author = PluginAuthor(
@@ -110,7 +110,7 @@ class GraalVMEnginePlugin : JSEnginePlugin {
     override fun getCapabilities(): JSEngineCapabilities {
         return JSEngineCapabilities(
             engineName = "GraalVM Polyglot",
-            engineVersion = "25.0.1",
+            engineVersion = "24.1.1",
             ecmaScriptVersion = "ES2022",
             supportsModules = true,
             supportsAsync = true,

@@ -15,8 +15,17 @@ pluginConfig {
     platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
 }
 
-// This plugin is Desktop-only - uses reflection to access Piper JNI at runtime
-// The Piper JNI library is provided by the host app
-// Native libraries are bundled in the plugin package
+// Piper JNI version (from Maven Central)
+val piperVersion = "1.2.0-c0670df"
 
-// No external dependencies - plugin uses reflection to access Piper JNI at runtime
+// Task to download Piper native libraries for all desktop platforms
+val downloadPiperNatives = tasks.register<DownloadPiperNativesTask>("downloadPiperNatives") {
+    piperJniVersion.set(piperVersion)
+    outputDir.set(layout.projectDirectory.dir("src/main/native"))
+    cacheDir.set(layout.buildDirectory.dir("download-cache"))
+}
+
+// Make packagePlugin depend on downloading natives
+tasks.named("packagePlugin") {
+    dependsOn(downloadPiperNatives)
+}

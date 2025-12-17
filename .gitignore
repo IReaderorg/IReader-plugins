@@ -21,6 +21,7 @@ local.properties
 repo/
 .kotlin
 
-# Downloaded native libraries (downloaded during build)
+# Downloaded native libraries and JARs (downloaded during build)
 **/src/main/jniLibs/
 **/src/main/native/
+**/src/main/libs/

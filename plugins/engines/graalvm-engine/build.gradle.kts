@@ -5,7 +5,7 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.graalvm-engine")
     name.set("GraalVM JavaScript Engine")
-    version.set("25.0.1")
+    version.set("24.1.1")  // Match GraalVM version
     versionCode.set(1)
     description.set("GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support")
     author.set("IReader Team")
@@ -15,8 +15,17 @@ pluginConfig {
     platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
 }
 
-// This plugin is Desktop-only - uses reflection to access GraalVM at runtime
-// The GraalVM Polyglot libraries are provided by the host app
-// Native libraries are bundled in the plugin package
+// GraalVM version
+val graalVersion = "24.1.1"
 
-// No external dependencies - plugin uses reflection to access GraalVM at runtime
+// Task to download GraalVM JARs
+val downloadGraalVMJars = tasks.register<DownloadGraalVMJarsTask>("downloadGraalVMJars") {
+    graalvmVersion.set(graalVersion)
+    outputDir.set(layout.projectDirectory.dir("src/main/libs"))
+    cacheDir.set(layout.buildDirectory.dir("download-cache"))
+}
+
+// Make packagePlugin depend on downloading JARs
+tasks.named("packagePlugin") {
+    dependsOn(downloadGraalVMJars)
+}
