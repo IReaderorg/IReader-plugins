@@ -7,7 +7,9 @@ import ireader.plugin.api.*
  * This is a template for creating TTS plugins.
  */
 class ExampleTTS : TTSPlugin {
-    
+
+
+
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.example-tts",
         name = "Example TTS",
