@@ -5,7 +5,7 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.j2v8-engine")
     name.set("J2V8 JavaScript Engine")
-    version.set("6.3.4")
+    version.set("6.2.1")  // Match J2V8 library version
     versionCode.set(1)
     description.set("V8 JavaScript engine for Android - enables LNReader-compatible sources with full ES6+ support")
     author.set("IReader Team")
