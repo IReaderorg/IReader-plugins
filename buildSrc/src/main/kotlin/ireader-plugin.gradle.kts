@@ -24,6 +24,7 @@ pluginConfig.apply {
     price.convention(0.0)
     currency.convention("USD")
     trialDays.convention(0)
+    mainClass.convention("")
 }
 
 repositories {
@@ -74,6 +75,7 @@ val generateManifest = tasks.register<PluginManifestGenerator>("generatePluginMa
     price.set(pluginConfig.price)
     currency.set(pluginConfig.currency)
     trialDays.set(pluginConfig.trialDays)
+    mainClass.set(pluginConfig.mainClass)
     outputDir.set(layout.buildDirectory.dir("generated/plugin"))
 }
 

@@ -52,6 +52,9 @@ abstract class PluginExtension {
     
     /** Trial days for premium plugins */
     abstract val trialDays: Property<Int>
+    
+    /** Fully qualified main class name (auto-detected if not specified) */
+    abstract val mainClass: Property<String>
 }
 
 enum class PluginType {

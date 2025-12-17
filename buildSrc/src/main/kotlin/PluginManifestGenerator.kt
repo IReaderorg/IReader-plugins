@@ -63,6 +63,9 @@ abstract class PluginManifestGenerator : DefaultTask() {
     @get:Input
     abstract val trialDays: Property<Int>
     
+    @get:Input
+    abstract val mainClass: Property<String>
+    
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
     
@@ -88,6 +91,7 @@ abstract class PluginManifestGenerator : DefaultTask() {
             permissions = pluginPermissions.get(),
             minIReaderVersion = minIReaderVersion.get(),
             platforms = listOf("ANDROID", "IOS", "DESKTOP"),
+            mainClass = mainClass.orNull?.takeIf { it.isNotBlank() },
             iconUrl = pluginIconUrl.orNull?.takeIf { it.isNotBlank() },
             monetization = createMonetization()
         )
@@ -126,6 +130,7 @@ data class PluginManifestData(
     val permissions: List<String>,
     val minIReaderVersion: String,
     val platforms: List<String>,
+    val mainClass: String? = null,
     val iconUrl: String? = null,
     val monetization: MonetizationData? = null
 )
