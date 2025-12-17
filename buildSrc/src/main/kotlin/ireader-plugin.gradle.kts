@@ -149,19 +149,14 @@ val packagePlugin = tasks.register<Zip>("packagePlugin") {
     }
     
     // Include native libraries for Android (jniLibs/<abi>/*.so)
-    val jniLibsDir = file("src/main/jniLibs")
-    if (jniLibsDir.exists()) {
-        from(jniLibsDir) {
-            into("native/android")
-        }
+    // Note: Don't check exists() at configuration time - directory may be created at execution time
+    from("src/main/jniLibs") {
+        into("native/android")
     }
     
     // Include native libraries for Desktop (native/<platform>/*.dll|.so|.dylib)
-    val nativeDir = file("src/main/native")
-    if (nativeDir.exists()) {
-        from(nativeDir) {
-            into("native")
-        }
+    from("src/main/native") {
+        into("native")
     }
     
     // Include KSP generated sources
