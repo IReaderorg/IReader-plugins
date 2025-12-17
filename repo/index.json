@@ -2,6 +2,70 @@
     "version": 1,
     "plugins": [
         {
+            "id": "io.github.ireaderorg.plugins.graalvm-engine",
+            "name": "GraalVM JavaScript Engine",
+            "version": "25.0.1",
+            "versionCode": 1,
+            "description": "GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "JS_ENGINE",
+            "permissions": [
+                "STORAGE"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
+            "fileSize": 23404,
+            "checksum": "sha256:cd2af706005460ac5c6598629eee1552eaa55f10c870055d6808584d2b8e3f7c"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.j2v8-engine",
+            "name": "J2V8 JavaScript Engine",
+            "version": "6.3.4",
+            "versionCode": 1,
+            "description": "V8 JavaScript engine for Android - enables LNReader-compatible sources with full ES6+ support",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "JS_ENGINE",
+            "permissions": [
+                "STORAGE"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.3.4.iplugin",
+            "fileSize": 22664,
+            "checksum": "sha256:e3ddc750ac3af976817fe01de529c590f9e24603a65c6e7353b35a69f9eef76c"
+        },
+        {
             "id": "io.github.ireaderorg.plugins.dictionary",
             "name": "Dictionary Lookup",
             "version": "1.0.0",
@@ -31,8 +95,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.dictionary-1.0.0.iplugin",
-            "fileSize": 5815,
-            "checksum": "sha256:f07f506820676f32b020c444f87f61831f67aae91786fa158e4128e26c95b250"
+            "fileSize": 5830,
+            "checksum": "sha256:eba5f70e3124d0059036d1b0edf8cda2a8cc68afaad60b7604a9bd8d2621f5b5"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -61,8 +125,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
-            "fileSize": 10687,
-            "checksum": "sha256:fd3985489774c13c544ab626eb57a65665447d47f0d475ab293ab1da4dbb00a7"
+            "fileSize": 10701,
+            "checksum": "sha256:f316630e43615ae720a18e6236061de472729fadc9e8f6b7dd52ff87086a8d05"
         },
         {
             "id": "io.github.ireaderorg.plugins.example-translation",
@@ -94,8 +158,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-translation-1.0.0.iplugin",
-            "fileSize": 6856,
-            "checksum": "sha256:a96eae671dba1c11b5ca36f09342df3661ec54d6a961bf2745cad8ee82d4a47e"
+            "fileSize": 6896,
+            "checksum": "sha256:65e039196635617329419ca9a38a41ffcce23ced55beafe87291c544d73a609e"
         },
         {
             "id": "io.github.ireaderorg.plugins.example-tts",
@@ -126,8 +190,41 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.example-tts-1.0.0.iplugin",
-            "fileSize": 5983,
-            "checksum": "sha256:721baed4c967c8fa848e0e1531ca7ae26e6f7e8d8a2140858393c7685c44f997"
+            "fileSize": 6009,
+            "checksum": "sha256:9128496b1b61fb883d9c1de48310048e17a051578ae42aa15aa9ced619e00445"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.piper-tts",
+            "name": "Piper TTS",
+            "version": "1.2.0",
+            "versionCode": 1,
+            "description": "High-performance neural text-to-speech with 30+ voices in 20+ languages. Powered by Piper.",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "TTS",
+            "permissions": [
+                "STORAGE",
+                "NETWORK"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
+            "fileSize": 22019,
+            "checksum": "sha256:07adc705915cf73c9a1ab8353b3bbdafb5f2d1244d9afb89fa02657264be12f0"
         }
     ]
 }
