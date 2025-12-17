@@ -18,6 +18,16 @@ pluginConfig {
 // J2V8 version
 val j2v8Version = "6.2.1"
 
+// Add J2V8 Java API as implementation dependency
+// This will be included in the plugin's DEX file
+// The native libraries are downloaded separately and included in native/android/<abi>/
+dependencies {
+    // J2V8 Java API - will be bundled in the plugin's DEX
+    // Note: We use the AAR but only the Java classes will be in DEX
+    // Native libraries are handled separately via downloadJ2V8Natives task
+    implementation("com.eclipsesource.j2v8:j2v8:$j2v8Version@aar")
+}
+
 // Task to download J2V8 AAR and extract native libraries
 val downloadJ2V8Natives = tasks.register<DownloadAndExtractAarTask>("downloadJ2V8Natives") {
     aarUrl.set("https://repo1.maven.org/maven2/com/eclipsesource/j2v8/j2v8/$j2v8Version/j2v8-$j2v8Version.aar")
@@ -25,6 +35,20 @@ val downloadJ2V8Natives = tasks.register<DownloadAndExtractAarTask>("downloadJ2V
     sourcePrefix.set("jni/")
     outputDir.set(layout.projectDirectory.dir("src/main/jniLibs"))
     cacheDir.set(layout.buildDirectory.dir("download-cache"))
+}
+
+// Task to extract J2V8 Java classes from AAR for DEX generation
+val extractJ2V8Classes = tasks.register<ExtractAarClassesTask>("extractJ2V8Classes") {
+    aarUrl.set("https://repo1.maven.org/maven2/com/eclipsesource/j2v8/j2v8/$j2v8Version/j2v8-$j2v8Version.aar")
+    aarFileName.set("j2v8-$j2v8Version.aar")
+    outputDir.set(layout.buildDirectory.dir("j2v8-classes"))
+    cacheDir.set(layout.buildDirectory.dir("download-cache"))
+}
+
+// Make JAR task include J2V8 classes
+tasks.named<Jar>("jar") {
+    dependsOn(extractJ2V8Classes)
+    from(layout.buildDirectory.dir("j2v8-classes"))
 }
 
 // Make packagePlugin depend on downloading natives

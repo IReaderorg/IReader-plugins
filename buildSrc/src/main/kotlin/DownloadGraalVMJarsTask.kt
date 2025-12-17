@@ -23,7 +23,7 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
     abstract val cacheDir: DirectoryProperty
     
     init {
-        graalvmVersion.convention("24.1.1")
+        graalvmVersion.convention("25.0.1")
     }
     
     // Required JARs for GraalVM JS

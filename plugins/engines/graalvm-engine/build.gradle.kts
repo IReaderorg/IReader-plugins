@@ -5,8 +5,8 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.graalvm-engine")
     name.set("GraalVM JavaScript Engine")
-    version.set("24.1.1")  // Match GraalVM version
-    versionCode.set(1)
+    version.set("25.0.1")  // Match GraalVM version
+    versionCode.set(2)
     description.set("GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support")
     author.set("IReader Team")
     type.set(PluginType.JS_ENGINE)
@@ -16,7 +16,7 @@ pluginConfig {
 }
 
 // GraalVM version
-val graalVersion = "24.1.1"
+val graalVersion = "25.0.1"
 
 // Task to download GraalVM JARs
 val downloadGraalVMJars = tasks.register<DownloadGraalVMJarsTask>("downloadGraalVMJars") {

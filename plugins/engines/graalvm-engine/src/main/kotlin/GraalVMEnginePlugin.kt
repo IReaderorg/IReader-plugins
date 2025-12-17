@@ -5,16 +5,16 @@ import ireader.plugin.api.*
 /**
  * GraalVM JavaScript Engine Plugin for Desktop.
  * 
- * This plugin bundles the GraalVM Polyglot JS JARs (~38MB total).
+ * This plugin bundles the GraalVM Polyglot JS JARs (~8MB total).
  * The host app loads these JARs to provide GraalVM JS engine support.
  * 
  * Bundled JARs (in libs/ folder):
- * - polyglot-24.1.1.jar - Core Polyglot API
- * - js-language-24.1.1.jar - JavaScript language implementation
- * - truffle-api-24.1.1.jar - Truffle framework
- * - collections-24.1.1.jar - GraalVM collections
- * - word-24.1.1.jar - GraalVM word types
- * - nativeimage-24.1.1.jar - Native image support
+ * - polyglot-25.0.1.jar - Core Polyglot API
+ * - js-language-25.0.1.jar - JavaScript language implementation
+ * - truffle-api-25.0.1.jar - Truffle framework
+ * - collections-25.0.1.jar - GraalVM collections
+ * - word-25.0.1.jar - GraalVM word types
+ * - nativeimage-25.0.1.jar - Native image support
  * 
  * The host app should:
  * 1. Extract the JAR files from the plugin package
@@ -28,8 +28,8 @@ class GraalVMEnginePlugin : Plugin {
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.graalvm-engine",
         name = "GraalVM JavaScript Engine",
-        version = "24.1.1",
-        versionCode = 1,
+        version = "25.0.1",
+        versionCode = 2,
         description = "GraalVM Polyglot JavaScript engine JARs for Desktop. Enables LNReader-compatible JS sources.",
         author = PluginAuthor(
             name = "IReader Team",
