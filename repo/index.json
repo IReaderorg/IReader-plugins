@@ -29,7 +29,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
             "fileSize": 9185075,
-            "checksum": "sha256:eeb039dff45e426b49e6e6a0c56f75d21fe0be6a4bd2df28e10a6f7d2ef44a0f"
+            "checksum": "sha256:84590a4d5dcd3da6f5d3f4a9950eac0d393dd4734e4e3671d2ff44c5f70cc387"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -58,8 +58,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
-            "fileSize": 35203670,
-            "checksum": "sha256:d6df9ec0a8c312fa337255593d7181f32d66ec66c280d10cf30bcb9a55843550"
+            "fileSize": 35204315,
+            "checksum": "sha256:95880e7dfb6f92be268dd3e65327eae2ba70d2f6c0c24c6c0d71ea1c2d646066"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,7 +89,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:f0a9cad1a45cf62c20e675229c35df3628b8bed25570d36c2b7e5e436a840458"
+            "checksum": "sha256:c563339917f69750f0a314979b300c61c40025e6c96e69f2364482f7dc46b43c"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -119,8 +119,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
-            "fileSize": 22755095,
-            "checksum": "sha256:60525aaafca1a18173c8b545793e7c3e1c135a0f2112cce2510eb754cac21d80"
+            "fileSize": 22755096,
+            "checksum": "sha256:81d09e6926b84ba195a766e31f2e6e54b33c6d74c2f7ab672d151a1e89bbff5d"
         }
     ]
 }
