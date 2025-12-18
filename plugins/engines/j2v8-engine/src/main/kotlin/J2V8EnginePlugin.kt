@@ -71,49 +71,75 @@ class J2V8EnginePlugin : Plugin {
             return true
         }
         
+        // Use println for logging since pluginContext might be null
+        // (this method can be called via reflection on a new instance)
+        fun log(message: String) {
+            println("[J2V8Plugin] $message")
+            pluginContext?.log(LogLevel.INFO, message)
+        }
+        
+        fun logError(message: String) {
+            println("[J2V8Plugin] ERROR: $message")
+            pluginContext?.log(LogLevel.ERROR, message)
+        }
+        
         try {
-            pluginContext?.log(LogLevel.INFO, "Loading native library: $libraryPath")
+            log("Loading native library: $libraryPath")
+            log("Plugin ClassLoader (this.javaClass.classLoader): ${this.javaClass.classLoader?.javaClass?.name}")
             
-            // Load the native library - this happens from within the plugin's ClassLoader
+            // Verify the library file exists
+            val libraryFile = java.io.File(libraryPath)
+            if (!libraryFile.exists()) {
+                loadError = "Native library file does not exist: $libraryPath"
+                logError(loadError!!)
+                return false
+            }
+            log("Native library file exists, size: ${libraryFile.length()} bytes")
+            
+            // Load the native library using absolute path
+            // This MUST be called before any J2V8 class is loaded, because J2V8 classes
+            // have static initializers that try to load the native library using System.loadLibrary()
+            log("Calling System.load($libraryPath)...")
             System.load(libraryPath)
-            pluginContext?.log(LogLevel.INFO, "System.load() completed")
+            log("System.load() completed successfully!")
             
+            // Now the native library is loaded. We can safely use J2V8 classes.
             // Use THIS class's ClassLoader to find V8 class
-            // This is the DexClassLoader that loaded this plugin
             val myClassLoader = this.javaClass.classLoader
-            pluginContext?.log(LogLevel.INFO, "Plugin ClassLoader: ${myClassLoader?.javaClass?.name}")
+            log("Attempting to load V8 class from ClassLoader: ${myClassLoader?.javaClass?.name}")
             
             // Load V8 class using the plugin's ClassLoader
             val v8Class = myClassLoader?.loadClass("com.eclipsesource.v8.V8")
             if (v8Class == null) {
                 loadError = "V8 class not found in plugin ClassLoader"
-                pluginContext?.log(LogLevel.ERROR, loadError!!)
+                logError(loadError!!)
                 return false
             }
-            pluginContext?.log(LogLevel.INFO, "V8 class loaded: ${v8Class.name}")
+            log("V8 class loaded: ${v8Class.name}")
             
             // Try to create a test runtime to verify everything works
+            log("Creating test V8 runtime...")
             val createMethod = v8Class.getMethod("createV8Runtime")
             val runtime = createMethod.invoke(null)
-            pluginContext?.log(LogLevel.INFO, "V8 runtime created successfully")
+            log("V8 runtime created successfully!")
             
             // Release the test runtime
             val releaseMethod = v8Class.getMethod("release")
             releaseMethod.invoke(runtime)
-            pluginContext?.log(LogLevel.INFO, "V8 runtime released")
+            log("V8 runtime released")
             
             nativeLibraryLoaded = true
-            pluginContext?.log(LogLevel.INFO, "J2V8 native library loaded and verified successfully")
+            log("J2V8 native library loaded and verified successfully!")
             return true
             
         } catch (e: UnsatisfiedLinkError) {
             loadError = "Native library load failed: ${e.message}"
-            pluginContext?.log(LogLevel.ERROR, loadError!!)
+            logError(loadError!!)
             e.printStackTrace()
             return false
         } catch (e: Exception) {
             loadError = "Initialization failed: ${e.javaClass.simpleName}: ${e.message}"
-            pluginContext?.log(LogLevel.ERROR, loadError!!)
+            logError(loadError!!)
             e.printStackTrace()
             return false
         }
