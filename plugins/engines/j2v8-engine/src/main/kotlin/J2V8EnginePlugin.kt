@@ -6,11 +6,8 @@ import ireader.plugin.api.*
  * J2V8 JavaScript Engine Plugin for Android.
  * 
  * This plugin bundles the J2V8 native libraries and Java API.
- * It handles its own native library loading during initialization.
- * 
- * The host app should:
- * 1. Load this plugin via PluginManager
- * 2. Use the plugin's ClassLoader to access J2V8 classes via reflection
+ * It provides a loadNativeLibrary() method that MUST be called from within
+ * this plugin's context to ensure JNI FindClass uses the correct ClassLoader.
  */
 class J2V8EnginePlugin : Plugin {
     
@@ -42,44 +39,7 @@ class J2V8EnginePlugin : Plugin {
     
     override fun initialize(context: PluginContext) {
         pluginContext = context
-        context.log(LogLevel.INFO, "J2V8 plugin initializing...")
-        
-        // Load native library during initialization using PluginContext
-        try {
-            // Extract native libraries to plugin's native directory
-            val nativeDir = context.extractNativeLibraries()
-            if (nativeDir == null) {
-                throw IllegalStateException("No native libraries available for this platform")
-            }
-            context.log(LogLevel.INFO, "Native libraries extracted to: $nativeDir")
-            
-            // Load the j2v8 native library
-            // This is called from within the plugin's ClassLoader context,
-            // so JNI FindClass will use this ClassLoader to find J2V8 classes
-            context.loadNativeLibrary("j2v8")
-            
-            // Verify the library loaded correctly by trying to access V8 class
-            try {
-                val v8Class = Class.forName("com.eclipsesource.v8.V8")
-                context.log(LogLevel.INFO, "V8 class loaded: ${v8Class.name}")
-                
-                // Try to create a test runtime
-                val createMethod = v8Class.getMethod("createV8Runtime")
-                val runtime = createMethod.invoke(null)
-                
-                // Release it
-                val releaseMethod = v8Class.getMethod("release")
-                releaseMethod.invoke(runtime)
-                
-                nativeLibraryLoaded = true
-                context.log(LogLevel.INFO, "J2V8 native library loaded and verified successfully")
-            } catch (e: Exception) {
-                throw IllegalStateException("J2V8 classes not accessible: ${e.message}", e)
-            }
-        } catch (e: Exception) {
-            loadError = e.message
-            context.log(LogLevel.ERROR, "Failed to load J2V8 native library: ${e.message}")
-        }
+        context.log(LogLevel.INFO, "J2V8 plugin initialized (native library will be loaded on demand)")
     }
     
     override fun cleanup() {
@@ -95,4 +55,54 @@ class J2V8EnginePlugin : Plugin {
      * Get the error message if loading failed.
      */
     fun getLoadError(): String? = loadError
+    
+    /**
+     * Load the native library from the given path.
+     * 
+     * IMPORTANT: This method MUST be called to load the native library because
+     * System.load() uses the ClassLoader of the calling class. When this method
+     * is called, the calling class is J2V8EnginePlugin which is loaded by the
+     * plugin's DexClassLoader, so JNI FindClass will find V8 classes correctly.
+     * 
+     * @param libraryPath Full path to the libj2v8.so file
+     * @return true if loaded successfully, false otherwise
+     */
+    fun loadNativeLibrary(libraryPath: String): Boolean {
+        if (nativeLibraryLoaded) {
+            return true
+        }
+        
+        try {
+            pluginContext?.log(LogLevel.INFO, "Loading native library from plugin context: $libraryPath")
+            
+            // This System.load() call happens from within the plugin's ClassLoader context
+            // JNI_OnLoad will use this ClassLoader to find com.eclipsesource.v8.V8
+            System.load(libraryPath)
+            
+            // Verify the library loaded correctly
+            val v8Class = Class.forName("com.eclipsesource.v8.V8")
+            pluginContext?.log(LogLevel.INFO, "V8 class loaded: ${v8Class.name}")
+            
+            // Try to create a test runtime
+            val createMethod = v8Class.getMethod("createV8Runtime")
+            val runtime = createMethod.invoke(null)
+            
+            // Release it
+            val releaseMethod = v8Class.getMethod("release")
+            releaseMethod.invoke(runtime)
+            
+            nativeLibraryLoaded = true
+            pluginContext?.log(LogLevel.INFO, "J2V8 native library loaded and verified successfully")
+            return true
+            
+        } catch (e: UnsatisfiedLinkError) {
+            loadError = "Native library load failed: ${e.message}"
+            pluginContext?.log(LogLevel.ERROR, loadError!!)
+            return false
+        } catch (e: Exception) {
+            loadError = "Initialization failed: ${e.message}"
+            pluginContext?.log(LogLevel.ERROR, loadError!!)
+            return false
+        }
+    }
 }
