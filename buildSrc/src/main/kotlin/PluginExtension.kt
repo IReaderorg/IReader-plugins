@@ -58,6 +58,12 @@ abstract class PluginExtension {
     
     /** Supported platforms (defaults to all: ANDROID, IOS, DESKTOP) */
     abstract val platforms: ListProperty<PluginPlatform>
+    
+    /** Whether this plugin is featured in the store */
+    abstract val featured: Property<Boolean>
+    
+    /** Tags for categorization and search (e.g., "dark", "minimal", "colorful") */
+    abstract val tags: ListProperty<String>
 }
 
 enum class PluginPlatform {

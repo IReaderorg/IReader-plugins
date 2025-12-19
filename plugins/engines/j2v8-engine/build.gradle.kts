@@ -13,6 +13,8 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.STORAGE))
     mainClass.set("io.github.ireaderorg.plugins.j2v8engine.J2V8EnginePlugin")
     platforms.set(listOf(PluginPlatform.ANDROID)) // Android only
+    featured.set(true)
+    tags.set(listOf("javascript", "js-engine", "android", "essential"))
 }
 
 // J2V8 version

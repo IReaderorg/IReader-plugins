@@ -27,6 +27,8 @@ pluginConfig.apply {
     trialDays.convention(0)
     mainClass.convention("")
     platforms.convention(listOf(PluginPlatform.ANDROID, PluginPlatform.IOS, PluginPlatform.DESKTOP))
+    featured.convention(false)
+    tags.convention(emptyList())
 }
 
 repositories {
@@ -79,6 +81,8 @@ val generateManifest = tasks.register<PluginManifestGenerator>("generatePluginMa
     trialDays.set(pluginConfig.trialDays)
     mainClass.set(pluginConfig.mainClass)
     pluginPlatforms.set(pluginConfig.platforms.map { list -> list.map { it.name } })
+    featured.set(pluginConfig.featured)
+    tags.set(pluginConfig.tags)
     outputDir.set(layout.buildDirectory.dir("generated/plugin"))
 }
 

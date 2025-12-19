@@ -13,6 +13,8 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.STORAGE))
     mainClass.set("io.github.ireaderorg.plugins.graalvmengine.GraalVMEnginePlugin")
     platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
+    featured.set(true)
+    tags.set(listOf("javascript", "js-engine", "desktop", "essential"))
 }
 
 // GraalVM version

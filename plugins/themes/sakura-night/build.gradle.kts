@@ -12,4 +12,5 @@ pluginConfig {
     authorWebsite.set("https://github.com/IReaderorg")
     type.set(PluginType.THEME)
     permissions.set(emptyList())
+    mainClass.set("io.github.ireaderorg.plugins.sakuranight.SakuraNightTheme")
 }

@@ -69,6 +69,12 @@ abstract class PluginManifestGenerator : DefaultTask() {
     @get:Input
     abstract val pluginPlatforms: ListProperty<String>
     
+    @get:Input
+    abstract val featured: Property<Boolean>
+    
+    @get:Input
+    abstract val tags: ListProperty<String>
+    
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
     
@@ -96,7 +102,9 @@ abstract class PluginManifestGenerator : DefaultTask() {
             platforms = pluginPlatforms.get(),
             mainClass = mainClass.orNull?.takeIf { it.isNotBlank() },
             iconUrl = pluginIconUrl.orNull?.takeIf { it.isNotBlank() },
-            monetization = createMonetization()
+            monetization = createMonetization(),
+            featured = featured.orNull ?: false,
+            tags = tags.orNull?.takeIf { it.isNotEmpty() }
         )
         
         val outputFile = File(outputDir.get().asFile, "plugin.json")
@@ -135,7 +143,9 @@ data class PluginManifestData(
     val platforms: List<String>,
     val mainClass: String? = null,
     val iconUrl: String? = null,
-    val monetization: MonetizationData? = null
+    val monetization: MonetizationData? = null,
+    val featured: Boolean = false,
+    val tags: List<String>? = null
 )
 
 @Serializable

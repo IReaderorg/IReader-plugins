@@ -13,6 +13,8 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.STORAGE, PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.pipertts.PiperTTSPlugin")
     platforms.set(listOf(PluginPlatform.DESKTOP)) // Desktop only
+    featured.set(true)
+    tags.set(listOf("tts", "text-to-speech", "neural", "voices", "desktop"))
 }
 
 // Piper standalone release version (from GitHub)
