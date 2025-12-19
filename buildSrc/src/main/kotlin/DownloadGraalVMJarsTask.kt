@@ -26,20 +26,30 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
         graalvmVersion.convention("25.0.1")
     }
     
-    // Required JARs for GraalVM JS
+    // Complete JARs for GraalVM JS - all required dependencies
     private val requiredJars = listOf(
-        // Core polyglot API
+        // === Core Polyglot API ===
         "org/graalvm/polyglot/polyglot" to "polyglot",
-        // JS language implementation
+        
+        // === JavaScript Language ===
         "org/graalvm/js/js-language" to "js-language",
-        // Truffle API (required by js-language)
+        
+        // === Truffle Framework ===
         "org/graalvm/truffle/truffle-api" to "truffle-api",
-        // Collections (required dependency)
+        "org/graalvm/truffle/truffle-runtime" to "truffle-runtime",
+        "org/graalvm/truffle/truffle-compiler" to "truffle-compiler",
+        
+        // === TRegex - REQUIRED for regex support in JS ===
+        "org/graalvm/regex/regex" to "regex",
+        
+        // === SDK Components ===
         "org/graalvm/sdk/collections" to "collections",
-        // Word (required dependency)
         "org/graalvm/sdk/word" to "word",
-        // Nativeimage (required dependency)
-        "org/graalvm/sdk/nativeimage" to "nativeimage"
+        "org/graalvm/sdk/nativeimage" to "nativeimage",
+        "org/graalvm/sdk/jniutils" to "jniutils",
+        
+        // === ICU4J for internationalization (Intl API support) ===
+        "org/graalvm/js/icu4j" to "icu4j"
     )
     
     @TaskAction
@@ -52,6 +62,9 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
         outDir.mkdirs()
         
         var totalSize = 0L
+        
+        // Essential JARs that must be present
+        val essentialArtifacts = setOf("polyglot", "js-language", "truffle-api", "regex", "collections", "word")
         
         for ((mavenPath, artifactName) in requiredJars) {
             val jarName = "$artifactName-$version.jar"
@@ -70,7 +83,10 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
                     }
                     logger.lifecycle("Downloaded: $jarName (${cachedJar.length()} bytes)")
                 } catch (e: Exception) {
-                    logger.warn("Failed to download $jarName: ${e.message}")
+                    if (artifactName in essentialArtifacts) {
+                        throw RuntimeException("Failed to download essential JAR $jarName: ${e.message}", e)
+                    }
+                    logger.warn("Optional JAR not available: $jarName (${e.message})")
                     continue
                 }
             } else {
