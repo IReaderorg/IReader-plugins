@@ -28,8 +28,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 10742146,
-            "checksum": "sha256:c12967a227ee8fb8dc3893a1676b4b310cac8b0b1a4041680a46aacb8dd01aa5"
+            "fileSize": 10742148,
+            "checksum": "sha256:e353acfc388e2e5d8d12e16eb10395efa466259ab80fb39460a5efb49a26203f"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -59,7 +59,217 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
             "fileSize": 35204302,
-            "checksum": "sha256:1eb3162dcfd91f9dfd330f2b6dbecb35bfd9d25bdd649e2956f7ddffa3802669"
+            "checksum": "sha256:3df6af5590f4e8e6707ef6dce2a3714c92e83294c6bac42cff1c35028a27dee0"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.arctic-aurora",
+            "name": "Arctic Aurora",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Northern lights inspired with teal and purple gradients",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.arctic-aurora-1.0.0.iplugin",
+            "fileSize": 10768,
+            "checksum": "sha256:a988c5456bf659a39fd241dc22df05985f8fd017f0d736a7e6aef30b85259e5c"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.coffee-bean",
+            "name": "Coffee Bean",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Rich coffee brown theme perfect for cozy reading sessions",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.coffee-bean-1.0.0.iplugin",
+            "fileSize": 10660,
+            "checksum": "sha256:72900ee4bd69b2d0be99829726e4b34dc2ea61fdc3f769f84d80e8c0a122036f"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.coral-reef",
+            "name": "Coral Reef",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Tropical ocean colors with warm coral and cool cyan accents",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.coral-reef-1.0.0.iplugin",
+            "fileSize": 10683,
+            "checksum": "sha256:4da6610afdb24fd79bef349dc6da269f0589ccfd3ea87e39e49f14a0801cb4e8"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.cyber-neon",
+            "name": "Cyber Neon",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Futuristic cyberpunk theme with electric cyan and magenta accents",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.cyber-neon-1.0.0.iplugin",
+            "fileSize": 10757,
+            "checksum": "sha256:c28f6f7cf9d7466d5f2d8a8f0f2e68a7ebf4543e9689c764fcf323a4c775c72c"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.desert-sand",
+            "name": "Desert Sand",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Warm earthy tones inspired by desert landscapes",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.desert-sand-1.0.0.iplugin",
+            "fileSize": 10694,
+            "checksum": "sha256:067a8b6f36c9226c50ec8f36ef5c6ecd1b0a16ad652520b42d3ce18819ee341a"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.mint-fresh",
+            "name": "Mint Fresh",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Cool refreshing mint green theme for a clean reading experience",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.mint-fresh-1.0.0.iplugin",
+            "fileSize": 10692,
+            "checksum": "sha256:22dc1b32ae88a6f871b7cb33ba5c1508d5ad4db5c43346457f1885f82c916bd3"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.nordic-frost",
+            "name": "Nordic Frost",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Cool icy blues with silver accents inspired by Scandinavian winters",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.nordic-frost-1.0.0.iplugin",
+            "fileSize": 10757,
+            "checksum": "sha256:23b1414d52d4f5425a57c30551374ed2ac25122a4603f5284619d9543ce06c9e"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,7 +299,127 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:19c56af4832652eb9a4fcf771c26e0b3c41d8043feaf43ff9417122f96fa2db8"
+            "checksum": "sha256:47219f64b80a1f5ef780e4ec2c69bb1ad845dd9ae7dcab3f3e87bcb87c23c9f5"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.royal-velvet",
+            "name": "Royal Velvet",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Rich luxurious purple theme fit for royalty",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.royal-velvet-1.0.0.iplugin",
+            "fileSize": 10647,
+            "checksum": "sha256:e633767dc037bdf9df9348040a4e91e2e7283d05533eb242773f6cb2f6ea562a"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.sakura-night",
+            "name": "Sakura Night",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Japanese cherry blossom inspired theme with soft pinks and purples",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.sakura-night-1.0.0.iplugin",
+            "fileSize": 10730,
+            "checksum": "sha256:5b1c504659ddb6c286dc92011e3254c4e59e0c8161f4d66a51d6bdc0ad52eb45"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.slate-gray",
+            "name": "Slate Gray",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Professional minimal theme with elegant gray tones",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.slate-gray-1.0.0.iplugin",
+            "fileSize": 10641,
+            "checksum": "sha256:378d65845469ceacbe6c336b48cdcd7ff66fd00f234ee7fa8eb5cbd20fcd1f43"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.vintage-sepia",
+            "name": "Vintage Sepia",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "Classic old book feel with warm brown tones",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": "https://github.com/IReaderorg"
+            },
+            "type": "THEME",
+            "permissions": [],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.vintage-sepia-1.0.0.iplugin",
+            "fileSize": 10667,
+            "checksum": "sha256:142d826a96ea64e004e58ce1e979878abc02275c246eb8762448fefa52c5733f"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -120,7 +450,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-2.0.0.iplugin",
             "fileSize": 94383017,
-            "checksum": "sha256:273c4673302752210c2fb75522717f42001bc38e4170c0c3d44535318eb0b44c"
+            "checksum": "sha256:a213a031bbc9312936f84ddac23f77d1808240f9ba58782a2f5c79ae002e3fbb"
         }
     ]
 }
