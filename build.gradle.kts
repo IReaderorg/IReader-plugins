@@ -28,6 +28,15 @@ tasks.register<PluginRepoTask>("repo") {
             it.path.startsWith(":plugins:") && it.path.count { c -> c == ':' } == 3
         }.map { it.layout.buildDirectory.get().asFile.absolutePath }
     )
+    // Plugin source directories for icon lookup (assets/icon.png)
+    pluginSourceDirs.set(
+        subprojects.filter {
+            it.path.startsWith(":plugins:") && it.path.count { c -> c == ':' } == 3
+        }.map { it.projectDir.absolutePath }
+    )
+    // Base URL for plugin icons - icons will be at {baseIconUrl}/images/{pluginId}.png
+    // This URL points to the gh-pages branch where the repo is hosted
+    baseIconUrl.set("https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo")
 }
 
 // Build all plugins
