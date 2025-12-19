@@ -1,4 +1,8 @@
+import java.io.File
 import java.net.URI
+import java.net.URL
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 
 plugins {
     id("ireader-plugin")
@@ -39,37 +43,68 @@ val extractHermesClasses = tasks.register<ExtractAarClassesTask>("extractHermesC
     cacheDir.set(layout.buildDirectory.dir("download-cache"))
 }
 
-// Also download the base hermes JAR which contains the core wrapper classes
-val downloadHermesJar = tasks.register("downloadHermesJar") {
-    val jarUrl = "https://repo1.maven.org/maven2/com/intuit/playerui/hermes/$playerUiHermesVersion/hermes-$playerUiHermesVersion.jar"
-    val outputDir = layout.buildDirectory.dir("hermes-jar")
-    val jarFile = outputDir.map { it.file("hermes-$playerUiHermesVersion.jar") }
+// Task to download and extract the base hermes JAR
+abstract class DownloadHermesJarTask : DefaultTask() {
+    @get:Input
+    abstract val jarUrl: Property<String>
     
-    outputs.file(jarFile)
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
     
-    doLast {
+    @get:OutputDirectory
+    abstract val classesDir: DirectoryProperty
+    
+    @TaskAction
+    fun execute() {
         val outDir = outputDir.get().asFile
         outDir.mkdirs()
-        val outFile = jarFile.get().asFile
+        
+        val jarFileName = jarUrl.get().substringAfterLast("/")
+        val outFile = File(outDir, jarFileName)
         
         if (!outFile.exists()) {
-            // Use ant.get for downloading
-            ant.invokeMethod("get", mapOf(
-                "src" to jarUrl,
-                "dest" to outFile,
-                "verbose" to true
-            ))
-            println("Downloaded: $jarUrl")
+            logger.lifecycle("Downloading: ${jarUrl.get()}")
+            URL(jarUrl.get()).openStream().use { input ->
+                outFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            logger.lifecycle("Downloaded: $jarFileName")
         }
         
-        // Extract JAR contents to hermes-classes
-        val classesDir = layout.buildDirectory.dir("hermes-classes").get().asFile
-        ant.invokeMethod("unzip", mapOf(
-            "src" to outFile,
-            "dest" to classesDir
-        ))
-        println("Extracted classes to: $classesDir")
+        // Extract JAR contents to classes directory
+        val classesOutput = classesDir.get().asFile
+        classesOutput.mkdirs()
+        
+        val zipFile = ZipFile(outFile)
+        try {
+            val entries = zipFile.entries()
+            while (entries.hasMoreElements()) {
+                val entry: ZipEntry = entries.nextElement()
+                val destFile = File(classesOutput, entry.name)
+                if (entry.isDirectory) {
+                    destFile.mkdirs()
+                } else {
+                    destFile.parentFile?.mkdirs()
+                    val inputStream = zipFile.getInputStream(entry)
+                    inputStream.use { input ->
+                        destFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+            }
+        } finally {
+            zipFile.close()
+        }
+        logger.lifecycle("Extracted classes to: $classesOutput")
     }
+}
+
+val downloadHermesJar = tasks.register<DownloadHermesJarTask>("downloadHermesJar") {
+    jarUrl.set("https://repo1.maven.org/maven2/com/intuit/playerui/hermes/$playerUiHermesVersion/hermes-$playerUiHermesVersion.jar")
+    outputDir.set(layout.buildDirectory.dir("hermes-jar"))
+    classesDir.set(layout.buildDirectory.dir("hermes-classes"))
 }
 
 // Make JAR task include Hermes classes
