@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Split a 4x4 grid image into individual plugin icons.
-Handles potential padding/margins in the generated image.
 """
 from PIL import Image
 import os
@@ -42,38 +41,27 @@ def main():
     width, height = img.size
     print(f"Source image size: {width}x{height}")
     
-    # Grid is 4x4
-    cols = 4
-    rows = 4
-    
-    # Calculate cell size
-    cell_width = width // cols
-    cell_height = height // rows
+    # Calculate cell size (4x4 grid)
+    cell_width = width // 4
+    cell_height = height // 4
     print(f"Cell size: {cell_width}x{cell_height}")
-    
-    # Add some padding detection - trim edges of each cell
-    # Gemini often adds small margins
-    padding = 5  # pixels to trim from each edge
     
     # Extract each icon
     for idx, plugin_name in enumerate(PLUGINS):
         if plugin_name is None:
             continue
             
-        row = idx // cols
-        col = idx % cols
+        row = idx // 4
+        col = idx % 4
         
-        # Calculate crop box with padding adjustment
-        left = col * cell_width + padding
-        top = row * cell_height + padding
-        right = (col + 1) * cell_width - padding
-        bottom = (row + 1) * cell_height - padding
+        # Calculate crop box
+        left = col * cell_width
+        top = row * cell_height
+        right = left + cell_width
+        bottom = top + cell_height
         
         # Crop the icon
         icon = img.crop((left, top, right, bottom))
-        
-        # Resize to standard 256x256 for consistency
-        icon = icon.resize((256, 256), Image.Resampling.LANCZOS)
         
         # Create assets folder if needed
         assets_dir = os.path.join(script_dir, "..", "plugins", "tts", plugin_name, "assets")
@@ -82,25 +70,7 @@ def main():
         # Save the icon
         icon_path = os.path.join(assets_dir, "icon.png")
         icon.save(icon_path, "PNG")
-        print(f"Saved: {plugin_name}/assets/icon.png ({col},{row})")
-    
-    # Also save a debug image with grid lines
-    from PIL import ImageDraw
-    debug_img = img.copy()
-    draw = ImageDraw.Draw(debug_img)
-    
-    # Draw grid lines
-    for i in range(1, cols):
-        x = i * cell_width
-        draw.line([(x, 0), (x, height)], fill="red", width=2)
-    for i in range(1, rows):
-        y = i * cell_height
-        draw.line([(0, y), (width, y)], fill="red", width=2)
-    
-    debug_path = os.path.join(script_dir, "..", "repo", "debug_grid.png")
-    debug_img.save(debug_path)
-    print(f"\nDebug image saved to: {debug_path}")
-    print("Check this image to verify grid alignment!")
+        print(f"Saved: {plugin_name}/assets/icon.png")
 
 if __name__ == "__main__":
     main()

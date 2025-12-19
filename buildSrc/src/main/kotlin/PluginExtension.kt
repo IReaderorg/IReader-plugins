@@ -77,7 +77,8 @@ enum class PluginType {
     TTS,
     TRANSLATION,
     FEATURE,
-    JS_ENGINE
+    JS_ENGINE,
+    GRADIO_TTS
 }
 
 enum class PluginPermission {
