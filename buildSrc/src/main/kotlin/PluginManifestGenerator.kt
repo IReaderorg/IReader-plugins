@@ -75,6 +75,12 @@ abstract class PluginManifestGenerator : DefaultTask() {
     @get:Input
     abstract val tags: ListProperty<String>
     
+    @get:Input
+    abstract val skipFromRepo: Property<Boolean>
+    
+    @get:Input
+    abstract val skipFromRepoReason: Property<String>
+    
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
     
@@ -104,7 +110,9 @@ abstract class PluginManifestGenerator : DefaultTask() {
             iconUrl = pluginIconUrl.orNull?.takeIf { it.isNotBlank() },
             monetization = createMonetization(),
             featured = featured.orNull ?: false,
-            tags = tags.orNull?.takeIf { it.isNotEmpty() }
+            tags = tags.orNull?.takeIf { it.isNotEmpty() },
+            skipFromRepo = skipFromRepo.orNull ?: false,
+            skipFromRepoReason = skipFromRepoReason.orNull?.takeIf { it.isNotBlank() }
         )
         
         val outputFile = File(outputDir.get().asFile, "plugin.json")
@@ -145,7 +153,9 @@ data class PluginManifestData(
     val iconUrl: String? = null,
     val monetization: MonetizationData? = null,
     val featured: Boolean = false,
-    val tags: List<String>? = null
+    val tags: List<String>? = null,
+    val skipFromRepo: Boolean = false,
+    val skipFromRepoReason: String? = null
 )
 
 @Serializable

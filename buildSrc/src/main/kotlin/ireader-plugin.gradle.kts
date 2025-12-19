@@ -29,6 +29,8 @@ pluginConfig.apply {
     platforms.convention(listOf(PluginPlatform.ANDROID, PluginPlatform.IOS, PluginPlatform.DESKTOP))
     featured.convention(false)
     tags.convention(emptyList())
+    skipFromRepo.convention(false)
+    skipFromRepoReason.convention("")
 }
 
 repositories {
@@ -83,6 +85,8 @@ val generateManifest = tasks.register<PluginManifestGenerator>("generatePluginMa
     pluginPlatforms.set(pluginConfig.platforms.map { list -> list.map { it.name } })
     featured.set(pluginConfig.featured)
     tags.set(pluginConfig.tags)
+    skipFromRepo.set(pluginConfig.skipFromRepo)
+    skipFromRepoReason.set(pluginConfig.skipFromRepoReason)
     outputDir.set(layout.buildDirectory.dir("generated/plugin"))
 }
 

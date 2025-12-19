@@ -64,6 +64,16 @@ abstract class PluginExtension {
     
     /** Tags for categorization and search (e.g., "dark", "minimal", "colorful") */
     abstract val tags: ListProperty<String>
+    
+    /** 
+     * Skip this plugin from the online repository.
+     * Use for internal plugins, development plugins, or plugins that should not be publicly distributed
+     * (e.g., Tachi Source Loaders, Reader Screens).
+     */
+    abstract val skipFromRepo: Property<Boolean>
+    
+    /** Optional reason why this plugin is skipped from the repo */
+    abstract val skipFromRepoReason: Property<String>
 }
 
 enum class PluginPlatform {
@@ -72,13 +82,19 @@ enum class PluginPlatform {
     DESKTOP
 }
 
+// Alias for compatibility
+typealias Platform = PluginPlatform
+
 enum class PluginType {
     THEME,
     TTS,
     TRANSLATION,
     FEATURE,
     JS_ENGINE,
-    GRADIO_TTS
+    GRADIO_TTS,
+    TACHI_SOURCE_LOADER,
+    READER_SCREEN,
+    SOURCE_LOADER
 }
 
 enum class PluginPermission {

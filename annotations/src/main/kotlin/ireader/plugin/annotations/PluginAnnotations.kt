@@ -78,3 +78,24 @@ annotation class PremiumPlugin(
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class FreemiumPlugin
+
+/**
+ * Marks a plugin to be skipped from the online repository.
+ * Use this for internal plugins, development plugins, or plugins that
+ * should not be publicly distributed (e.g., Tachi Source Loaders, Reader Screens).
+ * 
+ * Example:
+ * ```kotlin
+ * @IReaderPlugin
+ * @SkipFromRepo(reason = "Internal development plugin")
+ * class MyInternalPlugin : FeaturePlugin {
+ *     // ...
+ * }
+ * ```
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+annotation class SkipFromRepo(
+    /** Optional reason why this plugin is skipped from the repo */
+    val reason: String = ""
+)

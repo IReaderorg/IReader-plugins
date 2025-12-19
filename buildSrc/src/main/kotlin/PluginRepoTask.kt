@@ -73,6 +73,13 @@ abstract class PluginRepoTask : DefaultTask() {
                 try {
                     val manifest = json.decodeFromString<PluginManifestData>(manifestFile.readText())
 
+                    // Skip plugins marked with skipFromRepo
+                    if (manifest.skipFromRepo) {
+                        val reason = manifest.skipFromRepoReason?.let { " (reason: $it)" } ?: ""
+                        logger.lifecycle("Skipping plugin from repo: ${manifest.name}$reason")
+                        return@forEach
+                    }
+
                     // Find the built plugin file
                     val pluginFile = findPluginFile(buildDir)
                     
