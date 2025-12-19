@@ -28,8 +28,38 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 10742146,
-            "checksum": "sha256:581f643a4490dc3134f849c793ed819f6851ce47e480859dc941deb84ed8ccad"
+            "fileSize": 10742148,
+            "checksum": "sha256:f67e7c9f2b48985c137d94c2bec1433d46d1fe548f6af4a3208bfab350fe997e"
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.hermes-engine",
+            "name": "Hermes JavaScript Engine",
+            "version": "0.12.0",
+            "versionCode": 2,
+            "description": "Hermes JavaScript engine for Android - smaller binary size, faster startup, lower memory usage. Uses Player UI's standalone Hermes wrapper.",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "JS_ENGINE",
+            "permissions": [
+                "STORAGE"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.hermes-engine-0.12.0.iplugin",
+            "fileSize": 7734303,
+            "checksum": "sha256:988b4ae99b3acdbff42d1d9c3d814ac0c8941e8ac7704d197de8663263368ada"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -59,7 +89,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
             "fileSize": 35204302,
-            "checksum": "sha256:444254f1be53475dc874071d3e887673de0076bde52b14ebf7e0f065392b4c1a"
+            "checksum": "sha256:803cd9c4774e641df09bd03b3b2af27aecf8cdf64e21a88c15cc5e4abe4877c3"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,7 +119,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:8f71738435d1962509663cd2e6bfed2fb371d66859d28b86319ad9f0b82f5fdb"
+            "checksum": "sha256:4efbf42d5d929b4911d09e55f7d39b5d19aac04a4bcc1826a7f531d62a5f07b8"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -119,8 +149,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-2.0.0.iplugin",
-            "fileSize": 94383018,
-            "checksum": "sha256:5da6e28ed64628cf93ea2c355c965ace030666295c676197c4b0b63cea75aa1b"
+            "fileSize": 94383017,
+            "checksum": "sha256:ce5ef13a32863766dc5196e034c3f4ffb3afe509f061c4b3ff71dbb3963db6c7"
         }
     ]
 }
