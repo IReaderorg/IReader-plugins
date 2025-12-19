@@ -28,8 +28,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 10742147,
-            "checksum": "sha256:7fbdb7e05fd751478a6abf77280a60b40841ccf4a303495a2e2477b2ce102880"
+            "fileSize": 10742146,
+            "checksum": "sha256:391e0f9dfaa5316c53890cac905c208d3e45870788c522b5a8e78a77b72c83ec"
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -58,8 +58,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
-            "fileSize": 35204315,
-            "checksum": "sha256:d559fc310bd925930db3a788077ed0a21212c05e46f7e838aee53d20b44141d9"
+            "fileSize": 35204302,
+            "checksum": "sha256:0e81c3a8ba04de225aee9e638192cba6e4e398b1e11ca93afceee0ed74e526a0"
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -89,13 +89,13 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10701,
-            "checksum": "sha256:b390b9bad5a2c808ca889d54ba0f021db005bdd5bf12114245fbebee7b18218c"
+            "checksum": "sha256:c0c89f1736f1549697b0d4404d954a2c57e81a7bab20c675ef0473d92d31d957"
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
             "name": "Piper TTS",
-            "version": "1.2.0",
-            "versionCode": 1,
+            "version": "1.2.1",
+            "versionCode": 2,
             "description": "High-performance neural text-to-speech with 30+ voices in 20+ languages. Powered by Piper.",
             "author": {
                 "name": "IReader Team",
@@ -118,9 +118,9 @@
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.0.iplugin",
-            "fileSize": 22755096,
-            "checksum": "sha256:650c14819e1b5eafc726749faf4d82e256a42c81f1b3c285826292836a9394d7"
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-1.2.1.iplugin",
+            "fileSize": 83248442,
+            "checksum": "sha256:add14c509c0a266689585bb070624093fbd57a5308acda21fe11ec0be0ff3947"
         }
     ]
 }
