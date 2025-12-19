@@ -20,7 +20,7 @@
             "platforms": [
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.graalvm-engine.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -29,7 +29,14 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
             "fileSize": 10742188,
-            "checksum": "sha256:254b5662784f5226c81e239a6516dc5dd60112f1f58b9b8bf6fa3d808a322aa0"
+            "checksum": "sha256:109d777e5696c02e01b34408034df4261e1e54b91c77bd3922668c804a89db32",
+            "featured": true,
+            "tags": [
+                "javascript",
+                "js-engine",
+                "desktop",
+                "essential"
+            ]
         },
         {
             "id": "io.github.ireaderorg.plugins.j2v8-engine",
@@ -50,7 +57,7 @@
             "platforms": [
                 "ANDROID"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.j2v8-engine.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -59,7 +66,14 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
             "fileSize": 35204343,
-            "checksum": "sha256:51f0a49b1e69cb40e173fd987194610ffcb538fecae41358ffe6570923e1b315"
+            "checksum": "sha256:93f7a2a632ffb4669ad6f7c89cd8e20427525ca0931d661edfde4edfd9e48ad2",
+            "featured": true,
+            "tags": [
+                "javascript",
+                "js-engine",
+                "android",
+                "essential"
+            ]
         },
         {
             "id": "io.github.ireaderorg.plugins.arctic-aurora",
@@ -80,7 +94,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.arctic-aurora.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -88,8 +102,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.arctic-aurora-1.0.0.iplugin",
-            "fileSize": 10799,
-            "checksum": "sha256:adfcf3a1570fa7713bea87991a735b2a512fbb7855c4c15c63fc41208e474527"
+            "fileSize": 10798,
+            "checksum": "sha256:e9cb71cffa53890cb8ffb7ada7752026a96764942199c67f72b6fc4350e6b550",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.coffee-bean",
@@ -110,7 +126,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.coffee-bean.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -118,8 +134,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coffee-bean-1.0.0.iplugin",
-            "fileSize": 10687,
-            "checksum": "sha256:de05db1c2e7936e0364ecb8d99ef6cbd37c60332267dd7849a138aff78ea0998"
+            "fileSize": 10688,
+            "checksum": "sha256:9d9ed9ed1b118c9c6e036d68a3aef390da0a41bb5a537777685d248b9412cb37",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.coral-reef",
@@ -140,7 +158,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.coral-reef.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -148,8 +166,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coral-reef-1.0.0.iplugin",
-            "fileSize": 10710,
-            "checksum": "sha256:ab0c2632d903d61bc2850f0e33a4722789fb4f0c17ab603f55185bac89464cc0"
+            "fileSize": 10709,
+            "checksum": "sha256:6471913e069f79cbc1a8324b3e283f91af77a54b9c7639c1536c04eda348a7ab",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.cyber-neon",
@@ -170,7 +190,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.cyber-neon.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -178,8 +198,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.cyber-neon-1.0.0.iplugin",
-            "fileSize": 10786,
-            "checksum": "sha256:776749df2980973fe738acf8237a854f311dc23b19f9bf3a297946a7a61f715c"
+            "fileSize": 10787,
+            "checksum": "sha256:648055e49cc00c7940974c81d908a287e20a68143f36c9336a3629647a8205a3",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.desert-sand",
@@ -200,7 +222,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.desert-sand.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -209,7 +231,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.desert-sand-1.0.0.iplugin",
             "fileSize": 10724,
-            "checksum": "sha256:76318dc02f73dcf3002dde65dddc0367e21befc7a07ef053e21ca5ada2700c2d"
+            "checksum": "sha256:3555e779c161b7c89319391a823d628966f5ae4b115e94485c50bfd46f2a5c95",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.mint-fresh",
@@ -230,7 +254,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.mint-fresh.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -239,7 +263,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.mint-fresh-1.0.0.iplugin",
             "fileSize": 10722,
-            "checksum": "sha256:a31e0922c94db2934d5ff8f8312d3dc484b5f535bd510ccb668d4750fe99f887"
+            "checksum": "sha256:1aa040b54e2bf50a97a3078bc9fa78d905d74340e4db327c3ab88d5327348b06",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.nordic-frost",
@@ -260,7 +286,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.nordic-frost.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -269,7 +295,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.nordic-frost-1.0.0.iplugin",
             "fileSize": 10784,
-            "checksum": "sha256:a4c2734f9b32e9f7c9763cbee0b907d51aab24a97188b0d6aa5ce210442b6643"
+            "checksum": "sha256:835fbf907eeae9a3a87f58bcbdff0bd4bd38e492b4ec9f573c0a7e553df30680",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.ocean-theme",
@@ -299,7 +327,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10716,
-            "checksum": "sha256:b29ca63279cab4124eeca0f4bb2690ac4e18e134b91c013efc2dbeb9c7db9643"
+            "checksum": "sha256:f5710dc1612a304a26482a09c07ed3f773069e72af55503355e0d169e4a3a26e",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.royal-velvet",
@@ -320,7 +350,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.royal-velvet.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -329,7 +359,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.royal-velvet-1.0.0.iplugin",
             "fileSize": 10675,
-            "checksum": "sha256:4a87c5d549a0bbd9948bbe5015733a42955bf7248be19733a7fcb108bc47f711"
+            "checksum": "sha256:d4052721690649a9597104374f0f6c1b790d70289c7afc79a92c9a38a08db2d2",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.sakura-night",
@@ -350,7 +382,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.sakura-night.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -358,8 +390,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.sakura-night-1.0.0.iplugin",
-            "fileSize": 10760,
-            "checksum": "sha256:13efc49687c87c4a978b679b92109dbc06549ecd9acf6749bcfe046ead9e405f"
+            "fileSize": 10759,
+            "checksum": "sha256:3af199a436741547a718395d89cde0df7c940d528edec67d898141311efa95f4",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.slate-gray",
@@ -380,7 +414,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.slate-gray.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -389,7 +423,9 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.slate-gray-1.0.0.iplugin",
             "fileSize": 10669,
-            "checksum": "sha256:caa52eefbce6ebfc58d1f0487a4a42799dd71dbe4b9f6f10379a90d54bea0ceb"
+            "checksum": "sha256:9d1dc6025be04294f6626cb37e3c27cf610d2abd11a344d9a7a6c4939ec15f83",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.vintage-sepia",
@@ -410,7 +446,7 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.vintage-sepia.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -418,8 +454,10 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.vintage-sepia-1.0.0.iplugin",
-            "fileSize": 10693,
-            "checksum": "sha256:3d62c9e7263ef4db117b0eb981213328fcde9533e94aff0e019707d7fa9d2e34"
+            "fileSize": 10699,
+            "checksum": "sha256:0b53d34b16b03ed2d05250937d990ada69b55c92e7a506f3d9166a62983d4246",
+            "featured": false,
+            "tags": null
         },
         {
             "id": "io.github.ireaderorg.plugins.piper-tts",
@@ -441,7 +479,7 @@
             "platforms": [
                 "DESKTOP"
             ],
-            "iconUrl": null,
+            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.piper-tts.png",
             "monetization": {
                 "type": "FREE",
                 "price": null,
@@ -450,7 +488,15 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-2.0.0.iplugin",
             "fileSize": 94383054,
-            "checksum": "sha256:d64c73493a40203b96208a9219df325122c3d593deab3379599a2d5d1533654b"
+            "checksum": "sha256:0e0ff5b4d21189ebe816a811075be7c75318398494e9db314778e002840f56b1",
+            "featured": true,
+            "tags": [
+                "tts",
+                "text-to-speech",
+                "neural",
+                "voices",
+                "desktop"
+            ]
         }
     ]
 }
