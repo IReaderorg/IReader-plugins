@@ -4,7 +4,6 @@ import ireader.plugin.api.*
 
 /**
  * Persian Edge TTS Plugin - Microsoft's neural TTS with Persian voices.
- * Very natural sounding with multiple voice options.
  */
 class PersianEdgeTTSPlugin : Plugin {
     
@@ -23,24 +22,12 @@ class PersianEdgeTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
-        metadata = mapOf(
-            "gradio.spaceUrl" to "https://innoai-edge-tts-text-to-speech.hf.space",
-            "gradio.apiName" to "/predict",
-            "gradio.apiType" to "GRADIO_API",
-            "gradio.audioOutputIndex" to "0",
-            "gradio.params" to """[
-                {"type":"text","name":"text"},
-                {"type":"choice","name":"voice","choices":["fa-IR-DilaraNeural","fa-IR-FaridNeural"],"default":"fa-IR-DilaraNeural"},
-                {"type":"speed","name":"rate","default":1.0,"min":0.5,"max":2.0}
-            ]""",
-            "gradio.languages" to "fa,fa-IR"
-        )
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
     )
     
     override fun initialize(context: PluginContext) {
         pluginContext = context
-        context.log(LogLevel.INFO, "Persian Edge TTS Gradio plugin initialized")
+        context.log(LogLevel.INFO, "Persian Edge TTS plugin initialized")
     }
     
     override fun cleanup() {

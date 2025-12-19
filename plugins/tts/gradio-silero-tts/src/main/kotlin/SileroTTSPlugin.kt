@@ -22,24 +22,12 @@ class SileroTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
-        metadata = mapOf(
-            "gradio.spaceUrl" to "https://silero-silero-tts.hf.space",
-            "gradio.apiName" to "/predict",
-            "gradio.apiType" to "GRADIO_API",
-            "gradio.audioOutputIndex" to "0",
-            "gradio.params" to """[
-                {"type":"text","name":"text"},
-                {"type":"choice","name":"language","choices":["en","de","es","fr","ru","ua","uz","xal","indic"],"default":"en"},
-                {"type":"choice","name":"speaker","choices":["en_0","en_1","en_2","en_3","en_4"],"default":"en_0"}
-            ]""",
-            "gradio.languages" to "en,de,es,fr,ru,ua,uz,xal,indic"
-        )
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
     )
     
     override fun initialize(context: PluginContext) {
         pluginContext = context
-        context.log(LogLevel.INFO, "Silero TTS Gradio plugin initialized")
+        context.log(LogLevel.INFO, "Silero TTS plugin initialized")
     }
     
     override fun cleanup() {

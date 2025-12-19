@@ -1,0 +1,12 @@
+{
+  "spaceUrl": "https://coqui-xtts.hf.space",
+  "apiName": "/predict",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "supportsVoiceCloning": true,
+  "languages": ["fa", "fa-IR"],
+  "params": [
+    {"type": "text", "name": "text"},
+    {"type": "choice", "name": "language", "choices": ["fa"], "default": "fa"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "spaceUrl": "https://gyroing-persian-tts-piper.hf.space",
+  "apiName": "/synthesize_speech",
+  "apiType": "GRADIO_API_CALL",
+  "audioOutputIndex": 0,
+  "languages": ["fa", "fa-IR"],
+  "params": [
+    {"type": "text", "name": "text"}
+  ]
+}

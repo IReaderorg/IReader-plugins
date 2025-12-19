@@ -1,0 +1,11 @@
+{
+  "spaceUrl": "https://suno-bark.hf.space",
+  "apiName": "/predict",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "languages": ["en"],
+  "params": [
+    {"type": "text", "name": "text"},
+    {"type": "choice", "name": "voice_preset", "choices": ["v2/en_speaker_0", "v2/en_speaker_1", "v2/en_speaker_2", "v2/en_speaker_3"], "default": "v2/en_speaker_0"}
+  ]
+}

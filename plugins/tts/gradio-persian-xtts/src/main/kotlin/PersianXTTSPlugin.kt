@@ -22,24 +22,12 @@ class PersianXTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
-        metadata = mapOf(
-            "gradio.spaceUrl" to "https://coqui-xtts.hf.space",
-            "gradio.apiName" to "/predict",
-            "gradio.apiType" to "GRADIO_API",
-            "gradio.audioOutputIndex" to "0",
-            "gradio.supportsVoiceCloning" to "true",
-            "gradio.params" to """[
-                {"type":"text","name":"text"},
-                {"type":"choice","name":"language","choices":["fa"],"default":"fa"}
-            ]""",
-            "gradio.languages" to "fa,fa-IR"
-        )
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
     )
     
     override fun initialize(context: PluginContext) {
         pluginContext = context
-        context.log(LogLevel.INFO, "Persian XTTS Gradio plugin initialized")
+        context.log(LogLevel.INFO, "Persian XTTS plugin initialized")
     }
     
     override fun cleanup() {

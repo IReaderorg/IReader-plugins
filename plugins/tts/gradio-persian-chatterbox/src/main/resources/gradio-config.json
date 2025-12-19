@@ -1,0 +1,10 @@
+{
+  "spaceUrl": "https://gyroing-chatterbox-tts-persian-farsi.hf.space",
+  "apiName": "/generate_audio",
+  "apiType": "GRADIO_API_CALL",
+  "audioOutputIndex": 0,
+  "languages": ["fa", "fa-IR"],
+  "params": [
+    {"type": "text", "name": "text"}
+  ]
+}

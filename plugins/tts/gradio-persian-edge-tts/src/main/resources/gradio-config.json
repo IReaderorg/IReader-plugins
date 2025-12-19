@@ -1,0 +1,12 @@
+{
+  "spaceUrl": "https://innoai-edge-tts-text-to-speech.hf.space",
+  "apiName": "/predict",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "languages": ["fa", "fa-IR"],
+  "params": [
+    {"type": "text", "name": "text"},
+    {"type": "choice", "name": "voice", "choices": ["fa-IR-DilaraNeural", "fa-IR-FaridNeural"], "default": "fa-IR-DilaraNeural"},
+    {"type": "speed", "name": "rate", "default": 1.0, "min": 0.5, "max": 2.0}
+  ]
+}

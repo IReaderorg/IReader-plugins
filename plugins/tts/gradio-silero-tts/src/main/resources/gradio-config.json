@@ -1,0 +1,12 @@
+{
+  "spaceUrl": "https://silero-silero-tts.hf.space",
+  "apiName": "/predict",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "languages": ["en", "de", "es", "fr", "ru", "ua", "uz", "xal", "indic"],
+  "params": [
+    {"type": "text", "name": "text"},
+    {"type": "choice", "name": "language", "choices": ["en", "de", "es", "fr", "ru", "ua", "uz", "xal", "indic"], "default": "en"},
+    {"type": "choice", "name": "speaker", "choices": ["en_0", "en_1", "en_2", "en_3", "en_4"], "default": "en_0"}
+  ]
+}

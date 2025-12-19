@@ -1,0 +1,11 @@
+{
+  "spaceUrl": "https://parler-tts-parler-tts-mini.hf.space",
+  "apiName": "/predict",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "languages": ["en"],
+  "params": [
+    {"type": "text", "name": "text"},
+    {"type": "string", "name": "description", "default": "A female speaker with a clear and pleasant voice"}
+  ]
+}

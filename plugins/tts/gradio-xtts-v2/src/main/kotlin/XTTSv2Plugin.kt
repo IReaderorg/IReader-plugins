@@ -22,24 +22,12 @@ class XTTSv2Plugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
-        metadata = mapOf(
-            "gradio.spaceUrl" to "https://coqui-xtts.hf.space",
-            "gradio.apiName" to "/predict",
-            "gradio.apiType" to "GRADIO_API",
-            "gradio.audioOutputIndex" to "0",
-            "gradio.supportsVoiceCloning" to "true",
-            "gradio.params" to """[
-                {"type":"text","name":"text"},
-                {"type":"choice","name":"language","choices":["en","es","fr","de","it","pt","pl","tr","ru","nl","cs","ar","zh-cn","ja","ko"],"default":"en"}
-            ]""",
-            "gradio.languages" to "en,es,fr,de,it,pt,pl,tr,ru,nl,cs,ar,zh-cn,ja,ko"
-        )
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
     )
     
     override fun initialize(context: PluginContext) {
         pluginContext = context
-        context.log(LogLevel.INFO, "XTTS v2 Gradio plugin initialized")
+        context.log(LogLevel.INFO, "XTTS v2 plugin initialized")
     }
     
     override fun cleanup() {
