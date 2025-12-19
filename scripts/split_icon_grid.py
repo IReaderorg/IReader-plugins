@@ -18,7 +18,11 @@ except ImportError:
     os.system("pip install pillow")
     from PIL import Image
 
-# Plugin order - adjust this to match your grid image layout (left-to-right, top-to-bottom)
+# Plugin order - matches the prompts sent (left-to-right, top-to-bottom)
+# 1-4: Nordic Frost, Sakura Night, Cyber Neon, Arctic Aurora
+# 5-8: Desert Sand, Vintage Sepia, Mint Fresh, Coffee Bean
+# 9-12: Royal Velvet, Slate Gray, Coral Reef, GraalVM JS Engine
+# 13-15: J2V8 JS Engine, QuickJS Engine, Piper TTS
 PLUGIN_ORDER = [
     # Row 1
     ("themes", "nordic-frost"),
