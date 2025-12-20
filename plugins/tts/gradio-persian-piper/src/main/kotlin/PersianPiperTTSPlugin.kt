@@ -22,7 +22,15 @@ class PersianPiperTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://gyroing-persian-tts-piper.hf.space",
+            "gradio.apiName" to "/synthesize_speech",
+            "gradio.apiType" to "GRADIO_API_CALL",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.languages" to "fa,fa-IR",
+            "gradio.params" to """[{"type":"text","name":"text"}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {

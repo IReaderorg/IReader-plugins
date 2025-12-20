@@ -1,5 +1,6 @@
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 
 /**
  * Extension for configuring IReader plugins
@@ -74,6 +75,21 @@ abstract class PluginExtension {
     
     /** Optional reason why this plugin is skipped from the repo */
     abstract val skipFromRepoReason: Property<String>
+    
+    /**
+     * Custom metadata for plugin-specific configuration.
+     * A flexible key-value store for plugin-type-specific data.
+     * 
+     * For GRADIO_TTS plugins, use these keys:
+     * - "gradio.spaceUrl": Hugging Face Space URL (required)
+     * - "gradio.apiName": API endpoint name (e.g., "/predict")
+     * - "gradio.apiType": API type (AUTO, GRADIO_API, GRADIO_API_CALL, etc.)
+     * - "gradio.audioOutputIndex": Output index for audio (default: "0")
+     * - "gradio.params": JSON array of parameter definitions
+     * - "gradio.languages": Comma-separated language codes (e.g., "en,es,fr")
+     * - "gradio.supportsVoiceCloning": "true" if voice cloning is supported
+     */
+    abstract val metadata: MapProperty<String, String>
 }
 
 enum class PluginPlatform {

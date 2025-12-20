@@ -22,7 +22,16 @@ class OpenVoicePlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://myshell-ai-openvoice.hf.space",
+            "gradio.apiName" to "/predict",
+            "gradio.apiType" to "GRADIO_API",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.supportsVoiceCloning" to "true",
+            "gradio.languages" to "en,es,fr,zh,ja,ko",
+            "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"style","choices":["default","whispering","shouting","excited","cheerful","terrified","angry","sad","friendly"],"default":"default"},{"type":"choice","name":"language","choices":["EN","ES","FR","ZH","JP","KR"],"default":"EN"}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {

@@ -13,4 +13,12 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.gradiopersianpiper.PersianPiperTTSPlugin")
     tags.set(listOf("tts", "gradio", "persian", "farsi", "piper"))
+    metadata.set(mapOf(
+        "gradio.spaceUrl" to "https://gyroing-persian-tts-piper.hf.space",
+        "gradio.apiName" to "/synthesize_speech",
+        "gradio.apiType" to "GRADIO_API_CALL",
+        "gradio.audioOutputIndex" to "0",
+        "gradio.languages" to "fa,fa-IR",
+        "gradio.params" to """[{"type":"text","name":"text"}]"""
+    ))
 }

@@ -23,7 +23,15 @@ class EdgeTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://innoai-edge-tts-text-to-speech.hf.space",
+            "gradio.apiName" to "/predict",
+            "gradio.apiType" to "GRADIO_API",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.languages" to "en,en-US,en-GB,en-AU",
+            "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"voice","choices":["en-US-AriaNeural","en-US-GuyNeural","en-GB-SoniaNeural","en-AU-NatashaNeural"],"default":"en-US-AriaNeural"},{"type":"speed","name":"rate","default":1.0,"min":0.5,"max":2.0}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {
@@ -33,21 +41,5 @@ class EdgeTTSPlugin : Plugin {
     
     override fun cleanup() {
         pluginContext = null
-    }
-    
-    companion object {
-        // Gradio configuration - read by the host app
-        const val SPACE_URL = "https://innoai-edge-tts-text-to-speech.hf.space"
-        const val API_NAME = "/predict"
-        const val API_TYPE = "GRADIO_API"
-        const val AUDIO_OUTPUT_INDEX = 0
-        const val LANGUAGES = "en,en-US,en-GB,en-AU"
-        
-        // Parameters JSON for the host app to parse
-        const val PARAMS_JSON = """[
-            {"type":"text","name":"text"},
-            {"type":"choice","name":"voice","choices":["en-US-AriaNeural","en-US-GuyNeural","en-GB-SoniaNeural","en-AU-NatashaNeural"],"default":"en-US-AriaNeural"},
-            {"type":"speed","name":"rate","default":1.0,"min":0.5,"max":2.0}
-        ]"""
     }
 }

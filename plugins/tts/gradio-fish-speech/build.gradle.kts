@@ -13,4 +13,12 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.gradiofishspeech.FishSpeechPlugin")
     tags.set(listOf("tts", "gradio", "fish-speech", "multilingual", "fast"))
+    metadata.set(mapOf(
+        "gradio.spaceUrl" to "https://fishaudio-fish-speech-1.hf.space",
+        "gradio.apiName" to "/predict",
+        "gradio.apiType" to "GRADIO_API",
+        "gradio.audioOutputIndex" to "0",
+        "gradio.languages" to "en,zh,ja,ko",
+        "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"language","choices":["en","zh","ja","ko"],"default":"en"}]"""
+    ))
 }

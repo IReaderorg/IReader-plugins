@@ -13,4 +13,13 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.gradiopersianxtts.PersianXTTSPlugin")
     tags.set(listOf("tts", "gradio", "persian", "farsi", "xtts", "voice-cloning"))
+    metadata.set(mapOf(
+        "gradio.spaceUrl" to "https://coqui-xtts.hf.space",
+        "gradio.apiName" to "/predict",
+        "gradio.apiType" to "GRADIO_API",
+        "gradio.audioOutputIndex" to "0",
+        "gradio.supportsVoiceCloning" to "true",
+        "gradio.languages" to "fa,fa-IR",
+        "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"language","choices":["fa"],"default":"fa"}]"""
+    ))
 }

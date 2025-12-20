@@ -22,7 +22,15 @@ class FishSpeechPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://fishaudio-fish-speech-1.hf.space",
+            "gradio.apiName" to "/predict",
+            "gradio.apiType" to "GRADIO_API",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.languages" to "en,zh,ja,ko",
+            "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"language","choices":["en","zh","ja","ko"],"default":"en"}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {

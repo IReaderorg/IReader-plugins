@@ -13,4 +13,12 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.gradiosilero.SileroTTSPlugin")
     tags.set(listOf("tts", "gradio", "silero", "fast", "lightweight", "multilingual"))
+    metadata.set(mapOf(
+        "gradio.spaceUrl" to "https://silero-silero-tts.hf.space",
+        "gradio.apiName" to "/predict",
+        "gradio.apiType" to "GRADIO_API",
+        "gradio.audioOutputIndex" to "0",
+        "gradio.languages" to "en,de,es,fr,ru,ua,uz,xal,indic",
+        "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"language","choices":["en","de","es","fr","ru","ua","uz","xal","indic"],"default":"en"},{"type":"choice","name":"speaker","choices":["en_0","en_1","en_2","en_3","en_4"],"default":"en_0"}]"""
+    ))
 }

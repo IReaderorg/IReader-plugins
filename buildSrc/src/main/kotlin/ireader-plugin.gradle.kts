@@ -31,6 +31,7 @@ pluginConfig.apply {
     tags.convention(emptyList())
     skipFromRepo.convention(false)
     skipFromRepoReason.convention("")
+    metadata.convention(emptyMap())
 }
 
 repositories {
@@ -87,6 +88,7 @@ val generateManifest = tasks.register<PluginManifestGenerator>("generatePluginMa
     tags.set(pluginConfig.tags)
     skipFromRepo.set(pluginConfig.skipFromRepo)
     skipFromRepoReason.set(pluginConfig.skipFromRepoReason)
+    metadata.set(pluginConfig.metadata)
     outputDir.set(layout.buildDirectory.dir("generated/plugin"))
 }
 

@@ -13,4 +13,13 @@ pluginConfig {
     permissions.set(listOf(PluginPermission.NETWORK))
     mainClass.set("io.github.ireaderorg.plugins.gradioopenvoice.OpenVoicePlugin")
     tags.set(listOf("tts", "gradio", "openvoice", "voice-cloning", "emotion", "style"))
+    metadata.set(mapOf(
+        "gradio.spaceUrl" to "https://myshell-ai-openvoice.hf.space",
+        "gradio.apiName" to "/predict",
+        "gradio.apiType" to "GRADIO_API",
+        "gradio.audioOutputIndex" to "0",
+        "gradio.supportsVoiceCloning" to "true",
+        "gradio.languages" to "en,es,fr,zh,ja,ko",
+        "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"style","choices":["default","whispering","shouting","excited","cheerful","terrified","angry","sad","friendly"],"default":"default"},{"type":"choice","name":"language","choices":["EN","ES","FR","ZH","JP","KR"],"default":"EN"}]"""
+    ))
 }

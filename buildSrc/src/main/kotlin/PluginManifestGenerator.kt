@@ -5,6 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -81,6 +82,9 @@ abstract class PluginManifestGenerator : DefaultTask() {
     @get:Input
     abstract val skipFromRepoReason: Property<String>
     
+    @get:Input
+    abstract val metadata: MapProperty<String, String>
+    
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
     
@@ -112,7 +116,8 @@ abstract class PluginManifestGenerator : DefaultTask() {
             featured = featured.orNull ?: false,
             tags = tags.orNull?.takeIf { it.isNotEmpty() },
             skipFromRepo = skipFromRepo.orNull ?: false,
-            skipFromRepoReason = skipFromRepoReason.orNull?.takeIf { it.isNotBlank() }
+            skipFromRepoReason = skipFromRepoReason.orNull?.takeIf { it.isNotBlank() },
+            metadata = metadata.orNull?.takeIf { it.isNotEmpty() }
         )
         
         val outputFile = File(outputDir.get().asFile, "plugin.json")
@@ -155,7 +160,8 @@ data class PluginManifestData(
     val featured: Boolean = false,
     val tags: List<String>? = null,
     val skipFromRepo: Boolean = false,
-    val skipFromRepoReason: String? = null
+    val skipFromRepoReason: String? = null,
+    val metadata: Map<String, String>? = null
 )
 
 @Serializable

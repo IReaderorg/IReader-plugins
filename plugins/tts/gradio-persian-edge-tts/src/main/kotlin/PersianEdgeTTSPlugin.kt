@@ -22,7 +22,15 @@ class PersianEdgeTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://innoai-edge-tts-text-to-speech.hf.space",
+            "gradio.apiName" to "/predict",
+            "gradio.apiType" to "GRADIO_API",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.languages" to "fa,fa-IR",
+            "gradio.params" to """[{"type":"text","name":"text"},{"type":"choice","name":"voice","choices":["fa-IR-DilaraNeural","fa-IR-FaridNeural"],"default":"fa-IR-DilaraNeural"},{"type":"speed","name":"rate","default":1.0,"min":0.5,"max":2.0}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {

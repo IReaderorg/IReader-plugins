@@ -22,7 +22,15 @@ class ParlerTTSPlugin : Plugin {
         type = PluginType.GRADIO_TTS,
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
-        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP)
+        platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        metadata = mapOf(
+            "gradio.spaceUrl" to "https://parler-tts-parler-tts-mini.hf.space",
+            "gradio.apiName" to "/predict",
+            "gradio.apiType" to "GRADIO_API",
+            "gradio.audioOutputIndex" to "0",
+            "gradio.languages" to "en",
+            "gradio.params" to """[{"type":"text","name":"text"},{"type":"string","name":"description","default":"A female speaker with a clear and pleasant voice"}]"""
+        )
     )
     
     override fun initialize(context: PluginContext) {
