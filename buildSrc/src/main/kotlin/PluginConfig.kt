@@ -6,7 +6,7 @@ object PluginConfig {
     
     // Plugin API version this project targets
     // Must match the version published in IReader's plugin-api module
-    const val pluginApiVersion = "1.0.4"
+    const val pluginApiVersion = "1.0.5"
     
     // IReader minimum version for plugins
     const val minIReaderVersion = "1.0.0"

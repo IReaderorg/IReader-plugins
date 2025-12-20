@@ -42,6 +42,112 @@ class OllamaTranslatePlugin : TranslationPlugin {
     private var serverUrl: String = "http://localhost:11434"
     private var model: String = "mistral"
     
+    // ==================== Plugin Configuration ====================
+    
+    override fun getConfigFields(): List<PluginConfig<*>> = listOf(
+        PluginConfig.Header(
+            key = "server_header",
+            name = "Server Settings",
+            description = "Configure your Ollama server connection"
+        ),
+        PluginConfig.Text(
+            key = "server_url",
+            name = "Server URL",
+            defaultValue = "http://localhost:11434",
+            description = "URL of your Ollama server",
+            placeholder = "http://localhost:11434",
+            inputType = TextInputType.URL,
+            required = true
+        ),
+        PluginConfig.Select(
+            key = "model",
+            name = "Model",
+            options = listOf("mistral", "llama2", "llama3", "gemma", "gemma2", "phi3", "qwen2", "codellama", "deepseek-coder"),
+            defaultValue = 0,
+            description = "Select the LLM model to use for translation"
+        ),
+        PluginConfig.Text(
+            key = "custom_model",
+            name = "Custom Model",
+            defaultValue = "",
+            description = "Or enter a custom model name (overrides selection above)",
+            placeholder = "e.g., mixtral:8x7b"
+        ),
+        PluginConfig.Header(
+            key = "advanced_header",
+            name = "Advanced Settings"
+        ),
+        PluginConfig.Slider(
+            key = "temperature",
+            name = "Temperature",
+            defaultValue = 0.1f,
+            min = 0f,
+            max = 1f,
+            steps = 10,
+            description = "Lower = more consistent, Higher = more creative",
+            valueFormat = "%.1f"
+        ),
+        PluginConfig.Number(
+            key = "max_tokens",
+            name = "Max Tokens",
+            defaultValue = 8192,
+            min = 1000,
+            max = 32000,
+            description = "Maximum tokens in response"
+        ),
+        PluginConfig.Action(
+            key = "test_connection",
+            name = "Test Connection",
+            description = "Verify connection to Ollama server",
+            buttonText = "Test",
+            actionType = ActionType.TEST_CONNECTION
+        ),
+        PluginConfig.Note(
+            key = "install_note",
+            name = "Installation",
+            description = "Install Ollama from ollama.ai. Make sure the server is running before using.",
+            noteType = NoteType.INFO
+        ),
+        PluginConfig.Link(
+            key = "ollama_website",
+            name = "Get Ollama",
+            url = "https://ollama.ai",
+            description = "Download and install Ollama",
+            linkType = LinkType.EXTERNAL
+        )
+    )
+    
+    override fun onConfigChanged(key: String, value: Any?) {
+        when (key) {
+            "server_url" -> {
+                serverUrl = (value as? String) ?: "http://localhost:11434"
+                context?.preferences?.putString("server_url", serverUrl)
+            }
+            "model" -> {
+                val modelIndex = (value as? Int) ?: 0
+                val models = listOf("mistral", "llama2", "llama3", "gemma", "gemma2", "phi3", "qwen2", "codellama", "deepseek-coder")
+                model = models.getOrElse(modelIndex) { "mistral" }
+                context?.preferences?.putString("model", model)
+            }
+            "custom_model" -> {
+                val customModel = (value as? String)
+                if (!customModel.isNullOrBlank()) {
+                    model = customModel
+                    context?.preferences?.putString("model", model)
+                }
+            }
+        }
+    }
+    
+    override fun getConfigValue(key: String): Any? {
+        return when (key) {
+            "server_url" -> serverUrl
+            "model" -> model
+            "custom_model" -> model
+            else -> null
+        }
+    }
+    
     override fun initialize(context: PluginContext) {
         this.context = context
         serverUrl = context.preferences.getString("server_url", "http://localhost:11434")
