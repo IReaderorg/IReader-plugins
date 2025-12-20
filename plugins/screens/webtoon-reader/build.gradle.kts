@@ -17,4 +17,3 @@ pluginConfig {
     skipFromRepo.set(true)
     skipFromRepoReason.set("Internal reader screen - not for public distribution")
 }
-}
