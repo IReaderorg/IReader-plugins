@@ -23,7 +23,7 @@ class TachiAndroidLoader(
     
     private val classLoaders = mutableMapOf<String, Any>() // DexClassLoader
     private val extensionsDir: File by lazy {
-        File(context.dataDir, "tachi-extensions").apply { mkdirs() }
+        File(context.getDataDir(), "tachi-extensions").apply { mkdirs() }
     }
     
     override suspend fun loadExtension(apkPath: String): LoadedExtension {
@@ -184,7 +184,10 @@ class TachiAndroidLoader(
     }
 }
 
-private data class ApkMetadata(
+/**
+ * APK metadata extracted from manifest.
+ */
+data class ApkMetadata(
     val pkgName: String,
     val name: String,
     val versionName: String,

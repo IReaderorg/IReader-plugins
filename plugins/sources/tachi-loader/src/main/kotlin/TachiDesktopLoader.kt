@@ -27,7 +27,7 @@ class TachiDesktopLoader(
     
     private val classLoaders = mutableMapOf<String, URLClassLoader>()
     private val extensionsDir: File by lazy {
-        File(context.dataDir, "tachi-extensions").apply { mkdirs() }
+        File(context.getDataDir(), "tachi-extensions").apply { mkdirs() }
     }
     
     override suspend fun loadExtension(apkPath: String): LoadedExtension {
@@ -110,7 +110,7 @@ class TachiDesktopLoader(
         }
     }
     
-    private fun parseApkMetadata(apkFile: File): ApkMetadata {
+    private fun parseApkMetadata(apkFile: File): DesktopApkMetadata {
         ZipFile(apkFile).use { zip ->
             // Read AndroidManifest.xml (binary XML, need to parse)
             val manifestEntry = zip.getEntry("AndroidManifest.xml")
@@ -131,7 +131,7 @@ class TachiDesktopLoader(
             val name = parts.getOrElse(2) { "Unknown" }.replace("_", " ")
             val version = parts.lastOrNull()?.removePrefix("v") ?: "1.0.0"
             
-            return ApkMetadata(
+            return DesktopApkMetadata(
                 pkgName = pkgName,
                 name = name,
                 versionName = version,
@@ -236,7 +236,7 @@ class TachiDesktopLoader(
     
     private fun instantiateSources(
         classLoader: URLClassLoader,
-        metadata: ApkMetadata
+        metadata: DesktopApkMetadata
     ): List<TachiSourceWrapper> {
         return try {
             val mainClass = classLoader.loadClass(metadata.mainClass)
@@ -305,9 +305,9 @@ class TachiDesktopLoader(
 }
 
 /**
- * APK metadata extracted from manifest.
+ * APK metadata extracted from manifest (Desktop version).
  */
-private data class ApkMetadata(
+data class DesktopApkMetadata(
     val pkgName: String,
     val name: String,
     val versionName: String,

@@ -261,7 +261,9 @@ class TachiLoaderPlugin : TachiSourceLoaderPlugin {
     
     private fun getExtensionsDir(context: PluginContext): String {
         val prefs = context.preferences
-        return prefs.getString("extensions_dir", null) ?: "${context.dataDir}/tachi-extensions"
+        return prefs.getString("extensions_dir", "") 
+            .takeIf { it.isNotEmpty() } 
+            ?: "${context.getDataDir()}/tachi-extensions"
     }
     
     private suspend fun fetchRepoExtensions(
@@ -269,13 +271,16 @@ class TachiLoaderPlugin : TachiSourceLoaderPlugin {
         context: PluginContext
     ): List<SourceExtensionMeta> {
         val indexUrl = "${repo.baseUrl}/index.min.json"
-        val response = context.httpClient.get(indexUrl)
+        val httpClient = context.httpClient 
+            ?: throw TachiExtensionException("HTTP client not available")
+        val response = httpClient.get(indexUrl)
         
-        if (!response.isSuccessful) {
-            throw TachiExtensionException("Failed to fetch repo index: ${response.code}")
+        if (response.statusCode !in 200..299) {
+            throw TachiExtensionException("Failed to fetch repo index: ${response.statusCode}")
         }
         
-        val body = response.body ?: throw TachiExtensionException("Empty response")
+        val body = response.body
+        if (body.isEmpty()) throw TachiExtensionException("Empty response")
         return parseRepoIndex(body, repo)
     }
     
@@ -326,12 +331,9 @@ class TachiLoaderPlugin : TachiSourceLoaderPlugin {
         destPath: String,
         onProgress: (Float) -> Unit
     ) {
-        val response = context.httpClient.get(url)
-        if (!response.isSuccessful) {
-            throw TachiExtensionException("Download failed: ${response.code}")
-        }
-        
-        val bytes = response.bodyBytes
+        val httpClient = context.httpClient 
+            ?: throw TachiExtensionException("HTTP client not available")
+        val bytes = httpClient.download(url)
         writeFile(destPath, bytes)
         onProgress(1f)
     }
@@ -356,7 +358,8 @@ class TachiLoaderPlugin : TachiSourceLoaderPlugin {
     private fun loadRepositories() {
         val ctx = context ?: return
         val prefs = ctx.preferences
-        val repoJson = prefs.getString("repositories", null) ?: return
+        val repoJson = prefs.getString("repositories", "")
+        if (repoJson.isEmpty()) return
         
         try {
             val repos = json.decodeFromString(

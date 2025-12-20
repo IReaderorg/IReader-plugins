@@ -50,20 +50,20 @@ class WebtoonReaderPlugin : ReaderScreenPlugin {
         )
     )
     
-    private var context: PluginContext? = null
+    private var pluginContext: PluginContext? = null
     private var settings = WebtoonSettings()
     
     override fun initialize(context: PluginContext) {
-        this.context = context
+        this.pluginContext = context
         loadSettings()
     }
     
     override fun cleanup() {
         saveSettings()
-        context = null
+        pluginContext = null
     }
     
-    override fun createScreen(context: ReaderContext): ReaderScreen {
+    override fun createScreen(context: ireader.plugin.api.screen.ReaderContext): ReaderScreen {
         return WebtoonReaderScreen(context, settings)
     }
     
@@ -153,7 +153,7 @@ class WebtoonReaderPlugin : ReaderScreenPlugin {
     }
     
     private fun loadSettings() {
-        val prefs = context?.preferences ?: return
+        val prefs = pluginContext?.preferences ?: return
         settings = WebtoonSettings(
             preloadImages = prefs.getBoolean("preload_images", true),
             preloadCount = prefs.getInt("preload_count", 3),
@@ -161,12 +161,12 @@ class WebtoonReaderPlugin : ReaderScreenPlugin {
             tapToScroll = prefs.getBoolean("tap_to_scroll", true),
             scrollSensitivity = prefs.getFloat("scroll_sensitivity", 1f),
             keepScreenOn = prefs.getBoolean("keep_screen_on", true),
-            imageQuality = prefs.getString("image_quality", "high") ?: "high"
+            imageQuality = prefs.getString("image_quality", "high")
         )
     }
     
     private fun saveSettings() {
-        val prefs = context?.preferences ?: return
+        val prefs = pluginContext?.preferences ?: return
         prefs.putBoolean("preload_images", settings.preloadImages)
         prefs.putInt("preload_count", settings.preloadCount)
         prefs.putBoolean("show_page_number", settings.showPageNumber)
@@ -195,7 +195,7 @@ data class WebtoonSettings(
  * This would contain Compose UI code in a real implementation.
  */
 class WebtoonReaderScreen(
-    private val readerContext: ReaderContext,
+    private val readerContext: ireader.plugin.api.screen.ReaderContext,
     private val settings: WebtoonSettings
 ) : ReaderScreen {
     
