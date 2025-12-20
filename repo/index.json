@@ -29,7 +29,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
             "fileSize": 10742227,
-            "checksum": "sha256:c7e8f47734bc44f180624d13c9b0b8ff76077921c5fec7642e8eac5fecd99ec6",
+            "checksum": "sha256:a3cf9cd3f4e0bfb518c49559c1860549a9e7fcdb3d6504bfb081004943f436c3",
             "featured": true,
             "tags": [
                 "javascript",
@@ -65,8 +65,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.2.1.iplugin",
-            "fileSize": 35204391,
-            "checksum": "sha256:c5568dfc07a90a496d1464ff769a64c086eb9d3c7a3e35b3b169a208fe442f3b",
+            "fileSize": 35204394,
+            "checksum": "sha256:001b7e4b0a17c05d4ece392669e2d785c83bdf9d16309b724d822ae7afb52f0c",
             "featured": true,
             "tags": [
                 "javascript",
@@ -103,7 +103,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.arctic-aurora-1.0.0.iplugin",
             "fileSize": 10834,
-            "checksum": "sha256:79c7460e316fee4e2b7bf1f7ce0628d1b371cead79fb431639318dfebe5d5012",
+            "checksum": "sha256:b88b7fd0351813679b893a41bba2c6505d9cf17e77891d45a3eb0cba4b7dda89",
             "featured": false,
             "tags": null
         },
@@ -134,8 +134,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coffee-bean-1.0.0.iplugin",
-            "fileSize": 10725,
-            "checksum": "sha256:fd8431f3e6a8484ce1291240350fa7430a43ff4ec8b00415e461a5a9c27bea4e",
+            "fileSize": 10729,
+            "checksum": "sha256:9fe1861317d87dfb6a8aaf8f25bd1f635122d225dc4b052335a4ec7b16cd9352",
             "featured": false,
             "tags": null
         },
@@ -166,8 +166,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coral-reef-1.0.0.iplugin",
-            "fileSize": 10754,
-            "checksum": "sha256:66e2f5bc9512d8009a2e793300a0b36a9f644d8c63fab386dc77a1c33dfc8b4c",
+            "fileSize": 10753,
+            "checksum": "sha256:709601314eee0dd78dc4b0139ada748181cd341f252b26641e6ec40f16e41443",
             "featured": false,
             "tags": null
         },
@@ -198,8 +198,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.cyber-neon-1.0.0.iplugin",
-            "fileSize": 10818,
-            "checksum": "sha256:15e2615ed2a74bdb5a42ad6d80f55254f2ba9acd7939e50f946b772c649c6895",
+            "fileSize": 10820,
+            "checksum": "sha256:78e377d082282de67d227f3a1b11b9c9215f9c1560076c42c6ca29aa332837e6",
             "featured": false,
             "tags": null
         },
@@ -230,8 +230,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.desert-sand-1.0.0.iplugin",
-            "fileSize": 10765,
-            "checksum": "sha256:e039ccb3808a0f7d83c49101a589ea50bb6059584a1758f307dd4375bf21d766",
+            "fileSize": 10764,
+            "checksum": "sha256:9221104baf9b8c73bf840c6ad87b35b985e31ee2f5ea206578172d8942950bfd",
             "featured": false,
             "tags": null
         },
@@ -262,8 +262,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.mint-fresh-1.0.0.iplugin",
-            "fileSize": 10756,
-            "checksum": "sha256:3fa2bec40100930d00f8dc1bccd694a97cb07d5a521c82fc24b14fbc7b99c0dc",
+            "fileSize": 10761,
+            "checksum": "sha256:1f60d2c945763b74a221009a5363afce3f2a6193990c27778e508d93901275c7",
             "featured": false,
             "tags": null
         },
@@ -294,8 +294,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.nordic-frost-1.0.0.iplugin",
-            "fileSize": 10829,
-            "checksum": "sha256:8f36278b439738d6a5a75b8f2f0e8713cf038b26fb356693b81f93c49b7f8f47",
+            "fileSize": 10832,
+            "checksum": "sha256:2ef301ae3ef55ae00d9f64411de965e4287f432416f2680ee360ac1626181eee",
             "featured": false,
             "tags": null
         },
@@ -327,7 +327,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
             "fileSize": 10757,
-            "checksum": "sha256:6c31edf338a96d9163f2b32bd45287e21e2bbfe2d93f1a90ffaed053bf6f75c6",
+            "checksum": "sha256:bc35c8358d0debf5a9cc99f5296cb77260fddefc77941d897fdb7620b1a88c5e",
             "featured": false,
             "tags": null
         },
@@ -358,8 +358,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.royal-velvet-1.0.0.iplugin",
-            "fileSize": 10725,
-            "checksum": "sha256:c0c7dc87c57f48d728ef76f5070da42dac33467d6b3bebe1d2230f362beb29a8",
+            "fileSize": 10722,
+            "checksum": "sha256:19b9f8e2fb8e938642f943ac063415e0574a41491e2af6e9b128954904cd2a30",
             "featured": false,
             "tags": null
         },
@@ -391,7 +391,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.sakura-night-1.0.0.iplugin",
             "fileSize": 10801,
-            "checksum": "sha256:84812429e3b11bf8c05e13d6b40a45a2d8d43bd76f17e7bd619de27c004e9056",
+            "checksum": "sha256:f02966e50416ad96f5ac54a85971dabe4fce5490a3c5f3358969e4f4434b711f",
             "featured": false,
             "tags": null
         },
@@ -422,8 +422,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.slate-gray-1.0.0.iplugin",
-            "fileSize": 10704,
-            "checksum": "sha256:800d1ca8c95285af7c21014fe61113d47ca444a6de8334b93c67b57336afce5f",
+            "fileSize": 10703,
+            "checksum": "sha256:e9a168991c8cd87e3688ecd70f81fdb3941b4c7187abb9dd8e7da6b9e3160ca0",
             "featured": false,
             "tags": null
         },
@@ -455,7 +455,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.vintage-sepia-1.0.0.iplugin",
             "fileSize": 10736,
-            "checksum": "sha256:72e47001a7df1fe6b4e85e11245755a7a4897bc6d0c300d808947d6c39a56984",
+            "checksum": "sha256:8ea7e6508f0db32a4596c5b63d41d7955523bd68c9952448f65ef371f5cdce93",
             "featured": false,
             "tags": null
         },
@@ -490,7 +490,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.deepseek-translate-1.0.0.iplugin",
             "fileSize": 25549,
-            "checksum": "sha256:420170fc389593784f39b74558f3a65dd34bee5e2fef45920ce20a7ffe11eb5e",
+            "checksum": "sha256:dff04f145f5d7e73f44add3173b70fed99c601d557977804a4c6d296418ee1f7",
             "featured": false,
             "tags": [
                 "translation",
@@ -530,7 +530,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.huggingface-translate-1.0.0.iplugin",
             "fileSize": 19867,
-            "checksum": "sha256:2e5c901abb993b0ec11a5b3659d7cc14ce1a2394bddf7e6e8c45b208ac595212",
+            "checksum": "sha256:ac5188aff1e326e8539d43b868c700d8b278524c9ef675854c2451b30c8a2025",
             "featured": false,
             "tags": [
                 "translation",
@@ -570,7 +570,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.libretranslate-1.0.0.iplugin",
             "fileSize": 19415,
-            "checksum": "sha256:6bc8efbf0caf2080335563ca3812db244752ea23666d1a29c25f9a7f4e5cc79c",
+            "checksum": "sha256:23614975b6af2c1ad2a6b4053c466734a36bb1dcf28e2fc44d7ea47dad4e36cf",
             "featured": false,
             "tags": [
                 "translation",
@@ -609,8 +609,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ollama-translate-1.0.0.iplugin",
-            "fileSize": 24475,
-            "checksum": "sha256:134e42247970719211c6677ce256e7726b5d98fa9a61173b5a2e793b520df026",
+            "fileSize": 29021,
+            "checksum": "sha256:26548d3633ebc7e239d5276ae5bec1400c73f00c567b201f436ca8409d729335",
             "featured": false,
             "tags": [
                 "translation",
@@ -653,7 +653,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.openai-translate-1.0.0.iplugin",
             "fileSize": 26288,
-            "checksum": "sha256:5d9e8d6721ff3650e2ce292b61478f0ff633b7786ba416604b963518ae1dcc88",
+            "checksum": "sha256:3a487661778c8b83f1bbcda3da9169bddd486b4728a297e064d580be3c92321e",
             "featured": false,
             "tags": [
                 "translation",
@@ -693,8 +693,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-bark-tts-1.0.0.iplugin",
-            "fileSize": 5707,
-            "checksum": "sha256:cc6cb03ab8ee20f65f306bbbdd6e4117f4bff4c6db890976716c2e2db2d19a62",
+            "fileSize": 5710,
+            "checksum": "sha256:aeeda64d74ea3c397db029ab843df3885f21e1de52498645d6ff6bd47bbe40c0",
             "featured": false,
             "tags": [
                 "tts",
@@ -733,8 +733,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-edge-tts-1.0.0.iplugin",
-            "fileSize": 5977,
-            "checksum": "sha256:ee4c0b39fd4d1a33f419db2ccb211c3dd016d5e334e64731da7c7f66d6068e2e",
+            "fileSize": 5978,
+            "checksum": "sha256:a764a8bfc16547149bf405590262a95fa88fe8cde91cf560ad9dd7e56ef49436",
             "featured": false,
             "tags": [
                 "tts",
@@ -774,8 +774,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-fish-speech-1.1.0.iplugin",
-            "fileSize": 5693,
-            "checksum": "sha256:6ce2e1f672ca2d80da9e82e96dcb8b2e8f865893b2fe4f16282e3e4bbcab9b97",
+            "fileSize": 5698,
+            "checksum": "sha256:5502b500d45902e79c0d14b469d07d5e80e3cb2ce42e84595d364106c2459be9",
             "featured": false,
             "tags": [
                 "tts",
@@ -815,7 +815,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-openvoice-1.0.0.iplugin",
             "fileSize": 6091,
-            "checksum": "sha256:b0700dc645245cc542837a816d5cfa90a36e9eceb4c65e38abe3c32607053727",
+            "checksum": "sha256:f1eca086ca7487edaaf6d67ff1528ae89f4f84f495e754e62d0c63434242c6a4",
             "featured": false,
             "tags": [
                 "tts",
@@ -855,8 +855,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-parler-tts-1.0.0.iplugin",
-            "fileSize": 5669,
-            "checksum": "sha256:0e166f44f1fb5432479926eb9ade392345f1d201146379bedf5903d8eeaf1e62",
+            "fileSize": 5674,
+            "checksum": "sha256:9673927e4fb2c19bec845038cd94ddfa1fbdce4dd35480f636e8edae8f55464c",
             "featured": false,
             "tags": [
                 "tts",
@@ -895,7 +895,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-chatterbox-1.0.0.iplugin",
             "fileSize": 5649,
-            "checksum": "sha256:33cbe94821add2106f5454c4605c179e7903a0e81c2176cef2e72f81252d2d76",
+            "checksum": "sha256:f6785f4e0394066f033384e38ab92444bd30ea3e774fb68b89375cf4863a240a",
             "featured": false,
             "tags": [
                 "tts",
@@ -936,7 +936,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-edge-tts-1.0.0.iplugin",
             "fileSize": 5943,
-            "checksum": "sha256:2e24ae7b75191de725ded32deb4b68b0f03cb71ceebc6635f1f6e89e04fb81fd",
+            "checksum": "sha256:4fee3a4083b7dfdd78d203009c8437d94c5dbf88d0704e397b6da063cadb466d",
             "featured": false,
             "tags": [
                 "tts",
@@ -977,8 +977,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-piper-1.1.0.iplugin",
-            "fileSize": 5600,
-            "checksum": "sha256:58833a0956901e1a880eac2c8d439fc3d0daf6ca795fd9ee770a21449f71ea26",
+            "fileSize": 5599,
+            "checksum": "sha256:6fc13def369f6e0c0fd067c1a5d14a8add31d1f497152c58a6c6fa1065fb3965",
             "featured": false,
             "tags": [
                 "tts",
@@ -1018,7 +1018,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-xtts-1.0.0.iplugin",
             "fileSize": 5741,
-            "checksum": "sha256:8346cf0e26a1c8d0947744b907ee935f6e2b3ccc84d0690e50a0a0dc5e653656",
+            "checksum": "sha256:58b30e9e66e9b268aadfae6ddb63e144715d496ff31945b014ab7795e623afa7",
             "featured": false,
             "tags": [
                 "tts",
@@ -1059,7 +1059,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-silero-tts-1.0.0.iplugin",
             "fileSize": 5854,
-            "checksum": "sha256:12a3bde3a8764a61cb9eb90504e8501b05077f0437c230dc81d7142cf4bc575b",
+            "checksum": "sha256:f12477fe0459ba2ad7c511e5a1bc3103bd37fe58511c96860da0304cffdc402a",
             "featured": false,
             "tags": [
                 "tts",
@@ -1100,7 +1100,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-style-tts-2-1.0.0.iplugin",
             "fileSize": 5769,
-            "checksum": "sha256:e55908ecb5d7b3cf9d8c6d6e09587142d23652270bfca2782d686dcfc92fc1a5",
+            "checksum": "sha256:b778734c77226cd17352d2ed1448e9027db967c1d02a5965a49c2d12c3131529",
             "featured": false,
             "tags": [
                 "tts",
@@ -1140,7 +1140,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-tortoise-tts-1.0.0.iplugin",
             "fileSize": 6206,
-            "checksum": "sha256:7212d3546ae1b7256808c12bb2c64b8285a53e82667888adb237cb1c4725212f",
+            "checksum": "sha256:8a3382271942973186614d797231248b501a53d9abf9bb94727e194b604afa71",
             "featured": false,
             "tags": [
                 "tts",
@@ -1179,8 +1179,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-xtts-v2-1.0.0.iplugin",
-            "fileSize": 5995,
-            "checksum": "sha256:06d1418dc7b673ce5368eb4aaf099362b76323b1cf6ddce36a051e10fcd99efb",
+            "fileSize": 5996,
+            "checksum": "sha256:932e24b53af4de8e53128dc825d0f283e363e16c6b56acb6d3fb147f39869014",
             "featured": false,
             "tags": [
                 "tts",
@@ -1219,8 +1219,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-2.0.0.iplugin",
-            "fileSize": 5041,
-            "checksum": "sha256:2a0a4ff0aaff42a27a76cb9afc68a89096690cf293377f089f69df6b274f4a24",
+            "fileSize": 94383087,
+            "checksum": "sha256:93064337da9fc05187afa66460526acb6fccfd64b833aeabe90cc30d2d037590",
             "featured": true,
             "tags": [
                 "tts",
