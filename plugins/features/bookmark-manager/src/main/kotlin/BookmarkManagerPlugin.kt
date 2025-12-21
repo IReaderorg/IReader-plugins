@@ -10,7 +10,7 @@ import kotlinx.serialization.decodeFromString
  * Bookmark Manager Plugin for IReader
  * Provides advanced bookmark management with tags, notes, and smart organization.
  */
-class BookmarkManagerPlugin : FeaturePlugin {
+class BookmarkManagerPlugin : FeaturePlugin, PluginUIProvider {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.bookmark-manager",
@@ -29,6 +29,15 @@ class BookmarkManagerPlugin : FeaturePlugin {
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
     private val bookmarks = mutableListOf<Bookmark>()
     private val tags = mutableSetOf<String>()
+    
+    // UI State
+    private var currentTab = 0
+    private var searchQuery = ""
+    private var selectedTag = "all"
+    private var pendingTitle = ""
+    private var pendingNote = ""
+    private var pendingTags = ""
+    private var pendingNewTag = ""
     
     override fun initialize(context: PluginContext) {
         this.context = context
@@ -49,22 +58,250 @@ class BookmarkManagerPlugin : FeaturePlugin {
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
-        PluginScreen(route = "bookmarks/list", title = "My Bookmarks", content = {}),
-        PluginScreen(route = "bookmarks/add/{bookId}/{chapterId}/{position}", title = "Add Bookmark", content = {}),
-        PluginScreen(route = "bookmarks/edit/{bookmarkId}", title = "Edit Bookmark", content = {}),
-        PluginScreen(route = "bookmarks/tags", title = "Manage Tags", content = {})
+        PluginScreen(route = "plugin/bookmark-manager/main", title = "Bookmarks", content = {})
     )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
         // When user selects text, offer to create a bookmark with note
         context.selectedText?.let { text ->
             if (text.isNotBlank()) {
-                return PluginAction.Navigate(
-                    "bookmarks/add/${context.bookId}/${context.chapterId}/${context.position}"
-                )
+                pendingNote = text
+                return PluginAction.ShowMenu(listOf("add_bookmark"))
             }
         }
         return null
+    }
+    
+    // ==================== PluginUIProvider Implementation ====================
+    
+    override fun getScreen(screenId: String, context: PluginScreenContext): PluginUIScreen? {
+        return buildMainScreen(context)
+    }
+    
+    override suspend fun handleEvent(
+        screenId: String,
+        event: PluginUIEvent,
+        context: PluginScreenContext
+    ): PluginUIScreen? {
+        when (event.eventType) {
+            UIEventType.TAB_SELECTED -> {
+                currentTab = event.data["index"]?.toIntOrNull() ?: 0
+            }
+            UIEventType.TEXT_CHANGED -> {
+                when (event.componentId) {
+                    "search" -> searchQuery = event.data["value"] ?: ""
+                    "title" -> pendingTitle = event.data["value"] ?: ""
+                    "note" -> pendingNote = event.data["value"] ?: ""
+                    "tags" -> pendingTags = event.data["value"] ?: ""
+                    "new_tag" -> pendingNewTag = event.data["value"] ?: ""
+                }
+            }
+            UIEventType.CHIP_SELECTED -> {
+                if (event.componentId == "tag_filter") {
+                    selectedTag = event.data["value"] ?: "all"
+                }
+            }
+            UIEventType.CLICK -> {
+                when {
+                    event.componentId == "add_bookmark" -> {
+                        if (pendingTitle.isNotBlank() && context.bookId != null && context.chapterId != null) {
+                            val tagList = pendingTags.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                            addBookmark(
+                                bookId = context.bookId!!,
+                                chapterId = context.chapterId!!,
+                                position = 0,
+                                title = pendingTitle,
+                                note = pendingNote.ifBlank { null },
+                                selectedText = context.selectedText,
+                                bookmarkTags = tagList
+                            )
+                            pendingTitle = ""
+                            pendingNote = ""
+                            pendingTags = ""
+                        }
+                    }
+                    event.componentId == "add_tag" -> {
+                        if (pendingNewTag.isNotBlank()) {
+                            addTag(pendingNewTag)
+                            pendingNewTag = ""
+                        }
+                    }
+                    event.componentId.startsWith("delete_") -> {
+                        val bookmarkId = event.componentId.removePrefix("delete_")
+                        deleteBookmark(bookmarkId)
+                    }
+                    event.componentId.startsWith("remove_tag_") -> {
+                        val tag = event.componentId.removePrefix("remove_tag_")
+                        removeTag(tag)
+                    }
+                }
+            }
+            else -> {}
+        }
+        return buildMainScreen(context)
+    }
+    
+    private fun buildMainScreen(context: PluginScreenContext): PluginUIScreen {
+        val tabs = listOf(
+            Tab(id = "bookmarks", title = "Bookmarks", icon = "bookmarks", content = buildBookmarksTab()),
+            Tab(id = "add", title = "Add", icon = "bookmark_add", content = buildAddTab(context)),
+            Tab(id = "tags", title = "Tags", icon = "label", content = buildTagsTab())
+        )
+        
+        return PluginUIScreen(
+            id = "main",
+            title = "Bookmark Manager",
+            components = listOf(PluginUIComponent.Tabs(tabs))
+        )
+    }
+    
+    private fun buildBookmarksTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        // Search
+        components.add(PluginUIComponent.TextField(
+            id = "search",
+            label = "Search bookmarks",
+            value = searchQuery
+        ))
+        
+        // Tag filter
+        val allTags = listOf("all") + tags.toList()
+        components.add(PluginUIComponent.ChipGroup(
+            id = "tag_filter",
+            chips = allTags.map { tag ->
+                PluginUIComponent.Chip(
+                    id = tag,
+                    label = if (tag == "all") "All" else tag,
+                    selected = selectedTag == tag
+                )
+            },
+            singleSelection = true
+        ))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Filter bookmarks
+        val filtered = bookmarks.filter { bookmark ->
+            (selectedTag == "all" || selectedTag in bookmark.tags) &&
+            (searchQuery.isBlank() || 
+             bookmark.title.lowercase().contains(searchQuery.lowercase()) ||
+             bookmark.note?.lowercase()?.contains(searchQuery.lowercase()) == true)
+        }.sortedByDescending { it.createdAt }
+        
+        if (filtered.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "bookmarks",
+                message = "No bookmarks",
+                description = if (searchQuery.isNotBlank()) "Try a different search" else "Add your first bookmark"
+            ))
+        } else {
+            filtered.forEach { bookmark ->
+                components.add(PluginUIComponent.Card(listOf(
+                    PluginUIComponent.Row(listOf(
+                        PluginUIComponent.Column(listOf(
+                            PluginUIComponent.Text(bookmark.title, TextStyle.TITLE_SMALL),
+                            bookmark.note?.let { PluginUIComponent.Text(it.take(100), TextStyle.BODY_SMALL) }
+                                ?: PluginUIComponent.Spacer(0),
+                            if (bookmark.tags.isNotEmpty()) {
+                                PluginUIComponent.Text(bookmark.tags.joinToString(", "), TextStyle.LABEL)
+                            } else PluginUIComponent.Spacer(0)
+                        ), spacing = 4),
+                        PluginUIComponent.Button(
+                            id = "delete_${bookmark.id}",
+                            label = "",
+                            style = ButtonStyle.TEXT,
+                            icon = "delete"
+                        )
+                    ), spacing = 8)
+                )))
+            }
+        }
+        
+        return components
+    }
+    
+    private fun buildAddTab(context: PluginScreenContext): List<PluginUIComponent> {
+        return listOf(
+            PluginUIComponent.Text("Add New Bookmark", TextStyle.TITLE_SMALL),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Card(listOf(
+                PluginUIComponent.TextField(
+                    id = "title",
+                    label = "Bookmark title",
+                    value = pendingTitle
+                ),
+                PluginUIComponent.Spacer(8),
+                PluginUIComponent.TextField(
+                    id = "note",
+                    label = "Note (optional)",
+                    value = pendingNote,
+                    multiline = true,
+                    maxLines = 4
+                ),
+                PluginUIComponent.Spacer(8),
+                PluginUIComponent.TextField(
+                    id = "tags",
+                    label = "Tags (comma separated)",
+                    value = pendingTags
+                ),
+                PluginUIComponent.Spacer(16),
+                PluginUIComponent.Button(
+                    id = "add_bookmark",
+                    label = "Add Bookmark",
+                    style = ButtonStyle.PRIMARY,
+                    icon = "bookmark_add"
+                )
+            )),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Text("Chapter: ${context.chapterTitle ?: "Unknown"}", TextStyle.BODY_SMALL)
+        )
+    }
+    
+    private fun buildTagsTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        // Add tag form
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.TextField(
+                id = "new_tag",
+                label = "New tag name",
+                value = pendingNewTag
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Button(
+                id = "add_tag",
+                label = "Add Tag",
+                style = ButtonStyle.PRIMARY,
+                icon = "add"
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        components.add(PluginUIComponent.Text("Your Tags", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Spacer(8))
+        
+        if (tags.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "label",
+                message = "No tags yet",
+                description = "Create tags to organize your bookmarks"
+            ))
+        } else {
+            val items = tags.map { tag ->
+                val count = bookmarks.count { tag in it.tags }
+                ListItem(
+                    id = tag,
+                    title = tag,
+                    subtitle = "$count bookmarks",
+                    icon = "label",
+                    trailing = "remove_tag_$tag"
+                )
+            }
+            components.add(PluginUIComponent.ItemList(id = "tags_list", items = items))
+        }
+        
+        return components
     }
     
     // Bookmark CRUD operations

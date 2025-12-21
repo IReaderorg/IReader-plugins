@@ -10,7 +10,7 @@ import kotlinx.serialization.decodeFromString
  * Quote Highlighter Plugin for IReader
  * Allows users to highlight and save memorable quotes while reading.
  */
-class QuoteHighlighterPlugin : FeaturePlugin {
+class QuoteHighlighterPlugin : FeaturePlugin, PluginUIProvider {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.quote-highlighter",
@@ -31,6 +31,13 @@ class QuoteHighlighterPlugin : FeaturePlugin {
     // Data storage
     private val highlights = mutableListOf<Highlight>()
     private val collections = mutableListOf<QuoteCollection>()
+    
+    // UI State
+    private var currentTab = 0
+    private var selectedColor = HighlightColor.YELLOW
+    private var pendingNote = ""
+    private var pendingCollectionName = ""
+    private var filterColor: HighlightColor? = null
     
     override fun initialize(context: PluginContext) {
         this.context = context
@@ -54,23 +61,257 @@ class QuoteHighlighterPlugin : FeaturePlugin {
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
-        PluginScreen(route = "highlights/list", title = "My Highlights", content = {}),
-        PluginScreen(route = "highlights/book/{bookId}", title = "Book Highlights", content = {}),
-        PluginScreen(route = "highlights/collections", title = "Quote Collections", content = {}),
-        PluginScreen(route = "highlights/collection/{collectionId}", title = "Collection", content = {}),
-        PluginScreen(route = "highlights/share/{highlightId}", title = "Share Quote", content = {})
+        PluginScreen(route = "plugin/quote-highlighter/main", title = "Highlights", content = {})
     )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
         context.selectedText?.let { text ->
             if (text.isNotBlank() && text.length >= 10) {
-                // Show highlight options for selected text
                 return PluginAction.ShowMenu(listOf(
                     "highlight_yellow", "highlight_green", "highlight_blue", "highlight_pink", "save_quote"
                 ))
             }
         }
         return null
+    }
+    
+    // ==================== PluginUIProvider Implementation ====================
+    
+    override fun getScreen(screenId: String, context: PluginScreenContext): PluginUIScreen? {
+        return buildMainScreen(context)
+    }
+    
+    override suspend fun handleEvent(
+        screenId: String,
+        event: PluginUIEvent,
+        context: PluginScreenContext
+    ): PluginUIScreen? {
+        when (event.eventType) {
+            UIEventType.TAB_SELECTED -> {
+                currentTab = event.data["index"]?.toIntOrNull() ?: 0
+            }
+            UIEventType.TEXT_CHANGED -> {
+                when (event.componentId) {
+                    "note" -> pendingNote = event.data["value"] ?: ""
+                    "collection_name" -> pendingCollectionName = event.data["value"] ?: ""
+                }
+            }
+            UIEventType.CHIP_SELECTED -> {
+                when (event.componentId) {
+                    "color_select" -> {
+                        selectedColor = HighlightColor.values().find { it.name == event.data["value"] } ?: HighlightColor.YELLOW
+                    }
+                    "color_filter" -> {
+                        val value = event.data["value"]
+                        filterColor = if (value == "all") null else HighlightColor.values().find { it.name == value }
+                    }
+                }
+            }
+            UIEventType.CLICK -> {
+                when {
+                    event.componentId == "save_highlight" -> {
+                        if (context.selectedText != null && context.bookId != null && context.chapterId != null) {
+                            createHighlight(
+                                bookId = context.bookId!!,
+                                chapterId = context.chapterId!!,
+                                text = context.selectedText!!,
+                                startPosition = 0,
+                                endPosition = context.selectedText!!.length,
+                                color = selectedColor,
+                                note = pendingNote.ifBlank { null }
+                            )
+                            pendingNote = ""
+                        }
+                    }
+                    event.componentId == "create_collection" -> {
+                        if (pendingCollectionName.isNotBlank()) {
+                            createCollection(pendingCollectionName)
+                            pendingCollectionName = ""
+                        }
+                    }
+                    event.componentId.startsWith("delete_") -> {
+                        val highlightId = event.componentId.removePrefix("delete_")
+                        deleteHighlight(highlightId)
+                    }
+                    event.componentId.startsWith("delete_collection_") -> {
+                        val collectionId = event.componentId.removePrefix("delete_collection_")
+                        deleteCollection(collectionId)
+                    }
+                }
+            }
+            else -> {}
+        }
+        return buildMainScreen(context)
+    }
+    
+    private fun buildMainScreen(context: PluginScreenContext): PluginUIScreen {
+        val tabs = listOf(
+            Tab(id = "highlights", title = "Highlights", icon = "highlight", content = buildHighlightsTab()),
+            Tab(id = "add", title = "Add", icon = "add", content = buildAddTab(context)),
+            Tab(id = "collections", title = "Collections", icon = "folder", content = buildCollectionsTab())
+        )
+        
+        return PluginUIScreen(
+            id = "main",
+            title = "Quote Highlighter",
+            components = listOf(PluginUIComponent.Tabs(tabs))
+        )
+    }
+    
+    private fun buildHighlightsTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        // Color filter
+        val colors = listOf("all") + HighlightColor.values().map { it.name }
+        components.add(PluginUIComponent.ChipGroup(
+            id = "color_filter",
+            chips = colors.map { color ->
+                PluginUIComponent.Chip(
+                    id = color,
+                    label = if (color == "all") "All" else color.lowercase().replaceFirstChar { it.uppercase() },
+                    selected = (filterColor?.name ?: "all") == color
+                )
+            },
+            singleSelection = true
+        ))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Filter highlights
+        val filtered = if (filterColor != null) {
+            highlights.filter { it.color == filterColor }
+        } else {
+            highlights
+        }.sortedByDescending { it.createdAt }
+        
+        if (filtered.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "highlight",
+                message = "No highlights",
+                description = "Select text while reading to highlight it"
+            ))
+        } else {
+            filtered.forEach { highlight ->
+                components.add(PluginUIComponent.Card(listOf(
+                    PluginUIComponent.Row(listOf(
+                        PluginUIComponent.Chip(
+                            id = highlight.color.name,
+                            label = highlight.color.name.lowercase(),
+                            selected = true
+                        ),
+                        PluginUIComponent.Button(
+                            id = "delete_${highlight.id}",
+                            label = "",
+                            style = ButtonStyle.TEXT,
+                            icon = "delete"
+                        )
+                    ), spacing = 8),
+                    PluginUIComponent.Text("\"${highlight.text.take(150)}${if (highlight.text.length > 150) "..." else ""}\"", TextStyle.BODY),
+                    highlight.note?.let { PluginUIComponent.Text("Note: $it", TextStyle.BODY_SMALL) }
+                        ?: PluginUIComponent.Spacer(0)
+                )))
+            }
+        }
+        
+        return components
+    }
+    
+    private fun buildAddTab(context: PluginScreenContext): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        if (context.selectedText.isNullOrBlank()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "highlight",
+                message = "No text selected",
+                description = "Select text in the reader to highlight it"
+            ))
+        } else {
+            components.add(PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("Selected Text", TextStyle.LABEL),
+                PluginUIComponent.Text("\"${context.selectedText}\"", TextStyle.BODY)
+            )))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            // Color selection
+            components.add(PluginUIComponent.Text("Highlight Color", TextStyle.LABEL))
+            components.add(PluginUIComponent.ChipGroup(
+                id = "color_select",
+                chips = HighlightColor.values().map { color ->
+                    PluginUIComponent.Chip(
+                        id = color.name,
+                        label = color.name.lowercase().replaceFirstChar { it.uppercase() },
+                        selected = selectedColor == color
+                    )
+                },
+                singleSelection = true
+            ))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            // Note
+            components.add(PluginUIComponent.TextField(
+                id = "note",
+                label = "Add a note (optional)",
+                value = pendingNote,
+                multiline = true,
+                maxLines = 3
+            ))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            components.add(PluginUIComponent.Button(
+                id = "save_highlight",
+                label = "Save Highlight",
+                style = ButtonStyle.PRIMARY,
+                icon = "save"
+            ))
+        }
+        
+        return components
+    }
+    
+    private fun buildCollectionsTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        // Create collection form
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.TextField(
+                id = "collection_name",
+                label = "New collection name",
+                value = pendingCollectionName
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Button(
+                id = "create_collection",
+                label = "Create Collection",
+                style = ButtonStyle.PRIMARY,
+                icon = "add"
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        if (collections.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "folder",
+                message = "No collections",
+                description = "Create collections to organize your highlights"
+            ))
+        } else {
+            val items = collections.map { collection ->
+                ListItem(
+                    id = collection.id,
+                    title = collection.name,
+                    subtitle = "${collection.highlightIds.size} highlights",
+                    icon = "folder",
+                    trailing = "delete_collection_${collection.id}"
+                )
+            }
+            components.add(PluginUIComponent.ItemList(id = "collections_list", items = items))
+        }
+        
+        return components
     }
     
     // Highlight operations

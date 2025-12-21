@@ -10,7 +10,7 @@ import kotlinx.serialization.decodeFromString
  * Reading Timer Plugin for IReader
  * Track reading time with sessions, daily summaries, and Pomodoro support.
  */
-class ReadingTimerPlugin : FeaturePlugin {
+class ReadingTimerPlugin : FeaturePlugin, PluginUIProvider {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.reading-timer",
@@ -33,6 +33,11 @@ class ReadingTimerPlugin : FeaturePlugin {
     private var currentSession: ReadingSession? = null
     private var pomodoroState = PomodoroState()
     
+    // UI State
+    private var currentTab = 0
+    private var pendingPomodoroMinutes = ""
+    private var pendingBreakMinutes = ""
+    
     override fun initialize(context: PluginContext) {
         this.context = context
         loadState()
@@ -52,9 +57,7 @@ class ReadingTimerPlugin : FeaturePlugin {
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
-        PluginScreen(route = "timer/active", title = "Active Timer", content = {}),
-        PluginScreen(route = "timer/stats", title = "Reading Stats", content = {}),
-        PluginScreen(route = "timer/pomodoro", title = "Pomodoro", content = {})
+        PluginScreen(route = "plugin/reading-timer/main", title = "Reading Timer", content = {})
     )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
@@ -63,6 +66,256 @@ class ReadingTimerPlugin : FeaturePlugin {
             startSession(context.bookId, context.chapterId)
         }
         return null
+    }
+    
+    // ==================== PluginUIProvider Implementation ====================
+    
+    override fun getScreen(screenId: String, context: PluginScreenContext): PluginUIScreen? {
+        if (pendingPomodoroMinutes.isEmpty()) pendingPomodoroMinutes = settings.pomodoroMinutes.toString()
+        if (pendingBreakMinutes.isEmpty()) pendingBreakMinutes = settings.shortBreakMinutes.toString()
+        return buildMainScreen(context)
+    }
+    
+    override suspend fun handleEvent(
+        screenId: String,
+        event: PluginUIEvent,
+        context: PluginScreenContext
+    ): PluginUIScreen? {
+        when (event.eventType) {
+            UIEventType.TAB_SELECTED -> {
+                currentTab = event.data["index"]?.toIntOrNull() ?: 0
+            }
+            UIEventType.TEXT_CHANGED -> {
+                when (event.componentId) {
+                    "pomodoro_minutes" -> pendingPomodoroMinutes = event.data["value"] ?: ""
+                    "break_minutes" -> pendingBreakMinutes = event.data["value"] ?: ""
+                }
+            }
+            UIEventType.SWITCH_TOGGLED -> {
+                if (event.componentId == "auto_start") {
+                    setAutoStartTimer(event.data["checked"] == "true")
+                }
+            }
+            UIEventType.CLICK -> {
+                when (event.componentId) {
+                    "start_timer" -> {
+                        if (context.bookId != null && context.chapterId != null) {
+                            startSession(context.bookId!!, context.chapterId!!)
+                        }
+                    }
+                    "stop_timer" -> endCurrentSession()
+                    "start_pomodoro" -> startPomodoro()
+                    "stop_pomodoro" -> stopPomodoro()
+                    "start_break" -> startBreak()
+                    "save_settings" -> {
+                        val pomMinutes = pendingPomodoroMinutes.toIntOrNull() ?: settings.pomodoroMinutes
+                        val breakMinutes = pendingBreakMinutes.toIntOrNull() ?: settings.shortBreakMinutes
+                        setPomodoroMinutes(pomMinutes)
+                        setShortBreakMinutes(breakMinutes)
+                    }
+                }
+            }
+            else -> {}
+        }
+        return buildMainScreen(context)
+    }
+    
+    private fun buildMainScreen(context: PluginScreenContext): PluginUIScreen {
+        val tabs = listOf(
+            Tab(id = "timer", title = "Timer", icon = "timer", content = buildTimerTab(context)),
+            Tab(id = "pomodoro", title = "Pomodoro", icon = "hourglass_empty", content = buildPomodoroTab()),
+            Tab(id = "stats", title = "Stats", icon = "analytics", content = buildStatsTab()),
+            Tab(id = "settings", title = "Settings", icon = "settings", content = buildSettingsTab())
+        )
+        
+        return PluginUIScreen(
+            id = "main",
+            title = "Reading Timer",
+            components = listOf(PluginUIComponent.Tabs(tabs))
+        )
+    }
+    
+    private fun buildTimerTab(context: PluginScreenContext): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        if (isTimerRunning()) {
+            val elapsed = getElapsedMinutes()
+            components.add(PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("⏱️ ${elapsed} min", TextStyle.TITLE_LARGE),
+                PluginUIComponent.Text("Reading session active", TextStyle.BODY_SMALL)
+            )))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            components.add(PluginUIComponent.Button(
+                id = "stop_timer",
+                label = "Stop Timer",
+                style = ButtonStyle.OUTLINED,
+                icon = "stop"
+            ))
+        } else {
+            components.add(PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("No active session", TextStyle.TITLE_MEDIUM),
+                PluginUIComponent.Text("Start a timer to track your reading", TextStyle.BODY_SMALL)
+            )))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            components.add(PluginUIComponent.Button(
+                id = "start_timer",
+                label = "Start Timer",
+                style = ButtonStyle.PRIMARY,
+                icon = "play_arrow"
+            ))
+        }
+        
+        components.add(PluginUIComponent.Spacer(24))
+        
+        // Today's summary
+        components.add(PluginUIComponent.Text("Today", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text("${getTodayReadingTime()} minutes", TextStyle.TITLE_MEDIUM)
+        )))
+        
+        return components
+    }
+    
+    private fun buildPomodoroTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        val state = getPomodoroState()
+        
+        if (state.isActive) {
+            val remaining = getPomodoroTimeRemaining()
+            val label = if (state.isBreak) "Break" else "Focus"
+            
+            components.add(PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("🍅 $label", TextStyle.TITLE_SMALL),
+                PluginUIComponent.Text("${remaining} min remaining", TextStyle.TITLE_LARGE)
+            )))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            if (isPomodoroComplete()) {
+                if (state.isBreak) {
+                    components.add(PluginUIComponent.Button(
+                        id = "start_pomodoro",
+                        label = "Start Focus",
+                        style = ButtonStyle.PRIMARY,
+                        icon = "play_arrow"
+                    ))
+                } else {
+                    components.add(PluginUIComponent.Button(
+                        id = "start_break",
+                        label = "Take a Break",
+                        style = ButtonStyle.PRIMARY,
+                        icon = "coffee"
+                    ))
+                }
+            } else {
+                components.add(PluginUIComponent.Button(
+                    id = "stop_pomodoro",
+                    label = "Stop",
+                    style = ButtonStyle.OUTLINED,
+                    icon = "stop"
+                ))
+            }
+        } else {
+            components.add(PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("🍅 Pomodoro Timer", TextStyle.TITLE_MEDIUM),
+                PluginUIComponent.Text("Focus for ${settings.pomodoroMinutes} minutes", TextStyle.BODY_SMALL)
+            )))
+            
+            components.add(PluginUIComponent.Spacer(16))
+            
+            components.add(PluginUIComponent.Button(
+                id = "start_pomodoro",
+                label = "Start Pomodoro",
+                style = ButtonStyle.PRIMARY,
+                icon = "play_arrow"
+            ))
+        }
+        
+        components.add(PluginUIComponent.Spacer(24))
+        
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text("Completed today: ${getCompletedPomodoros()} 🍅", TextStyle.BODY)
+        )))
+        
+        return components
+    }
+    
+    private fun buildStatsTab(): List<PluginUIComponent> {
+        return listOf(
+            PluginUIComponent.Text("Reading Statistics", TextStyle.TITLE_SMALL),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Card(listOf(
+                PluginUIComponent.Row(listOf(
+                    PluginUIComponent.Column(listOf(
+                        PluginUIComponent.Text("${getTodayReadingTime()}", TextStyle.TITLE_MEDIUM),
+                        PluginUIComponent.Text("Today (min)", TextStyle.BODY_SMALL)
+                    ), spacing = 4),
+                    PluginUIComponent.Column(listOf(
+                        PluginUIComponent.Text("${getWeekReadingTime()}", TextStyle.TITLE_MEDIUM),
+                        PluginUIComponent.Text("This Week", TextStyle.BODY_SMALL)
+                    ), spacing = 4)
+                ), spacing = 32)
+            )),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Card(listOf(
+                PluginUIComponent.Row(listOf(
+                    PluginUIComponent.Column(listOf(
+                        PluginUIComponent.Text("${getTotalReadingTime()}", TextStyle.TITLE_MEDIUM),
+                        PluginUIComponent.Text("Total (min)", TextStyle.BODY_SMALL)
+                    ), spacing = 4),
+                    PluginUIComponent.Column(listOf(
+                        PluginUIComponent.Text("${getSessionCount()}", TextStyle.TITLE_MEDIUM),
+                        PluginUIComponent.Text("Sessions", TextStyle.BODY_SMALL)
+                    ), spacing = 4),
+                    PluginUIComponent.Column(listOf(
+                        PluginUIComponent.Text("${getAverageSessionLength()}", TextStyle.TITLE_MEDIUM),
+                        PluginUIComponent.Text("Avg (min)", TextStyle.BODY_SMALL)
+                    ), spacing = 4)
+                ), spacing = 24)
+            ))
+        )
+    }
+    
+    private fun buildSettingsTab(): List<PluginUIComponent> {
+        return listOf(
+            PluginUIComponent.Text("Timer Settings", TextStyle.TITLE_SMALL),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Card(listOf(
+                PluginUIComponent.Switch(
+                    id = "auto_start",
+                    label = "Auto-start timer when reading",
+                    checked = settings.autoStartTimer
+                )
+            )),
+            PluginUIComponent.Spacer(16),
+            PluginUIComponent.Card(listOf(
+                PluginUIComponent.Text("Pomodoro Duration (minutes)", TextStyle.LABEL),
+                PluginUIComponent.TextField(
+                    id = "pomodoro_minutes",
+                    label = "Focus time",
+                    value = pendingPomodoroMinutes
+                ),
+                PluginUIComponent.Spacer(8),
+                PluginUIComponent.Text("Break Duration (minutes)", TextStyle.LABEL),
+                PluginUIComponent.TextField(
+                    id = "break_minutes",
+                    label = "Break time",
+                    value = pendingBreakMinutes
+                ),
+                PluginUIComponent.Spacer(8),
+                PluginUIComponent.Button(
+                    id = "save_settings",
+                    label = "Save Settings",
+                    style = ButtonStyle.PRIMARY,
+                    icon = "save"
+                )
+            ))
+        )
     }
     
     fun startSession(bookId: Long, chapterId: Long): ReadingSession {

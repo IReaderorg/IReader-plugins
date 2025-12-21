@@ -10,7 +10,7 @@ import kotlinx.serialization.decodeFromString
  * Reading Statistics Plugin for IReader
  * Provides comprehensive reading analytics and goal tracking.
  */
-class ReadingStatsPlugin : FeaturePlugin {
+class ReadingStatsPlugin : FeaturePlugin, PluginUIProvider {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.reading-stats",
@@ -34,6 +34,12 @@ class ReadingStatsPlugin : FeaturePlugin {
     private var goals = ReadingGoals()
     private var currentSession: ReadingSession? = null
     
+    // UI State
+    private var currentTab = 0
+    private var pendingDailyGoal = ""
+    private var pendingWeeklyGoal = ""
+    private var pendingMonthlyGoal = ""
+    
     override fun initialize(context: PluginContext) {
         this.context = context
         loadData()
@@ -52,18 +58,236 @@ class ReadingStatsPlugin : FeaturePlugin {
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
-        PluginScreen(route = "stats/overview", title = "Statistics Overview", content = {}),
-        PluginScreen(route = "stats/daily", title = "Daily Statistics", content = {}),
-        PluginScreen(route = "stats/weekly", title = "Weekly Statistics", content = {}),
-        PluginScreen(route = "stats/monthly", title = "Monthly Statistics", content = {}),
-        PluginScreen(route = "stats/goals", title = "Reading Goals", content = {}),
-        PluginScreen(route = "stats/books/{bookId}", title = "Book Statistics", content = {})
+        PluginScreen(route = "plugin/reading-stats/main", title = "Reading Statistics", content = {})
     )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
         // Track reading progress when reader context changes
         trackReading(context)
         return null
+    }
+    
+    // ==================== PluginUIProvider Implementation ====================
+    
+    override fun getScreen(screenId: String, context: PluginScreenContext): PluginUIScreen? {
+        // Initialize pending goals from current goals
+        if (pendingDailyGoal.isEmpty()) pendingDailyGoal = goals.dailyMinutes.toString()
+        if (pendingWeeklyGoal.isEmpty()) pendingWeeklyGoal = goals.weeklyMinutes.toString()
+        if (pendingMonthlyGoal.isEmpty()) pendingMonthlyGoal = goals.monthlyBooks.toString()
+        
+        return buildMainScreen()
+    }
+    
+    override suspend fun handleEvent(
+        screenId: String,
+        event: PluginUIEvent,
+        context: PluginScreenContext
+    ): PluginUIScreen? {
+        when (event.eventType) {
+            UIEventType.TAB_SELECTED -> {
+                currentTab = event.data["index"]?.toIntOrNull() ?: 0
+            }
+            UIEventType.TEXT_CHANGED -> {
+                when (event.componentId) {
+                    "daily_goal" -> pendingDailyGoal = event.data["value"] ?: ""
+                    "weekly_goal" -> pendingWeeklyGoal = event.data["value"] ?: ""
+                    "monthly_goal" -> pendingMonthlyGoal = event.data["value"] ?: ""
+                }
+            }
+            UIEventType.CLICK -> {
+                when (event.componentId) {
+                    "save_goals" -> {
+                        val daily = pendingDailyGoal.toIntOrNull() ?: goals.dailyMinutes
+                        val weekly = pendingWeeklyGoal.toIntOrNull() ?: goals.weeklyMinutes
+                        val monthly = pendingMonthlyGoal.toIntOrNull() ?: goals.monthlyBooks
+                        goals = ReadingGoals(daily, weekly, monthly)
+                        saveData()
+                    }
+                }
+            }
+            else -> {}
+        }
+        return buildMainScreen()
+    }
+    
+    private fun buildMainScreen(): PluginUIScreen {
+        val tabs = listOf(
+            Tab(id = "overview", title = "Overview", icon = "analytics", content = buildOverviewTab()),
+            Tab(id = "streak", title = "Streak", icon = "local_fire_department", content = buildStreakTab()),
+            Tab(id = "goals", title = "Goals", icon = "flag", content = buildGoalsTab())
+        )
+        
+        return PluginUIScreen(
+            id = "main",
+            title = "Reading Statistics",
+            components = listOf(PluginUIComponent.Tabs(tabs))
+        )
+    }
+    
+    private fun buildOverviewTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        val allTime = getAllTimeStats()
+        val today = getTodayStats()
+        val week = getWeekStats()
+        
+        // Today's stats
+        components.add(PluginUIComponent.Text("Today", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Row(listOf(
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${today.totalReadingTimeMs / 60_000} min", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Reading Time", TextStyle.BODY_SMALL)
+                ), spacing = 4),
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${today.sessionsCount}", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Sessions", TextStyle.BODY_SMALL)
+                ), spacing = 4)
+            ), spacing = 32)
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // This week
+        components.add(PluginUIComponent.Text("This Week", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Row(listOf(
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${week.totalReadingTimeMs / 60_000} min", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Total Time", TextStyle.BODY_SMALL)
+                ), spacing = 4),
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${week.daysActive}/7", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Days Active", TextStyle.BODY_SMALL)
+                ), spacing = 4)
+            ), spacing = 32)
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // All time
+        components.add(PluginUIComponent.Text("All Time", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Row(listOf(
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${allTime.totalReadingTimeMs / 3_600_000}h", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Total Hours", TextStyle.BODY_SMALL)
+                ), spacing = 4),
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${allTime.totalBooksRead}", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Books", TextStyle.BODY_SMALL)
+                ), spacing = 4),
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${allTime.totalSessions}", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Sessions", TextStyle.BODY_SMALL)
+                ), spacing = 4)
+            ), spacing = 24)
+        )))
+        
+        return components
+    }
+    
+    private fun buildStreakTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        val streak = getCurrentStreak()
+        
+        // Current streak
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Column(listOf(
+                PluginUIComponent.Text("🔥 ${streak.currentStreak}", TextStyle.TITLE_LARGE),
+                PluginUIComponent.Text("Day Streak", TextStyle.BODY)
+            ), spacing = 8)
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Longest streak
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Row(listOf(
+                PluginUIComponent.Column(listOf(
+                    PluginUIComponent.Text("${streak.longestStreak}", TextStyle.TITLE_MEDIUM),
+                    PluginUIComponent.Text("Longest Streak", TextStyle.BODY_SMALL)
+                ), spacing = 4)
+            ))
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Goal progress
+        val progress = getGoalProgress()
+        components.add(PluginUIComponent.Text("Today's Progress", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text(
+                "${progress.dailyMinutesRead}/${goals.dailyMinutes} minutes (${progress.dailyProgressPercent.toInt()}%)",
+                TextStyle.BODY
+            )
+        )))
+        
+        return components
+    }
+    
+    private fun buildGoalsTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        val progress = getGoalProgress()
+        
+        components.add(PluginUIComponent.Text("Set Your Reading Goals", TextStyle.TITLE_SMALL))
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Daily goal
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text("Daily Goal (minutes)", TextStyle.LABEL),
+            PluginUIComponent.TextField(
+                id = "daily_goal",
+                label = "Minutes per day",
+                value = pendingDailyGoal
+            ),
+            PluginUIComponent.Text(
+                "Progress: ${progress.dailyMinutesRead}/${goals.dailyMinutes} min (${progress.dailyProgressPercent.toInt()}%)",
+                TextStyle.BODY_SMALL
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(8))
+        
+        // Weekly goal
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text("Weekly Goal (minutes)", TextStyle.LABEL),
+            PluginUIComponent.TextField(
+                id = "weekly_goal",
+                label = "Minutes per week",
+                value = pendingWeeklyGoal
+            ),
+            PluginUIComponent.Text(
+                "Progress: ${progress.weeklyMinutesRead}/${goals.weeklyMinutes} min (${progress.weeklyProgressPercent.toInt()}%)",
+                TextStyle.BODY_SMALL
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(8))
+        
+        // Monthly goal
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.Text("Monthly Goal (books)", TextStyle.LABEL),
+            PluginUIComponent.TextField(
+                id = "monthly_goal",
+                label = "Books per month",
+                value = pendingMonthlyGoal
+            ),
+            PluginUIComponent.Text(
+                "Progress: ${progress.monthlyBooksRead}/${goals.monthlyBooks} books (${progress.monthlyProgressPercent.toInt()}%)",
+                TextStyle.BODY_SMALL
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        components.add(PluginUIComponent.Button(
+            id = "save_goals",
+            label = "Save Goals",
+            style = ButtonStyle.PRIMARY,
+            icon = "save"
+        ))
+        
+        return components
     }
     
     // Session tracking

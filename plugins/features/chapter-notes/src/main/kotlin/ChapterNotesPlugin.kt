@@ -9,8 +9,9 @@ import kotlinx.serialization.decodeFromString
 /**
  * Chapter Notes Plugin for IReader
  * Allows users to take notes while reading chapters.
+ * Uses declarative UI that the app renders.
  */
-class ChapterNotesPlugin : FeaturePlugin {
+class ChapterNotesPlugin : FeaturePlugin, PluginUIProvider {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.chapter-notes",
@@ -28,491 +29,437 @@ class ChapterNotesPlugin : FeaturePlugin {
     private var context: PluginContext? = null
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
     
-    // Data storage
-    private val chapterNotes = mutableMapOf<String, ChapterNote>()
-    private val characterNotes = mutableListOf<CharacterNote>()
-    private val plotPoints = mutableListOf<PlotPoint>()
+    // In-memory state for current session
+    private var currentNotes = mutableListOf<NoteData>()
+    private var currentCharacters = mutableListOf<CharacterData>()
+    private var currentPlotPoints = mutableListOf<PlotPointData>()
+    private var currentTab = 0
+    private var pendingNoteContent = ""
+    private var pendingCharacterName = ""
+    private var pendingCharacterDesc = ""
+    private var pendingPlotTitle = ""
+    private var pendingPlotDesc = ""
+    private var pendingPlotType = "Event"
     
     override fun initialize(context: PluginContext) {
         this.context = context
-        loadData()
     }
     
     override fun cleanup() {
-        saveData()
-        chapterNotes.clear()
-        characterNotes.clear()
-        plotPoints.clear()
         context = null
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "add_note", label = "Add Chapter Note", icon = "note_add", order = 0),
-        PluginMenuItem(id = "add_character", label = "Add Character Note", icon = "person_add", order = 1),
-        PluginMenuItem(id = "add_plot_point", label = "Add Plot Point", icon = "timeline", order = 2),
-        PluginMenuItem(id = "view_notes", label = "View All Notes", icon = "notes", order = 3)
+        PluginMenuItem(id = "add_note", label = "Add Note", icon = "note_add", order = 0),
+        PluginMenuItem(id = "view_notes", label = "View Notes", icon = "notes", order = 1),
+        PluginMenuItem(id = "add_character", label = "Track Character", icon = "person_add", order = 2),
+        PluginMenuItem(id = "add_plot_point", label = "Add Plot Point", icon = "timeline", order = 3)
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
-        PluginScreen(route = "notes/chapter/{bookId}/{chapterId}", title = "Chapter Notes", content = {}),
-        PluginScreen(route = "notes/book/{bookId}", title = "Book Notes", content = {}),
-        PluginScreen(route = "notes/characters/{bookId}", title = "Characters", content = {}),
-        PluginScreen(route = "notes/plot/{bookId}", title = "Plot Timeline", content = {}),
-        PluginScreen(route = "notes/summary/{bookId}", title = "Book Summary", content = {})
+        PluginScreen(
+            route = "plugin/chapter-notes/main",
+            title = "Chapter Notes",
+            content = {} // Content provided via PluginUIProvider
+        )
     )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
-        // Show quick note option when reading
-        return PluginAction.ShowMenu(listOf("add_note", "add_character", "add_plot_point"))
+        if (context.selectedText != null) {
+            return PluginAction.ShowMenu(listOf("add_note"))
+        }
+        return null
     }
     
-    // Chapter Note operations
+    // ==================== PluginUIProvider Implementation ====================
     
-    fun getOrCreateChapterNote(bookId: Long, chapterId: Long): ChapterNote {
-        val key = "$bookId-$chapterId"
-        return chapterNotes.getOrPut(key) {
-            ChapterNote(
-                bookId = bookId,
-                chapterId = chapterId,
-                summary = "",
-                notes = "",
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
+    override fun getScreen(screenId: String, context: PluginScreenContext): PluginUIScreen? {
+        val bookId = context.bookId ?: return null
+        val chapterId = context.chapterId ?: return null
+        
+        // Load data
+        loadData(bookId, chapterId)
+        
+        // Pre-fill with selected text if available
+        if (context.selectedText != null && pendingNoteContent.isEmpty()) {
+            pendingNoteContent = context.selectedText ?: ""
+        }
+        
+        return buildMainScreen(context)
+    }
+    
+    override suspend fun handleEvent(
+        screenId: String,
+        event: PluginUIEvent,
+        context: PluginScreenContext
+    ): PluginUIScreen? {
+        val bookId = context.bookId ?: return null
+        val chapterId = context.chapterId ?: return null
+        
+        when (event.eventType) {
+            UIEventType.TAB_SELECTED -> {
+                currentTab = event.data["index"]?.toIntOrNull() ?: 0
+            }
+            UIEventType.TEXT_CHANGED -> {
+                when (event.componentId) {
+                    "note_content" -> pendingNoteContent = event.data["value"] ?: ""
+                    "character_name" -> pendingCharacterName = event.data["value"] ?: ""
+                    "character_desc" -> pendingCharacterDesc = event.data["value"] ?: ""
+                    "plot_title" -> pendingPlotTitle = event.data["value"] ?: ""
+                    "plot_desc" -> pendingPlotDesc = event.data["value"] ?: ""
+                }
+            }
+            UIEventType.CHIP_SELECTED -> {
+                if (event.componentId == "plot_type") {
+                    pendingPlotType = event.data["value"] ?: "Event"
+                }
+            }
+            UIEventType.CLICK -> {
+                when (event.componentId) {
+                    "save_note" -> {
+                        if (pendingNoteContent.isNotBlank()) {
+                            currentNotes.add(NoteData(
+                                id = System.currentTimeMillis().toString(),
+                                content = pendingNoteContent,
+                                highlight = context.selectedText,
+                                createdAt = System.currentTimeMillis()
+                            ))
+                            saveNotes(bookId, chapterId)
+                            pendingNoteContent = ""
+                        }
+                    }
+                    "save_character" -> {
+                        if (pendingCharacterName.isNotBlank()) {
+                            currentCharacters.add(CharacterData(
+                                id = System.currentTimeMillis().toString(),
+                                name = pendingCharacterName,
+                                description = pendingCharacterDesc,
+                                firstChapter = chapterId
+                            ))
+                            saveCharacters(bookId)
+                            pendingCharacterName = ""
+                            pendingCharacterDesc = ""
+                        }
+                    }
+                    "save_plot" -> {
+                        if (pendingPlotTitle.isNotBlank()) {
+                            currentPlotPoints.add(PlotPointData(
+                                id = System.currentTimeMillis().toString(),
+                                title = pendingPlotTitle,
+                                description = pendingPlotDesc,
+                                type = pendingPlotType,
+                                createdAt = System.currentTimeMillis()
+                            ))
+                            savePlotPoints(bookId, chapterId)
+                            pendingPlotTitle = ""
+                            pendingPlotDesc = ""
+                        }
+                    }
+                }
+                // Handle delete actions
+                if (event.componentId.startsWith("delete_note_")) {
+                    val noteId = event.componentId.removePrefix("delete_note_")
+                    currentNotes.removeAll { it.id == noteId }
+                    saveNotes(bookId, chapterId)
+                }
+                if (event.componentId.startsWith("delete_char_")) {
+                    val charId = event.componentId.removePrefix("delete_char_")
+                    currentCharacters.removeAll { it.id == charId }
+                    saveCharacters(bookId)
+                }
+                if (event.componentId.startsWith("delete_plot_")) {
+                    val plotId = event.componentId.removePrefix("delete_plot_")
+                    currentPlotPoints.removeAll { it.id == plotId }
+                    savePlotPoints(bookId, chapterId)
+                }
+            }
+            else -> {}
+        }
+        
+        return buildMainScreen(context)
+    }
+    
+    private fun buildMainScreen(context: PluginScreenContext): PluginUIScreen {
+        val tabs = listOf(
+            Tab(
+                id = "notes",
+                title = "Notes",
+                icon = "notes",
+                content = buildNotesTab()
+            ),
+            Tab(
+                id = "characters",
+                title = "Characters",
+                icon = "people",
+                content = buildCharactersTab()
+            ),
+            Tab(
+                id = "plot",
+                title = "Plot",
+                icon = "timeline",
+                content = buildPlotTab()
             )
-        }
-    }
-    
-    fun updateChapterNote(
-        bookId: Long,
-        chapterId: Long,
-        summary: String? = null,
-        notes: String? = null
-    ): ChapterNote {
-        val key = "$bookId-$chapterId"
-        val existing = chapterNotes[key] ?: ChapterNote(
-            bookId = bookId,
-            chapterId = chapterId,
-            summary = "",
-            notes = "",
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
         )
         
-        val updated = existing.copy(
-            summary = summary ?: existing.summary,
-            notes = notes ?: existing.notes,
-            updatedAt = System.currentTimeMillis()
+        return PluginUIScreen(
+            id = "main",
+            title = context.chapterTitle ?: "Chapter Notes",
+            components = listOf(PluginUIComponent.Tabs(tabs))
         )
-        chapterNotes[key] = updated
-        saveData()
-        return updated
     }
     
-    fun getChapterNote(bookId: Long, chapterId: Long): ChapterNote? {
-        return chapterNotes["$bookId-$chapterId"]
-    }
-    
-    fun getBookChapterNotes(bookId: Long): List<ChapterNote> {
-        return chapterNotes.values
-            .filter { it.bookId == bookId }
-            .sortedBy { it.chapterId }
-    }
-    
-    fun deleteChapterNote(bookId: Long, chapterId: Long): Boolean {
-        val removed = chapterNotes.remove("$bookId-$chapterId") != null
-        if (removed) saveData()
-        return removed
-    }
-    
-    // Character Note operations
-    
-    fun addCharacterNote(
-        bookId: Long,
-        name: String,
-        description: String,
-        firstAppearanceChapter: Long? = null,
-        traits: List<String> = emptyList(),
-        relationships: List<CharacterRelationship> = emptyList()
-    ): CharacterNote {
-        val character = CharacterNote(
-            id = generateId(),
-            bookId = bookId,
-            name = name,
-            description = description,
-            firstAppearanceChapter = firstAppearanceChapter,
-            traits = traits,
-            relationships = relationships,
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
-        characterNotes.add(character)
-        saveData()
-        return character
-    }
-    
-    fun updateCharacterNote(
-        characterId: String,
-        name: String? = null,
-        description: String? = null,
-        traits: List<String>? = null,
-        relationships: List<CharacterRelationship>? = null
-    ): Boolean {
-        val index = characterNotes.indexOfFirst { it.id == characterId }
-        if (index == -1) return false
+    private fun buildNotesTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
         
-        val existing = characterNotes[index]
-        characterNotes[index] = existing.copy(
-            name = name ?: existing.name,
-            description = description ?: existing.description,
-            traits = traits ?: existing.traits,
-            relationships = relationships ?: existing.relationships,
-            updatedAt = System.currentTimeMillis()
-        )
-        saveData()
-        return true
-    }
-    
-    fun getCharacter(characterId: String): CharacterNote? {
-        return characterNotes.find { it.id == characterId }
-    }
-    
-    fun getBookCharacters(bookId: Long): List<CharacterNote> {
-        return characterNotes
-            .filter { it.bookId == bookId }
-            .sortedBy { it.name }
-    }
-    
-    fun searchCharacters(bookId: Long, query: String): List<CharacterNote> {
-        val lowerQuery = query.lowercase()
-        return characterNotes
-            .filter { it.bookId == bookId }
-            .filter { 
-                it.name.lowercase().contains(lowerQuery) ||
-                it.description.lowercase().contains(lowerQuery) ||
-                it.traits.any { trait -> trait.lowercase().contains(lowerQuery) }
-            }
-    }
-    
-    fun deleteCharacter(characterId: String): Boolean {
-        val removed = characterNotes.removeAll { it.id == characterId }
-        if (removed) saveData()
-        return removed
-    }
-    
-    // Plot Point operations
-    
-    fun addPlotPoint(
-        bookId: Long,
-        chapterId: Long,
-        title: String,
-        description: String,
-        type: PlotPointType,
-        importance: PlotImportance = PlotImportance.NORMAL
-    ): PlotPoint {
-        val plotPoint = PlotPoint(
-            id = generateId(),
-            bookId = bookId,
-            chapterId = chapterId,
-            title = title,
-            description = description,
-            type = type,
-            importance = importance,
-            createdAt = System.currentTimeMillis()
-        )
-        plotPoints.add(plotPoint)
-        saveData()
-        return plotPoint
-    }
-    
-    fun updatePlotPoint(
-        plotPointId: String,
-        title: String? = null,
-        description: String? = null,
-        type: PlotPointType? = null,
-        importance: PlotImportance? = null
-    ): Boolean {
-        val index = plotPoints.indexOfFirst { it.id == plotPointId }
-        if (index == -1) return false
+        // Add note form
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.TextField(
+                id = "note_content",
+                label = "Your note",
+                value = pendingNoteContent,
+                multiline = true,
+                maxLines = 4
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Button(
+                id = "save_note",
+                label = "Save Note",
+                style = ButtonStyle.PRIMARY,
+                icon = "save"
+            )
+        )))
         
-        val existing = plotPoints[index]
-        plotPoints[index] = existing.copy(
-            title = title ?: existing.title,
-            description = description ?: existing.description,
-            type = type ?: existing.type,
-            importance = importance ?: existing.importance
-        )
-        saveData()
-        return true
-    }
-    
-    fun getPlotPoint(plotPointId: String): PlotPoint? {
-        return plotPoints.find { it.id == plotPointId }
-    }
-    
-    fun getBookPlotPoints(bookId: Long): List<PlotPoint> {
-        return plotPoints
-            .filter { it.bookId == bookId }
-            .sortedBy { it.chapterId }
-    }
-    
-    fun getPlotPointsByType(bookId: Long, type: PlotPointType): List<PlotPoint> {
-        return plotPoints
-            .filter { it.bookId == bookId && it.type == type }
-            .sortedBy { it.chapterId }
-    }
-    
-    fun getImportantPlotPoints(bookId: Long): List<PlotPoint> {
-        return plotPoints
-            .filter { it.bookId == bookId && it.importance == PlotImportance.CRITICAL }
-            .sortedBy { it.chapterId }
-    }
-    
-    fun deletePlotPoint(plotPointId: String): Boolean {
-        val removed = plotPoints.removeAll { it.id == plotPointId }
-        if (removed) saveData()
-        return removed
-    }
-    
-    // Book Summary generation
-    
-    fun generateBookSummary(bookId: Long): BookSummary {
-        val notes = getBookChapterNotes(bookId)
-        val characters = getBookCharacters(bookId)
-        val plots = getBookPlotPoints(bookId)
+        components.add(PluginUIComponent.Spacer(16))
         
-        val chapterSummaries = notes
-            .filter { it.summary.isNotBlank() }
-            .map { "Chapter ${it.chapterId}: ${it.summary}" }
-        
-        val mainCharacters = characters.take(5)
-        val criticalPlots = plots.filter { it.importance == PlotImportance.CRITICAL }
-        
-        return BookSummary(
-            bookId = bookId,
-            totalChaptersWithNotes = notes.size,
-            totalCharacters = characters.size,
-            totalPlotPoints = plots.size,
-            chapterSummaries = chapterSummaries,
-            mainCharacters = mainCharacters.map { it.name },
-            criticalPlotPoints = criticalPlots.map { it.title }
-        )
-    }
-    
-    // Export/Import
-    
-    fun exportBookNotes(bookId: Long): String {
-        val notes = getBookChapterNotes(bookId)
-        val characters = getBookCharacters(bookId)
-        val plots = getBookPlotPoints(bookId)
-        
-        val export = NotesExport(
-            version = 1,
-            bookId = bookId,
-            exportedAt = System.currentTimeMillis(),
-            chapterNotes = notes,
-            characterNotes = characters,
-            plotPoints = plots
-        )
-        return json.encodeToString(export)
-    }
-    
-    fun importBookNotes(jsonData: String): ImportResult {
-        return try {
-            val import = json.decodeFromString<NotesExport>(jsonData)
-            var imported = 0
-            
-            import.chapterNotes.forEach { note ->
-                val key = "${note.bookId}-${note.chapterId}"
-                if (!chapterNotes.containsKey(key)) {
-                    chapterNotes[key] = note
-                    imported++
-                }
-            }
-            
-            import.characterNotes.forEach { character ->
-                if (characterNotes.none { it.bookId == character.bookId && it.name == character.name }) {
-                    characterNotes.add(character.copy(id = generateId()))
-                    imported++
-                }
-            }
-            
-            import.plotPoints.forEach { plot ->
-                if (plotPoints.none { it.bookId == plot.bookId && it.title == plot.title }) {
-                    plotPoints.add(plot.copy(id = generateId()))
-                    imported++
-                }
-            }
-            
-            saveData()
-            ImportResult(success = true, imported = imported)
-        } catch (e: Exception) {
-            ImportResult(success = false, error = e.message)
-        }
-    }
-    
-    // Statistics
-    
-    fun getStatistics(bookId: Long): NotesStatistics {
-        val notes = getBookChapterNotes(bookId)
-        val characters = getBookCharacters(bookId)
-        val plots = getBookPlotPoints(bookId)
-        
-        return NotesStatistics(
-            totalChapterNotes = notes.size,
-            chaptersWithSummary = notes.count { it.summary.isNotBlank() },
-            totalCharacters = characters.size,
-            totalPlotPoints = plots.size,
-            plotPointsByType = PlotPointType.values().associateWith { type ->
-                plots.count { it.type == type }
-            },
-            totalWordCount = notes.sumOf { it.notes.split(" ").size + it.summary.split(" ").size }
-        )
-    }
-    
-    // Private helpers
-    
-    private fun generateId(): String {
-        return "${System.currentTimeMillis()}-${(1000..9999).random()}"
-    }
-    
-    private fun loadData() {
-        context?.let { ctx ->
-            try {
-                val data = ctx.preferences.getString("chapter_notes_data", null)
-                if (data != null) {
-                    val export = json.decodeFromString<AllNotesExport>(data)
-                    chapterNotes.clear()
-                    chapterNotes.putAll(export.chapterNotes.associateBy { "${it.bookId}-${it.chapterId}" })
-                    characterNotes.clear()
-                    characterNotes.addAll(export.characterNotes)
-                    plotPoints.clear()
-                    plotPoints.addAll(export.plotPoints)
-                }
-            } catch (_: Exception) {
-                // Ignore load errors
+        // Notes list
+        if (currentNotes.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "notes",
+                message = "No notes yet",
+                description = "Add your first note above"
+            ))
+        } else {
+            currentNotes.forEach { note ->
+                components.add(PluginUIComponent.Card(listOf(
+                    if (note.highlight != null) {
+                        PluginUIComponent.Text("\"${note.highlight}\"", TextStyle.BODY_SMALL)
+                    } else {
+                        PluginUIComponent.Spacer(0)
+                    },
+                    PluginUIComponent.Text(note.content, TextStyle.BODY),
+                    PluginUIComponent.Row(listOf(
+                        PluginUIComponent.Button(
+                            id = "delete_note_${note.id}",
+                            label = "Delete",
+                            style = ButtonStyle.TEXT,
+                            icon = "delete"
+                        )
+                    ))
+                )))
             }
         }
+        
+        return components
     }
     
-    private fun saveData() {
-        context?.let { ctx ->
-            try {
-                val export = AllNotesExport(
-                    version = 1,
-                    chapterNotes = chapterNotes.values.toList(),
-                    characterNotes = characterNotes.toList(),
-                    plotPoints = plotPoints.toList()
+    private fun buildCharactersTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        // Add character form
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.TextField(
+                id = "character_name",
+                label = "Character name",
+                value = pendingCharacterName
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.TextField(
+                id = "character_desc",
+                label = "Description (optional)",
+                value = pendingCharacterDesc,
+                multiline = true,
+                maxLines = 3
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Button(
+                id = "save_character",
+                label = "Track Character",
+                style = ButtonStyle.PRIMARY,
+                icon = "person_add"
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Characters list
+        if (currentCharacters.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "people",
+                message = "No characters tracked",
+                description = "Track characters as you read"
+            ))
+        } else {
+            val items = currentCharacters.map { char ->
+                ListItem(
+                    id = char.id,
+                    title = char.name,
+                    subtitle = char.description.ifBlank { null },
+                    icon = "person",
+                    trailing = "delete_char_${char.id}"
                 )
-                ctx.preferences.putString("chapter_notes_data", json.encodeToString(export))
-            } catch (_: Exception) {
-                // Ignore save errors
+            }
+            components.add(PluginUIComponent.ItemList(id = "characters_list", items = items))
+        }
+        
+        return components
+    }
+    
+    private fun buildPlotTab(): List<PluginUIComponent> {
+        val components = mutableListOf<PluginUIComponent>()
+        
+        val plotTypes = listOf("Event", "Revelation", "Conflict", "Resolution", "Twist", "Foreshadowing")
+        
+        // Add plot point form
+        components.add(PluginUIComponent.Card(listOf(
+            PluginUIComponent.TextField(
+                id = "plot_title",
+                label = "Plot point title",
+                value = pendingPlotTitle
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.TextField(
+                id = "plot_desc",
+                label = "Description (optional)",
+                value = pendingPlotDesc,
+                multiline = true,
+                maxLines = 3
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Text("Type", TextStyle.LABEL),
+            PluginUIComponent.ChipGroup(
+                id = "plot_type",
+                chips = plotTypes.map { type ->
+                    PluginUIComponent.Chip(
+                        id = type,
+                        label = type,
+                        selected = pendingPlotType == type
+                    )
+                },
+                singleSelection = true
+            ),
+            PluginUIComponent.Spacer(8),
+            PluginUIComponent.Button(
+                id = "save_plot",
+                label = "Add Plot Point",
+                style = ButtonStyle.PRIMARY,
+                icon = "add"
+            )
+        )))
+        
+        components.add(PluginUIComponent.Spacer(16))
+        
+        // Plot points list
+        if (currentPlotPoints.isEmpty()) {
+            components.add(PluginUIComponent.Empty(
+                icon = "timeline",
+                message = "No plot points",
+                description = "Track important events as you read"
+            ))
+        } else {
+            currentPlotPoints.forEach { point ->
+                components.add(PluginUIComponent.Card(listOf(
+                    PluginUIComponent.Row(listOf(
+                        PluginUIComponent.Chip(id = point.type, label = point.type, selected = true),
+                        PluginUIComponent.Button(
+                            id = "delete_plot_${point.id}",
+                            label = "",
+                            style = ButtonStyle.TEXT,
+                            icon = "delete"
+                        )
+                    )),
+                    PluginUIComponent.Text(point.title, TextStyle.TITLE_SMALL),
+                    if (point.description.isNotBlank()) {
+                        PluginUIComponent.Text(point.description, TextStyle.BODY_SMALL)
+                    } else {
+                        PluginUIComponent.Spacer(0)
+                    }
+                )))
             }
         }
+        
+        return components
+    }
+    
+    // ==================== Data Storage ====================
+    
+    private fun loadData(bookId: Long, chapterId: Long) {
+        currentNotes = loadNotes(bookId, chapterId).toMutableList()
+        currentCharacters = loadCharacters(bookId).toMutableList()
+        currentPlotPoints = loadPlotPoints(bookId, chapterId).toMutableList()
+    }
+    
+    private fun loadNotes(bookId: Long, chapterId: Long): List<NoteData> {
+        val key = "notes_${bookId}_$chapterId"
+        val data = context?.preferences?.getString(key, "") ?: ""
+        return if (data.isNotBlank()) {
+            try { json.decodeFromString(data) } catch (_: Exception) { emptyList() }
+        } else emptyList()
+    }
+    
+    private fun saveNotes(bookId: Long, chapterId: Long) {
+        val key = "notes_${bookId}_$chapterId"
+        context?.preferences?.putString(key, json.encodeToString(currentNotes.toList()))
+    }
+    
+    private fun loadCharacters(bookId: Long): List<CharacterData> {
+        val key = "characters_$bookId"
+        val data = context?.preferences?.getString(key, "") ?: ""
+        return if (data.isNotBlank()) {
+            try { json.decodeFromString(data) } catch (_: Exception) { emptyList() }
+        } else emptyList()
+    }
+    
+    private fun saveCharacters(bookId: Long) {
+        val key = "characters_$bookId"
+        context?.preferences?.putString(key, json.encodeToString(currentCharacters.toList()))
+    }
+    
+    private fun loadPlotPoints(bookId: Long, chapterId: Long): List<PlotPointData> {
+        val key = "plotpoints_${bookId}_$chapterId"
+        val data = context?.preferences?.getString(key, "") ?: ""
+        return if (data.isNotBlank()) {
+            try { json.decodeFromString(data) } catch (_: Exception) { emptyList() }
+        } else emptyList()
+    }
+    
+    private fun savePlotPoints(bookId: Long, chapterId: Long) {
+        val key = "plotpoints_${bookId}_$chapterId"
+        context?.preferences?.putString(key, json.encodeToString(currentPlotPoints.toList()))
     }
 }
 
 // Data classes
-
 @Serializable
-data class ChapterNote(
-    val bookId: Long,
-    val chapterId: Long,
-    val summary: String,
-    val notes: String,
-    val createdAt: Long,
-    val updatedAt: Long
-)
-
-@Serializable
-data class CharacterNote(
+data class NoteData(
     val id: String,
-    val bookId: Long,
-    val name: String,
-    val description: String,
-    val firstAppearanceChapter: Long? = null,
-    val traits: List<String> = emptyList(),
-    val relationships: List<CharacterRelationship> = emptyList(),
-    val createdAt: Long,
-    val updatedAt: Long
-)
-
-@Serializable
-data class CharacterRelationship(
-    val characterName: String,
-    val relationshipType: String,
-    val description: String? = null
-)
-
-@Serializable
-data class PlotPoint(
-    val id: String,
-    val bookId: Long,
-    val chapterId: Long,
-    val title: String,
-    val description: String,
-    val type: PlotPointType,
-    val importance: PlotImportance,
+    val content: String,
+    val highlight: String? = null,
     val createdAt: Long
 )
 
-enum class PlotPointType {
-    INTRODUCTION,
-    RISING_ACTION,
-    CLIMAX,
-    FALLING_ACTION,
-    RESOLUTION,
-    TWIST,
-    FORESHADOWING,
-    FLASHBACK,
-    OTHER
-}
-
-enum class PlotImportance {
-    MINOR,
-    NORMAL,
-    MAJOR,
-    CRITICAL
-}
-
 @Serializable
-data class NotesExport(
-    val version: Int,
-    val bookId: Long,
-    val exportedAt: Long,
-    val chapterNotes: List<ChapterNote>,
-    val characterNotes: List<CharacterNote>,
-    val plotPoints: List<PlotPoint>
+data class CharacterData(
+    val id: String,
+    val name: String,
+    val description: String,
+    val firstChapter: Long? = null
 )
 
 @Serializable
-data class AllNotesExport(
-    val version: Int,
-    val chapterNotes: List<ChapterNote>,
-    val characterNotes: List<CharacterNote>,
-    val plotPoints: List<PlotPoint>
-)
-
-data class BookSummary(
-    val bookId: Long,
-    val totalChaptersWithNotes: Int,
-    val totalCharacters: Int,
-    val totalPlotPoints: Int,
-    val chapterSummaries: List<String>,
-    val mainCharacters: List<String>,
-    val criticalPlotPoints: List<String>
-)
-
-data class ImportResult(
-    val success: Boolean,
-    val imported: Int = 0,
-    val error: String? = null
-)
-
-data class NotesStatistics(
-    val totalChapterNotes: Int,
-    val chaptersWithSummary: Int,
-    val totalCharacters: Int,
-    val totalPlotPoints: Int,
-    val plotPointsByType: Map<PlotPointType, Int>,
-    val totalWordCount: Int
+data class PlotPointData(
+    val id: String,
+    val title: String,
+    val description: String,
+    val type: String,
+    val createdAt: Long
 )
