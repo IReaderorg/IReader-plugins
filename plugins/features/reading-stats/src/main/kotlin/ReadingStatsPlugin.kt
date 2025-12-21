@@ -555,8 +555,8 @@ class ReadingStatsPlugin : FeaturePlugin, PluginUIProvider {
     private fun loadData() {
         context?.let { ctx ->
             try {
-                val data = ctx.preferences.getString("reading_stats_data", null)
-                if (data != null) {
+                val data = ctx.preferences.getString("reading_stats_data", "")
+                if (data.isNotEmpty()) {
                     val export = json.decodeFromString<StatsExport>(data)
                     readingSessions.clear()
                     readingSessions.addAll(export.sessions)

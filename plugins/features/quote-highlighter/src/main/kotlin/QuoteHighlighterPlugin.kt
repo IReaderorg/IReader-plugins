@@ -561,8 +561,8 @@ class QuoteHighlighterPlugin : FeaturePlugin, PluginUIProvider {
     private fun loadData() {
         context?.let { ctx ->
             try {
-                val data = ctx.preferences.getString("highlights_data", null)
-                if (data != null) {
+                val data = ctx.preferences.getString("highlights_data", "")
+                if (data.isNotEmpty()) {
                     val export = json.decodeFromString<HighlightExport>(data)
                     highlights.clear()
                     highlights.addAll(export.highlights)

@@ -1,5 +1,7 @@
 # IReader Plugin Quick Reference
 
+> **Need more details?** See the [Plugin Creation Guide](./PLUGIN_CREATION_GUIDE.md) for complete tutorials.
+
 ## Plugin Types at a Glance
 
 | Type | Interface | Purpose | Key Methods |

@@ -2,6 +2,8 @@
 
 A comprehensive guide for developers creating plugins for IReader.
 
+> **New to plugin development?** Check out the [Plugin Creation Guide](./PLUGIN_CREATION_GUIDE.md) for step-by-step tutorials with complete code examples.
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -514,8 +516,11 @@ fun isPremiumFeature(): Boolean {
 
 ## Resources
 
-- [Plugin API Reference](./API_REFERENCE.md)
-- [Example Plugins](../plugins/)
+- [Plugin Creation Guide](./PLUGIN_CREATION_GUIDE.md) - Step-by-step tutorials
+- [Project Overview](./PROJECT_OVERVIEW.md) - What this project is about
+- [Quick Reference](./QUICK_REFERENCE.md) - Cheat sheet for common tasks
+- [AI Context](./AI_CONTEXT.md) - Context for AI assistants
+- [Example Plugins](../plugins/) - Reference implementations
 - [IReader Documentation](https://ireader.org/docs)
 - [Discord Community](https://discord.gg/ireader)
 - [GitHub Issues](https://github.com/IReaderorg/IReader-plugins/issues)

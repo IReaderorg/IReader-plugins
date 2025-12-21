@@ -1,6 +1,42 @@
 package io.github.ireaderorg.plugins.aisummarizer
 
-import ireader.plugin.api.*
+import ireader.plugin.api.AIResult
+import ireader.plugin.api.AISummarizerPlugin
+import ireader.plugin.api.BookSummary
+import ireader.plugin.api.BookSummaryOptions
+import ireader.plugin.api.Plugin
+import ireader.plugin.api.PluginManifest
+import ireader.plugin.api.PluginAuthor
+import ireader.plugin.api.PluginType
+import ireader.plugin.api.PluginPermission
+import ireader.plugin.api.Platform
+import ireader.plugin.api.PluginContext
+import ireader.plugin.api.PluginUIProvider
+import ireader.plugin.api.PluginUIScreen
+import ireader.plugin.api.PluginUIComponent
+import ireader.plugin.api.PluginUIEvent
+import ireader.plugin.api.PluginScreenContext
+import ireader.plugin.api.UIEventType
+import ireader.plugin.api.TextStyle
+import ireader.plugin.api.ButtonStyle
+import ireader.plugin.api.ChapterSummary
+import ireader.plugin.api.ChapterSummaryOptions
+import ireader.plugin.api.KeyPoint
+import ireader.plugin.api.Tab
+import ireader.plugin.api.ListItem
+import ireader.plugin.api.PlotPoint
+import ireader.plugin.api.PluginAction
+import ireader.plugin.api.PluginMenuItem
+import ireader.plugin.api.PluginScreen
+import ireader.plugin.api.ReaderContext
+import ireader.plugin.api.RecapOptions
+import ireader.plugin.api.RecapSummary
+import ireader.plugin.api.SelectionSummaryOptions
+import ireader.plugin.api.SummaryCapability
+import ireader.plugin.api.SummaryChapterContent
+import ireader.plugin.api.SummaryError
+import ireader.plugin.api.SummaryProviderConfig
+import ireader.plugin.api.SummaryResult
 
 /**
  * AI Summarizer Plugin Implementation
@@ -71,7 +107,12 @@ class AISummarizerPluginImpl : AISummarizerPlugin, PluginUIProvider {
     // ==================== FeaturePlugin Implementation ====================
     
     fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "summarize", label = "Summarize Chapter", icon = "auto_awesome", order = 0),
+        PluginMenuItem(
+            id = "summarize",
+            label = "Summarize Chapter",
+            icon = "auto_awesome",
+            order = 0
+        ),
         PluginMenuItem(id = "key_points", label = "Extract Key Points", icon = "list", order = 1),
         PluginMenuItem(id = "recap", label = "Previously On...", icon = "history", order = 2)
     )
@@ -347,14 +388,15 @@ class AISummarizerPluginImpl : AISummarizerPlugin, PluginUIProvider {
     }
     
     // ==================== AI Summary Logic ====================
-    
-    private data class SummaryResult(
+
+    // Local result class for internal use
+    private data class LocalSummaryResult(
         val summary: String,
         val keyPoints: List<String>,
         val characters: List<String>
     )
     
-    private suspend fun generateSummary(content: String): SummaryResult {
+    private suspend fun generateSummary(content: String): LocalSummaryResult {
         if (apiKey.isBlank()) {
             throw Exception("API key not configured")
         }
@@ -363,10 +405,10 @@ class AISummarizerPluginImpl : AISummarizerPlugin, PluginUIProvider {
         // using context?.httpClient
         kotlinx.coroutines.delay(1500)
         
-        return SummaryResult(
+        return LocalSummaryResult(
             summary = "This chapter follows the protagonist as they face new challenges. " +
-                     "Key events unfold that advance the main plot, with character development " +
-                     "and world-building elements woven throughout the narrative.",
+                    "Key events unfold that advance the main plot, with character development " +
+                    "and world-building elements woven throughout the narrative.",
             keyPoints = listOf(
                 "Main character encounters a significant obstacle",
                 "New information revealed about the antagonist",

@@ -182,6 +182,9 @@ IReader handles payment processing and license validation.
 ## Support
 
 - **Documentation**: This `docs/` folder
+  - [Plugin Creation Guide](./PLUGIN_CREATION_GUIDE.md) - Step-by-step tutorials
+  - [Developer Guide](./DEVELOPER_GUIDE.md) - Comprehensive reference
+  - [Quick Reference](./QUICK_REFERENCE.md) - Cheat sheet
 - **Issues**: GitHub Issues
 - **Discord**: [IReader Community](https://discord.gg/ireader)
 - **Email**: plugins@ireader.org

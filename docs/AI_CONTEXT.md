@@ -361,3 +361,10 @@ When reviewing or creating plugins:
 - [ ] No hardcoded API keys
 - [ ] Works on all target platforms
 - [ ] Documentation is complete
+
+## Related Documentation
+
+- [Plugin Creation Guide](./PLUGIN_CREATION_GUIDE.md) - Step-by-step tutorials with complete examples
+- [Developer Guide](./DEVELOPER_GUIDE.md) - Comprehensive reference documentation
+- [Quick Reference](./QUICK_REFERENCE.md) - Cheat sheet for common tasks
+- [Project Overview](./PROJECT_OVERVIEW.md) - What this project is about
