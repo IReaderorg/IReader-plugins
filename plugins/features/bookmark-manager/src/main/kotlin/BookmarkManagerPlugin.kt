@@ -527,8 +527,8 @@ class BookmarkManagerPlugin : FeaturePlugin, PluginUIProvider {
     private fun loadBookmarks() {
         context?.let { ctx ->
             try {
-                val data = ctx.preferences.getString("bookmarks_data", null)
-                if (data != null) {
+                val data = ctx.preferences.getString("bookmarks_data", "")
+                if (data.isNotEmpty()) {
                     val export = json.decodeFromString<BookmarkExport>(data)
                     bookmarks.clear()
                     bookmarks.addAll(export.bookmarks)
