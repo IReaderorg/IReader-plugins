@@ -6,7 +6,7 @@ pluginConfig {
     id.set("io.github.ireaderorg.plugins.graalvm-engine")
     name.set("GraalVM JavaScript Engine")
     version.set("25.0.1")  // Match GraalVM version
-    versionCode.set(2)
+    versionCode.set(3)
     description.set("GraalVM Polyglot JavaScript engine for Desktop - high-performance JS execution with full ES2022+ support")
     author.set("IReader Team")
     type.set(PluginType.JS_ENGINE)

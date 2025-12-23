@@ -48,8 +48,9 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
         "org/graalvm/sdk/nativeimage" to "nativeimage",
         "org/graalvm/sdk/jniutils" to "jniutils",
         
-        // === ICU4J for internationalization (Intl API support) ===
-        "org/graalvm/js/icu4j" to "icu4j"
+        // === ICU4J (shadowed) - REQUIRED for Intl API and Date locale support ===
+        // This is the GraalVM-shadowed version of ICU4J with package org.graalvm.shadowed.com.ibm.icu
+        "org/graalvm/shadowed/icu4j" to "icu4j"
     )
     
     @TaskAction
@@ -64,7 +65,7 @@ abstract class DownloadGraalVMJarsTask : DefaultTask() {
         var totalSize = 0L
         
         // Essential JARs that must be present
-        val essentialArtifacts = setOf("polyglot", "js-language", "truffle-api", "regex", "collections", "word")
+        val essentialArtifacts = setOf("polyglot", "js-language", "truffle-api", "regex", "collections", "word", "icu4j")
         
         for ((mavenPath, artifactName) in requiredJars) {
             val jarName = "$artifactName-$version.jar"
