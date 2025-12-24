@@ -52,9 +52,9 @@ class ReadingStatsPlugin : FeaturePlugin, PluginUIProvider {
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "view_stats", label = "Reading Statistics", icon = "analytics", order = 0),
-        PluginMenuItem(id = "set_goals", label = "Set Reading Goals", icon = "flag", order = 1),
-        PluginMenuItem(id = "view_streak", label = "Reading Streak", icon = "local_fire_department", order = 2)
+        PluginMenuItem(id = "view_stats", label = "Reading Statistics", icon = "analytics", order = 0, route = "plugin/reading-stats/main"),
+        PluginMenuItem(id = "set_goals", label = "Set Reading Goals", icon = "flag", order = 1, route = "plugin/reading-stats/main"),
+        PluginMenuItem(id = "view_streak", label = "Reading Streak", icon = "local_fire_department", order = 2, route = "plugin/reading-stats/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

@@ -52,12 +52,12 @@ class QuoteHighlighterPlugin : FeaturePlugin, PluginUIProvider {
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "highlight_yellow", label = "Highlight (Yellow)", icon = "highlight", order = 0),
-        PluginMenuItem(id = "highlight_green", label = "Highlight (Green)", icon = "highlight", order = 1),
-        PluginMenuItem(id = "highlight_blue", label = "Highlight (Blue)", icon = "highlight", order = 2),
-        PluginMenuItem(id = "highlight_pink", label = "Highlight (Pink)", icon = "highlight", order = 3),
-        PluginMenuItem(id = "save_quote", label = "Save as Quote", icon = "format_quote", order = 4),
-        PluginMenuItem(id = "view_highlights", label = "View All Highlights", icon = "collections_bookmark", order = 5)
+        PluginMenuItem(id = "highlight_yellow", label = "Highlight (Yellow)", icon = "highlight", order = 0, route = "plugin/quote-highlighter/main"),
+        PluginMenuItem(id = "highlight_green", label = "Highlight (Green)", icon = "highlight", order = 1, route = "plugin/quote-highlighter/main"),
+        PluginMenuItem(id = "highlight_blue", label = "Highlight (Blue)", icon = "highlight", order = 2, route = "plugin/quote-highlighter/main"),
+        PluginMenuItem(id = "highlight_pink", label = "Highlight (Pink)", icon = "highlight", order = 3, route = "plugin/quote-highlighter/main"),
+        PluginMenuItem(id = "save_quote", label = "Save as Quote", icon = "format_quote", order = 4, route = "plugin/quote-highlighter/main"),
+        PluginMenuItem(id = "view_highlights", label = "View All Highlights", icon = "collections_bookmark", order = 5, route = "plugin/quote-highlighter/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

@@ -58,29 +58,35 @@ class ReadingTrackerPlugin : FeaturePlugin {
             id = "sync_progress",
             label = "Sync Progress",
             icon = "sync",
-            order = 1
+            order = 1,
+            route = "plugin/reading-tracker/main"
         ),
         PluginMenuItem(
             id = "reading_goals",
             label = "Reading Goals",
             icon = "flag",
-            order = 2
+            order = 2,
+            route = "plugin/reading-tracker/main"
         ),
         PluginMenuItem(
             id = "analytics",
             label = "Reading Analytics",
             icon = "analytics",
-            order = 3
+            order = 3,
+            route = "plugin/reading-tracker/main"
         ),
         PluginMenuItem(
             id = "export_progress",
             label = "Export Progress",
             icon = "download",
-            order = 4
+            order = 4,
+            route = "plugin/reading-tracker/main"
         )
     )
     
-    override fun getScreens(): List<PluginScreen> = emptyList() // Screens require Composable content
+    override fun getScreens(): List<PluginScreen> = listOf(
+        PluginScreen(route = "plugin/reading-tracker/main", title = "Reading Tracker", content = {})
+    )
     
     override fun onReaderContext(context: ReaderContext): PluginAction? {
         // Track reading progress when user reads

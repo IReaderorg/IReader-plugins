@@ -111,10 +111,11 @@ class AISummarizerPluginImpl : AISummarizerPlugin, PluginUIProvider {
             id = "summarize",
             label = "Summarize Chapter",
             icon = "auto_awesome",
-            order = 0
+            order = 0,
+            route = "plugin/ai-summarizer/main"
         ),
-        PluginMenuItem(id = "key_points", label = "Extract Key Points", icon = "list", order = 1),
-        PluginMenuItem(id = "recap", label = "Previously On...", icon = "history", order = 2)
+        PluginMenuItem(id = "key_points", label = "Extract Key Points", icon = "list", order = 1, route = "plugin/ai-summarizer/main"),
+        PluginMenuItem(id = "recap", label = "Previously On...", icon = "history", order = 2, route = "plugin/ai-summarizer/main")
     )
     
     fun getScreens(): List<PluginScreen> = listOf(

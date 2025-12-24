@@ -50,10 +50,10 @@ class ChapterNotesPlugin : FeaturePlugin, PluginUIProvider {
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "add_note", label = "Add Note", icon = "note_add", order = 0),
-        PluginMenuItem(id = "view_notes", label = "View Notes", icon = "notes", order = 1),
-        PluginMenuItem(id = "add_character", label = "Track Character", icon = "person_add", order = 2),
-        PluginMenuItem(id = "add_plot_point", label = "Add Plot Point", icon = "timeline", order = 3)
+        PluginMenuItem(id = "add_note", label = "Add Note", icon = "note_add", order = 0, route = "plugin/chapter-notes/main"),
+        PluginMenuItem(id = "view_notes", label = "View Notes", icon = "notes", order = 1, route = "plugin/chapter-notes/main"),
+        PluginMenuItem(id = "add_character", label = "Track Character", icon = "person_add", order = 2, route = "plugin/chapter-notes/main"),
+        PluginMenuItem(id = "add_plot_point", label = "Add Plot Point", icon = "timeline", order = 3, route = "plugin/chapter-notes/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

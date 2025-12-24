@@ -47,8 +47,8 @@ class SmartDictionaryPlugin : FeaturePlugin, PluginUIProvider {
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "lookup", label = "Look up word", icon = "dictionary", order = 0),
-        PluginMenuItem(id = "add_vocab", label = "Add to vocabulary", icon = "bookmark", order = 1)
+        PluginMenuItem(id = "lookup", label = "Look up word", icon = "dictionary", order = 0, route = "plugin/smart-dictionary/main"),
+        PluginMenuItem(id = "add_vocab", label = "Add to vocabulary", icon = "bookmark", order = 1, route = "plugin/smart-dictionary/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

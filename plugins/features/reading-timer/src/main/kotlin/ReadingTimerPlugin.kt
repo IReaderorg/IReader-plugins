@@ -50,10 +50,10 @@ class ReadingTimerPlugin : FeaturePlugin, PluginUIProvider {
     }
     
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "start_timer", label = "Start Timer", icon = "play", order = 0),
-        PluginMenuItem(id = "stop_timer", label = "Stop Timer", icon = "stop", order = 1),
-        PluginMenuItem(id = "view_stats", label = "View Stats", icon = "chart", order = 2),
-        PluginMenuItem(id = "pomodoro", label = "Pomodoro Mode", icon = "timer", order = 3)
+        PluginMenuItem(id = "start_timer", label = "Start Timer", icon = "play", order = 0, route = "plugin/reading-timer/main"),
+        PluginMenuItem(id = "stop_timer", label = "Stop Timer", icon = "stop", order = 1, route = "plugin/reading-timer/main"),
+        PluginMenuItem(id = "view_stats", label = "View Stats", icon = "chart", order = 2, route = "plugin/reading-timer/main"),
+        PluginMenuItem(id = "pomodoro", label = "Pomodoro Mode", icon = "timer", order = 3, route = "plugin/reading-timer/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

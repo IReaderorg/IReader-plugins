@@ -52,9 +52,9 @@ class BookmarkManagerPlugin : FeaturePlugin, PluginUIProvider {
     }
 
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "add_bookmark", label = "Add Bookmark", icon = "bookmark_add", order = 0),
-        PluginMenuItem(id = "view_bookmarks", label = "View Bookmarks", icon = "bookmarks", order = 1),
-        PluginMenuItem(id = "add_note", label = "Add Note", icon = "note_add", order = 2)
+        PluginMenuItem(id = "add_bookmark", label = "Add Bookmark", icon = "bookmark_add", order = 0, route = "plugin/bookmark-manager/main"),
+        PluginMenuItem(id = "view_bookmarks", label = "View Bookmarks", icon = "bookmarks", order = 1, route = "plugin/bookmark-manager/main"),
+        PluginMenuItem(id = "add_note", label = "Add Note", icon = "note_add", order = 2, route = "plugin/bookmark-manager/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(

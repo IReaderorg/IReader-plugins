@@ -47,10 +47,10 @@ class ReadingGoalsPlugin : FeaturePlugin, PluginUIProvider {
     }
     
     override fun getMenuItems(): List<PluginMenuItem> = listOf(
-        PluginMenuItem(id = "view_goals", label = "View Goals", icon = "target", order = 0),
-        PluginMenuItem(id = "log_reading", label = "Log Reading", icon = "book", order = 1),
-        PluginMenuItem(id = "view_streak", label = "View Streak", icon = "fire", order = 2),
-        PluginMenuItem(id = "achievements", label = "Achievements", icon = "trophy", order = 3)
+        PluginMenuItem(id = "view_goals", label = "View Goals", icon = "target", order = 0, route = "plugin/reading-goals/main"),
+        PluginMenuItem(id = "log_reading", label = "Log Reading", icon = "book", order = 1, route = "plugin/reading-goals/main"),
+        PluginMenuItem(id = "view_streak", label = "View Streak", icon = "fire", order = 2, route = "plugin/reading-goals/main"),
+        PluginMenuItem(id = "achievements", label = "Achievements", icon = "trophy", order = 3, route = "plugin/reading-goals/main")
     )
     
     override fun getScreens(): List<PluginScreen> = listOf(
