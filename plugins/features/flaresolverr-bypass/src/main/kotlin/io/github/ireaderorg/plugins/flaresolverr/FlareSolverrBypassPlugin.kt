@@ -167,6 +167,16 @@ class FlareSolverrBypassPlugin : CloudflareBypassPlugin {
     
     fun downloadFlareSolverr(): Boolean {
         if (_isDownloading) return false
+        
+        // Check if already downloaded
+        if (isDownloaded()) {
+            _downloadStatus = "Already downloaded"
+            _downloadProgress = 1f
+            onDownloadProgress?.invoke(1f, "Already downloaded")
+            println("[FlareSolverr] Already downloaded, skipping download")
+            return true
+        }
+        
         val platformInfo = PLATFORM_INFO[platform] ?: run {
             _downloadStatus = "Unsupported platform: $platform"
             return false
@@ -292,8 +302,53 @@ class FlareSolverrBypassPlugin : CloudflareBypassPlugin {
     // ==================== Internal Helpers ====================
     
     private fun findExecutable(): File? {
-        val exe = File(getPluginDataDir(), "native/$platform/flaresolverr/$executableName")
-        return if (exe.exists() && exe.canExecute()) exe else null
+        val baseDir = File(getPluginDataDir(), "native/$platform/flaresolverr")
+        println("[FlareSolverr] Looking for executable '$executableName' in: ${baseDir.absolutePath}")
+        
+        if (!baseDir.exists()) {
+            println("[FlareSolverr] Base directory does not exist")
+            return null
+        }
+        
+        // Direct path (if extracted without root folder)
+        val directExe = File(baseDir, executableName)
+        if (directExe.exists() && directExe.isFile) {
+            println("[FlareSolverr] Found executable at direct path: ${directExe.absolutePath}")
+            return directExe
+        }
+        
+        // Search in subdirectories (ZIP might have nested folders)
+        // Common patterns: flaresolverr/flaresolverr.exe or flaresolverr/flaresolverr/flaresolverr.exe
+        val searchPaths = listOf(
+            File(baseDir, "flaresolverr/$executableName"),
+            File(baseDir, "flaresolverr/flaresolverr/$executableName"),
+            File(baseDir, "FlareSolverr/$executableName"),
+            File(baseDir, "FlareSolverr/FlareSolverr/$executableName")
+        )
+        
+        for (path in searchPaths) {
+            if (path.exists() && path.isFile) {
+                println("[FlareSolverr] Found executable at: ${path.absolutePath}")
+                return path
+            }
+        }
+        
+        // Fallback: recursive search
+        try {
+            baseDir.walkTopDown()
+                .maxDepth(4)
+                .filter { it.isFile && it.name.equals(executableName, ignoreCase = true) }
+                .firstOrNull()
+                ?.let { 
+                    println("[FlareSolverr] Found executable via recursive search: ${it.absolutePath}")
+                    return it 
+                }
+        } catch (e: Exception) {
+            println("[FlareSolverr] Error during recursive search: ${e.message}")
+        }
+        
+        println("[FlareSolverr] Executable not found")
+        return null
     }
     
     private fun detectPlatform(): String {
