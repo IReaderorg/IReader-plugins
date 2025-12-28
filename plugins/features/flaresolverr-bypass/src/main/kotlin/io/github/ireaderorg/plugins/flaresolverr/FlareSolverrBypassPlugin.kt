@@ -15,12 +15,9 @@ import kotlin.concurrent.Volatile
  * 
  * This plugin downloads FlareSolverr binaries on-demand from GitHub releases
  * instead of bundling them, keeping the plugin size small.
- * 
- * Implements both CloudflareBypassPlugin for bypass functionality and
- * ExternalResourcePlugin for on-demand download management.
  */
 @IReaderPlugin
-class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, ExternalResourcePlugin {
+class FlareSolverrBypassPlugin : FeaturePlugin {
     
     companion object {
         // FlareSolverr release info - update these when new versions are available
@@ -87,32 +84,22 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
         pluginContext = null
     }
     
-    // ==================== CloudflareBypassPlugin Implementation ====================
+    // ==================== Public API ====================
     
-    override val priority: Int = 100
+    /** Priority for bypass selection (higher = preferred) */
+    val priority: Int = 100
     
-    override suspend fun canHandle(challenge: CloudflareChallenge): Boolean {
-        return when (challenge) {
-            is CloudflareChallenge.JSChallenge,
-            is CloudflareChallenge.ManagedChallenge,
-            is CloudflareChallenge.TurnstileChallenge,
-            is CloudflareChallenge.Unknown,
-            CloudflareChallenge.None -> true
-            is CloudflareChallenge.BlockedIP,
-            is CloudflareChallenge.RateLimited,
-            is CloudflareChallenge.CaptchaChallenge -> false
-        }
+    /** Check if this plugin can handle a challenge type */
+    fun canHandle(challengeType: String): Boolean {
+        return challengeType in listOf("JSChallenge", "ManagedChallenge", "TurnstileChallenge", "Unknown", "None")
     }
     
-    override suspend fun isAvailable(): Boolean {
-        // Check if already running
+    /** Check if FlareSolverr is available and running */
+    suspend fun isAvailable(): Boolean {
         if (isServerRunning()) return true
         
-        // Check if executable exists
-        val executable = findExecutable()
-        if (executable == null) return false
+        val executable = findExecutable() ?: return false
         
-        // Start server if not started
         if (!isServerStarted) {
             startServer()
             repeat(30) {
@@ -123,205 +110,143 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
         return isServerRunning()
     }
     
-    override suspend fun bypass(request: BypassRequest): BypassResponse {
-        if (!isResourceDownloaded()) {
-            return BypassResponse.ServiceUnavailable(
-                reason = "FlareSolverr not downloaded",
-                setupInstructions = "Please download FlareSolverr from the Cloudflare Bypass settings"
-            )
-        }
-        
-        if (!isAvailable()) {
-            return BypassResponse.ServiceUnavailable(
-                reason = "FlareSolverr server not running",
-                setupInstructions = "Please start the FlareSolverr server from settings"
-            )
-        }
-        
-        return try {
-            val flareSolverrRequest = FlareSolverrRequest(
-                cmd = if (request.postData != null) "request.post" else "request.get",
-                url = request.url,
-                maxTimeout = request.timeoutMs.toInt().coerceAtMost(180000),
-                postData = request.postData
-            )
-            
-            val responseJson = makeHttpRequest(
-                "http://localhost:$serverPort/v1",
-                json.encodeToString(FlareSolverrRequest.serializer(), flareSolverrRequest)
-            )
-            
-            val response = json.decodeFromString(FlareSolverrResponse.serializer(), responseJson)
-            
-            if (response.status == "ok" && response.solution != null) {
-                BypassResponse.Success(
-                    content = response.solution.response ?: "",
-                    cookies = response.solution.cookies?.map { cookie ->
-                        BypassCookie(
-                            name = cookie.name,
-                            value = cookie.value,
-                            domain = cookie.domain,
-                            path = cookie.path,
-                            expiresAt = cookie.expiry?.toLong() ?: 0L,
-                            secure = cookie.secure,
-                            httpOnly = cookie.httpOnly
-                        )
-                    } ?: emptyList(),
-                    userAgent = response.solution.userAgent ?: "",
-                    finalUrl = response.solution.url,
-                    statusCode = response.solution.status ?: 200
-                )
-            } else {
-                BypassResponse.Failed(
-                    reason = response.message ?: "Unknown error",
-                    canRetry = true
-                )
-            }
-        } catch (e: Exception) {
-            BypassResponse.Failed(
-                reason = e.message ?: "Request failed",
-                canRetry = true
-            )
-        }
-    }
+    /** Check if FlareSolverr binaries are downloaded */
+    fun isDownloaded(): Boolean = findExecutable() != null
     
-    override fun getStatusDescription(): String = when {
-        _isDownloading -> "Downloading... ${(_currentProgress?.progressPercent ?: 0)}%"
-        !isResourceDownloaded() -> "Not downloaded - click to download"
+    /** Check if currently downloading */
+    fun isCurrentlyDownloading(): Boolean = _isDownloading
+    
+    /** Get download progress (0.0 to 1.0) */
+    fun getDownloadProgressFloat(): Float = _downloadProgress
+    
+    /** Get download status message */
+    fun getDownloadStatusMessage(): String = _downloadStatus
+    
+    /** Get human-readable status */
+    fun getStatusDescription(): String = when {
+        _isDownloading -> "Downloading... ${(_downloadProgress * 100).toInt()}%"
+        !isDownloaded() -> "Not downloaded - click to download"
         isServerRunning() -> "Running on port $serverPort"
         serverProcess != null -> "Starting..."
         else -> "Downloaded - not running"
     }
     
-    // ==================== ExternalResourcePlugin Implementation ====================
-    
-    override val resourceInfo: ExternalResourceInfo by lazy {
+    /** Get resource info for UI display */
+    fun getResourceInfo(): ResourceInfo {
         val platformInfo = PLATFORM_INFO[platform]
-        ExternalResourceInfo(
+        return ResourceInfo(
             id = "flaresolverr-binary-$platform",
             name = "FlareSolverr",
-            description = "Browser automation for Cloudflare bypass. Runs a headless browser to solve challenges automatically.",
+            description = "Browser automation for Cloudflare bypass",
             downloadUrl = platformInfo?.downloadUrl ?: "",
             estimatedSize = platformInfo?.estimatedSize ?: 500_000_000L,
-            requiredFor = "Cloudflare-protected sources",
-            version = FLARESOLVERR_VERSION,
-            source = "Official GitHub Release",
-            platforms = listOf(platform)
+            version = FLARESOLVERR_VERSION
         )
     }
     
-    override fun isResourceDownloaded(): Boolean = findExecutable() != null
+    data class ResourceInfo(
+        val id: String,
+        val name: String,
+        val description: String,
+        val downloadUrl: String,
+        val estimatedSize: Long,
+        val version: String
+    ) {
+        val estimatedSizeFormatted: String
+            get() {
+                val mb = estimatedSize / 1024.0 / 1024.0
+                return if (mb >= 1000) String.format("%.1f GB", mb / 1024.0) else String.format("%.0f MB", mb)
+            }
+    }
     
-    @Volatile
-    private var _isDownloading = false
+    // ==================== Download Management ====================
     
-    override fun isDownloading(): Boolean = _isDownloading
+    @Volatile private var _isDownloading = false
+    @Volatile private var _downloadProgress = 0f
+    @Volatile private var _downloadStatus = ""
+    @Volatile private var _downloadCancelled = false
     
-    @Volatile
-    private var _currentProgress: ResourceDownloadProgress? = null
+    var onDownloadProgress: ((Float, String) -> Unit)? = null
     
-    override fun getDownloadProgress(): ResourceDownloadProgress? = _currentProgress
-    
-    @Volatile
-    private var _downloadCancelled = false
-    
-    override suspend fun downloadResource(onProgress: (ResourceDownloadProgress) -> Unit): ResourceDownloadResult {
-        if (_isDownloading) {
-            return ResourceDownloadResult.Failed("Download already in progress", canRetry = false)
-        }
+    /** Start downloading FlareSolverr binaries */
+    fun downloadFlareSolverr(): Boolean {
+        if (_isDownloading) return false
         
         val platformInfo = PLATFORM_INFO[platform]
         if (platformInfo == null) {
-            return ResourceDownloadResult.PlatformNotSupported(
-                currentPlatform = platform,
-                supportedPlatforms = PLATFORM_INFO.keys.toList()
-            )
+            _downloadStatus = "Unsupported platform: $platform"
+            return false
         }
         
         _isDownloading = true
         _downloadCancelled = false
-        _currentProgress = ResourceDownloadProgress(phase = ResourceDownloadPhase.PREPARING, statusMessage = "Starting download...")
-        onProgress(_currentProgress!!)
+        _downloadProgress = 0f
+        _downloadStatus = "Starting download..."
         
-        return try {
-            val dataDir = getPluginDataDir()
-            val targetDir = File(dataDir, "native/$platform/flaresolverr")
-            targetDir.mkdirs()
-            
-            _currentProgress = ResourceDownloadProgress(phase = ResourceDownloadPhase.DOWNLOADING, statusMessage = "Downloading FlareSolverr $FLARESOLVERR_VERSION...")
-            onProgress(_currentProgress!!)
-            
-            val tempFile = File(dataDir, "flaresolverr_download.tmp")
-            
-            downloadFile(platformInfo.downloadUrl, tempFile) { downloaded, total, speed ->
-                if (_downloadCancelled) throw InterruptedException("Download cancelled")
-                _currentProgress = ResourceDownloadProgress(
-                    downloadedBytes = downloaded,
-                    totalBytes = total,
-                    phase = ResourceDownloadPhase.DOWNLOADING,
-                    statusMessage = "Downloading...",
-                    speedBytesPerSecond = speed
-                )
-                onProgress(_currentProgress!!)
-            }
-            
-            if (_downloadCancelled) {
-                tempFile.delete()
-                return ResourceDownloadResult.Cancelled
-            }
-            
-            _currentProgress = ResourceDownloadProgress(phase = ResourceDownloadPhase.EXTRACTING, statusMessage = "Extracting files...")
-            onProgress(_currentProgress!!)
-            
-            // Extract based on file type
-            if (platformInfo.downloadUrl.endsWith(".zip")) {
-                extractZip(tempFile, targetDir)
-            } else {
-                extractTarGz(tempFile, targetDir)
-            }
-            
-            // Make executable on Unix systems
-            if (platform != "windows-x64") {
-                val exe = File(targetDir, platformInfo.executableName)
-                if (exe.exists()) {
-                    exe.setExecutable(true)
+        Thread {
+            try {
+                val dataDir = getPluginDataDir()
+                val targetDir = File(dataDir, "native/$platform/flaresolverr")
+                targetDir.mkdirs()
+                
+                _downloadStatus = "Downloading FlareSolverr $FLARESOLVERR_VERSION..."
+                onDownloadProgress?.invoke(0f, _downloadStatus)
+                
+                val tempFile = File(dataDir, "flaresolverr_download.tmp")
+                downloadFile(platformInfo.downloadUrl, tempFile) { progress ->
+                    if (_downloadCancelled) throw InterruptedException("Download cancelled")
+                    _downloadProgress = progress * 0.8f
+                    onDownloadProgress?.invoke(_downloadProgress, "Downloading: ${(progress * 100).toInt()}%")
                 }
+                
+                if (_downloadCancelled) {
+                    tempFile.delete()
+                    return@Thread
+                }
+                
+                _downloadStatus = "Extracting..."
+                _downloadProgress = 0.8f
+                onDownloadProgress?.invoke(_downloadProgress, _downloadStatus)
+                
+                if (platformInfo.downloadUrl.endsWith(".zip")) {
+                    extractZip(tempFile, targetDir)
+                } else {
+                    extractTarGz(tempFile, targetDir)
+                }
+                
+                if (platform != "windows-x64") {
+                    val exe = File(targetDir, platformInfo.executableName)
+                    if (exe.exists()) exe.setExecutable(true)
+                }
+                
+                tempFile.delete()
+                
+                _downloadProgress = 1f
+                _downloadStatus = "Download complete!"
+                onDownloadProgress?.invoke(_downloadProgress, _downloadStatus)
+                
+                println("[FlareSolverr] Download complete: ${targetDir.absolutePath}")
+                
+            } catch (e: InterruptedException) {
+                _downloadStatus = "Download cancelled"
+                _downloadProgress = 0f
+                onDownloadProgress?.invoke(_downloadProgress, _downloadStatus)
+            } catch (e: Exception) {
+                _downloadStatus = "Download failed: ${e.message}"
+                _downloadProgress = 0f
+                onDownloadProgress?.invoke(_downloadProgress, _downloadStatus)
+                println("[FlareSolverr] Download error: ${e.message}")
+                e.printStackTrace()
+            } finally {
+                _isDownloading = false
             }
-            
-            tempFile.delete()
-            
-            _currentProgress = ResourceDownloadProgress(phase = ResourceDownloadPhase.COMPLETE, statusMessage = "Download complete!")
-            onProgress(_currentProgress!!)
-            
-            println("[FlareSolverr] Download complete: ${targetDir.absolutePath}")
-            
-            ResourceDownloadResult.Success(
-                installedPath = targetDir.absolutePath,
-                sizeBytes = getDownloadedSize() ?: 0L
-            )
-        } catch (e: InterruptedException) {
-            _currentProgress = ResourceDownloadProgress(phase = ResourceDownloadPhase.CANCELLED, statusMessage = "Download cancelled")
-            onProgress(_currentProgress!!)
-            ResourceDownloadResult.Cancelled
-        } catch (e: Exception) {
-            _currentProgress = ResourceDownloadProgress(
-                phase = ResourceDownloadPhase.ERROR,
-                statusMessage = "Download failed: ${e.message}"
-            )
-            onProgress(_currentProgress!!)
-            println("[FlareSolverr] Download error: ${e.message}")
-            e.printStackTrace()
-            ResourceDownloadResult.Failed(
-                reason = e.message ?: "Unknown error",
-                canRetry = true,
-                exceptionMessage = e.toString()
-            )
-        } finally {
-            _isDownloading = false
-        }
+        }.start()
+        
+        return true
     }
     
-    override fun cancelDownload(): Boolean {
+    /** Cancel ongoing download */
+    fun cancelDownload(): Boolean {
         if (_isDownloading) {
             _downloadCancelled = true
             return true
@@ -329,69 +254,32 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
         return false
     }
     
-    override suspend fun deleteResource(): Boolean {
+    /** Delete downloaded resources */
+    fun deleteDownloadedResource(): Boolean {
         return try {
             stopServer()
             val dataDir = getPluginDataDir()
             val targetDir = File(dataDir, "native/$platform/flaresolverr")
-            if (targetDir.exists()) {
-                targetDir.deleteRecursively()
-            }
+            if (targetDir.exists()) targetDir.deleteRecursively()
             true
         } catch (e: Exception) {
-            println("[FlareSolverr] Failed to delete resource: ${e.message}")
+            println("[FlareSolverr] Failed to delete: ${e.message}")
             false
         }
     }
     
-    override fun getDownloadedSize(): Long? {
+    /** Get size of downloaded resource */
+    fun getDownloadedSize(): Long? {
         val executable = findExecutable() ?: return null
         return executable.parentFile?.walkTopDown()?.filter { it.isFile }?.sumOf { it.length() }
     }
     
-    // ==================== Internal Implementation ====================
+    // ==================== Bypass Functionality ====================
     
-    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
-    private var serverProcess: Process? = null
-    private var serverPort: Int = 8191
-    private var isServerStarted = false
-    
-    private val platform: String by lazy { detectPlatform() }
-    private val executableName: String by lazy { PLATFORM_INFO[platform]?.executableName ?: "flaresolverr" }
-    
-    // Legacy callback for backward compatibility
-    var onDownloadProgress: ((Float, String) -> Unit)? = null
-    
-    /**
-     * Legacy method - use downloadResource() instead
-     */
-    @Deprecated("Use downloadResource() instead", ReplaceWith("downloadResource(onProgress)"))
-    fun downloadFlareSolverr(): Boolean {
-        if (_isDownloading) return false
-        
-        val platformInfo = PLATFORM_INFO[platform]
-        if (platformInfo == null) {
-            return false
-        }
-        
-        Thread {
-            kotlinx.coroutines.runBlocking {
-                downloadResource { progress ->
-                    val progressFloat = progress.progress
-                    onDownloadProgress?.invoke(progressFloat, progress.statusMessage)
-                }
-            }
-        }.start()
-        
-        return true
-    }
-    
-    /**
-     * Legacy bypass method - use bypass(BypassRequest) instead
-     */
-    suspend fun bypassUrl(url: String, postData: String? = null, timeoutMs: Long = 60000): String {
-        if (!isResourceDownloaded()) {
-            return """{"status":"error","reason":"FlareSolverr not downloaded. Please download first.","needsDownload":true}"""
+    /** Bypass Cloudflare protection for a URL */
+    suspend fun bypass(url: String, postData: String? = null, timeoutMs: Long = 60000): String {
+        if (!isDownloaded()) {
+            return """{"status":"error","reason":"FlareSolverr not downloaded","needsDownload":true}"""
         }
         if (!isAvailable()) {
             return """{"status":"error","reason":"FlareSolverr could not be started","needsDownload":false}"""
@@ -408,6 +296,16 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
             """{"status":"error","reason":"${e.message}"}"""
         }
     }
+    
+    // ==================== Server Management ====================
+    
+    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+    private var serverProcess: Process? = null
+    private var serverPort: Int = 8191
+    private var isServerStarted = false
+    
+    private val platform: String by lazy { detectPlatform() }
+    private val executableName: String by lazy { PLATFORM_INFO[platform]?.executableName ?: "flaresolverr" }
     
     fun startServer() {
         if (serverProcess?.isAlive == true) return
@@ -458,6 +356,8 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
         code in 200..299
     } catch (e: Exception) { false }
     
+    // ==================== Internal Helpers ====================
+    
     private fun findExecutable(): File? {
         val dataDir = getPluginDataDir()
         val exe = File(dataDir, "native/$platform/flaresolverr/$executableName")
@@ -467,7 +367,6 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
     private fun detectPlatform(): String {
         val os = System.getProperty("os.name").lowercase()
         val arch = System.getProperty("os.arch").lowercase()
-        
         return when {
             os.contains("win") -> "windows-x64"
             os.contains("mac") -> if (arch.contains("aarch64") || arch.contains("arm")) "macos-arm64" else "macos-x64"
@@ -476,13 +375,12 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
         }
     }
     
-    private fun downloadFile(url: String, target: File, onProgress: (downloaded: Long, total: Long, speed: Long) -> Unit) {
+    private fun downloadFile(url: String, target: File, onProgress: (Float) -> Unit) {
         val connection = URL(url).openConnection() as HttpURLConnection
         connection.connectTimeout = 30000
         connection.readTimeout = 60000
         connection.instanceFollowRedirects = true
         
-        // Handle redirects manually for GitHub releases
         var finalConnection = connection
         var redirectCount = 0
         while (redirectCount < 5) {
@@ -493,16 +391,11 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
                 finalConnection.connectTimeout = 30000
                 finalConnection.readTimeout = 60000
                 redirectCount++
-            } else {
-                break
-            }
+            } else break
         }
         
         val totalSize = finalConnection.contentLengthLong
         var downloadedSize = 0L
-        var lastTime = System.currentTimeMillis()
-        var lastDownloaded = 0L
-        var currentSpeed = 0L
         
         finalConnection.inputStream.use { input ->
             FileOutputStream(target).use { output ->
@@ -511,16 +404,7 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
                 while (input.read(buffer).also { bytesRead = it } != -1) {
                     output.write(buffer, 0, bytesRead)
                     downloadedSize += bytesRead
-                    
-                    // Calculate speed every second
-                    val now = System.currentTimeMillis()
-                    if (now - lastTime >= 1000) {
-                        currentSpeed = ((downloadedSize - lastDownloaded) * 1000) / (now - lastTime)
-                        lastTime = now
-                        lastDownloaded = downloadedSize
-                    }
-                    
-                    onProgress(downloadedSize, totalSize, currentSpeed)
+                    if (totalSize > 0) onProgress(downloadedSize.toFloat() / totalSize)
                 }
             }
         }
@@ -531,13 +415,10 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
             var entry = zis.nextEntry
             while (entry != null) {
                 val file = File(targetDir, entry.name)
-                if (entry.isDirectory) {
-                    file.mkdirs()
-                } else {
+                if (entry.isDirectory) file.mkdirs()
+                else {
                     file.parentFile?.mkdirs()
-                    FileOutputStream(file).use { fos ->
-                        zis.copyTo(fos)
-                    }
+                    FileOutputStream(file).use { zis.copyTo(it) }
                 }
                 zis.closeEntry()
                 entry = zis.nextEntry
@@ -546,14 +427,12 @@ class FlareSolverrBypassPlugin : FeaturePlugin, CloudflareBypassPlugin, External
     }
     
     private fun extractTarGz(tarGzFile: File, targetDir: File) {
-        // Use system tar command for tar.gz extraction
         val pb = ProcessBuilder("tar", "-xzf", tarGzFile.absolutePath, "-C", targetDir.absolutePath)
         pb.redirectErrorStream(true)
         val process = pb.start()
         process.waitFor()
-        
         if (process.exitValue() != 0) {
-            throw RuntimeException("Failed to extract tar.gz: ${process.inputStream.bufferedReader().readText()}")
+            throw RuntimeException("Failed to extract: ${process.inputStream.bufferedReader().readText()}")
         }
     }
     
