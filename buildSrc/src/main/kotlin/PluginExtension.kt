@@ -110,7 +110,8 @@ enum class PluginType {
     GRADIO_TTS,
     TACHI_SOURCE_LOADER,
     READER_SCREEN,
-    SOURCE_LOADER
+    SOURCE_LOADER,
+    CLOUDFLARE_BYPASS
 }
 
 enum class PluginPermission {
