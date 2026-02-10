@@ -5,23 +5,23 @@ import ireader.plugin.api.*
 /**
  * Hugging Face Translation Plugin
  * 
- * Free AI translation using Hugging Face Inference API with Helsinki-NLP models.
- * No API key required for basic usage.
+ * AI translation using Hugging Face Inference API with Helsinki-NLP models.
+ * API key recommended for reliable access (free tier available at huggingface.co/settings/tokens).
  */
 class HuggingFaceTranslatePlugin : TranslationPlugin {
     
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.huggingface-translate",
         name = "Hugging Face Translation",
-        version = "1.0.0",
-        versionCode = 1,
-        description = "Free AI translation using Hugging Face Inference API with Helsinki-NLP models. No API key required.",
+        version = "1.1.0",
+        versionCode = 2,
+        description = "AI translation using Hugging Face Inference API with Helsinki-NLP models. API key recommended for reliable access.",
         author = PluginAuthor(
             name = "IReader Team",
             website = "https://github.com/IReaderorg"
         ),
         type = PluginType.TRANSLATION,
-        permissions = listOf(PluginPermission.NETWORK),
+        permissions = listOf(PluginPermission.NETWORK, PluginPermission.PREFERENCES),
         minIReaderVersion = "1.0.0",
         platforms = listOf(Platform.ANDROID, Platform.DESKTOP),
         metadata = mapOf(
@@ -34,10 +34,13 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     )
     
     private var context: PluginContext? = null
-    private val baseUrl = "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt"
+    private var apiKey: String = ""
+    private val baseUrl = "https://router.huggingface.co/hf-inference/models"
     
     override fun initialize(context: PluginContext) {
         this.context = context
+        // Load API key from preferences
+        apiKey = context.preferences.getString("api_key", "")
     }
     
     override fun cleanup() {
@@ -62,26 +65,59 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
         }
         
         return try {
-            val modelUrl = "$baseUrl-$sourceCode-$to"
+            val modelId = getModelId(sourceCode, to)
+            val modelUrl = "$baseUrl/$modelId"
             val requestBody = """{"inputs": ${text.escapeJson()}}"""
+            
+            val headers = mutableMapOf("Content-Type" to "application/json")
+            if (apiKey.isNotBlank()) {
+                headers["Authorization"] = "Bearer $apiKey"
+            }
             
             val response = httpClient.post(
                 url = modelUrl,
                 body = requestBody,
-                headers = mapOf("Content-Type" to "application/json")
+                headers = headers
             )
             
+            if (response.statusCode == 401) {
+                return Result.failure(Exception("Invalid API key. Please check your Hugging Face API key."))
+            }
+            if (response.statusCode == 403) {
+                return Result.failure(Exception("Access forbidden. You may need to accept the model terms on Hugging Face or add an API key."))
+            }
             if (response.statusCode == 429) {
-                return Result.failure(Exception("Rate limit exceeded. Please wait and try again."))
+                return Result.failure(Exception("Rate limit exceeded. Please add a free Hugging Face API key for higher limits."))
+            }
+            if (response.statusCode == 503) {
+                return Result.failure(Exception("Model is loading. Please try again in a few moments."))
             }
             if (response.statusCode !in 200..299) {
-                return Result.failure(Exception("API error: ${response.statusCode}"))
+                return Result.failure(Exception("API error: ${response.statusCode} - ${response.body.take(200)}"))
             }
             
             val translatedText = parseResponse(response.body)
             Result.success(translatedText)
         } catch (e: Exception) {
             Result.failure(Exception("Translation failed: ${e.message}"))
+        }
+    }
+    
+    /**
+     * Get the model ID for a language pair.
+     * Maps language codes to the correct Helsinki-NLP model names.
+     */
+    private fun getModelId(from: String, to: String): String {
+        // Special cases for models with different naming conventions
+        val pairKey = "$from-$to"
+        return when (pairKey) {
+            "en-zh" -> "Helsinki-NLP/opus-mt-en-zh"
+            "zh-en" -> "Helsinki-NLP/opus-mt-zh-en"
+            "en-ja" -> "Helsinki-NLP/opus-mt-en-ja"
+            "ja-en" -> "Helsinki-NLP/opus-mt-ja-en"
+            "en-ko" -> "Helsinki-NLP/opus-mt-en-ko"
+            "ko-en" -> "Helsinki-NLP/opus-mt-ko-en"
+            else -> "Helsinki-NLP/opus-mt-$from-$to"
         }
     }
     
@@ -112,8 +148,11 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     override fun requiresApiKey(): Boolean = false
     
     override fun configureApiKey(key: String) {
-        // Not required
+        apiKey = key
+        context?.preferences?.putString("api_key", key)
     }
+    
+    override fun getApiKey(): String? = apiKey.ifBlank { null }
     
     override val supportsAI: Boolean = true
     override val supportsContextAwareTranslation: Boolean = false
