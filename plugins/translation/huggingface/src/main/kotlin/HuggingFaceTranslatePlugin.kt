@@ -90,7 +90,7 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
             
             val headers = mutableMapOf("Content-Type" to "application/json")
             if (apiKey.isNotBlank()) {
-                headers["Authorization"] = "Bearer ${apiKey.take(10)}..."
+                headers["Authorization"] = "Bearer $apiKey"
             }
             
             println("HuggingFaceTranslatePlugin: Sending request...")
