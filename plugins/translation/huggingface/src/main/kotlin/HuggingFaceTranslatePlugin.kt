@@ -48,19 +48,34 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     }
     
     override suspend fun translate(text: String, from: String, to: String): Result<String> {
-        if (text.isBlank()) return Result.success(text)
+        println("HuggingFaceTranslatePlugin: translate() called")
+        println("HuggingFaceTranslatePlugin: from=$from, to=$to, text length=${text.length}")
+        println("HuggingFaceTranslatePlugin: text preview: ${text.take(100)}...")
+        
+        if (text.isBlank()) {
+            println("HuggingFaceTranslatePlugin: Text is blank, returning as-is")
+            return Result.success(text)
+        }
         
         val httpClient = context?.httpClient
-            ?: return Result.failure(Exception("HTTP client not available"))
+        if (httpClient == null) {
+            println("HuggingFaceTranslatePlugin: ERROR - HTTP client not available")
+            return Result.failure(Exception("HTTP client not available"))
+        }
         
         // Handle auto-detection (default to English)
         val sourceCode = if (from == "auto") "en" else from
+        println("HuggingFaceTranslatePlugin: sourceCode=$sourceCode (after auto-detection)")
         
         // Skip if same language
-        if (sourceCode == to) return Result.success(text)
+        if (sourceCode == to) {
+            println("HuggingFaceTranslatePlugin: Source and target are same, returning as-is")
+            return Result.success(text)
+        }
         
         // Check if language pair is supported
         if (!isLanguagePairSupported(sourceCode, to)) {
+            println("HuggingFaceTranslatePlugin: ERROR - Language pair $sourceCode -> $to not supported")
             return Result.failure(Exception("Language pair $sourceCode -> $to not supported"))
         }
         
@@ -69,36 +84,53 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
             val modelUrl = "$baseUrl/$modelId"
             val requestBody = """{"inputs": ${text.escapeJson()}}"""
             
+            println("HuggingFaceTranslatePlugin: Model ID: $modelId")
+            println("HuggingFaceTranslatePlugin: URL: $modelUrl")
+            println("HuggingFaceTranslatePlugin: Using API key: ${apiKey.isNotBlank()}")
+            
             val headers = mutableMapOf("Content-Type" to "application/json")
             if (apiKey.isNotBlank()) {
-                headers["Authorization"] = "Bearer $apiKey"
+                headers["Authorization"] = "Bearer ${apiKey.take(10)}..."
             }
             
+            println("HuggingFaceTranslatePlugin: Sending request...")
             val response = httpClient.post(
                 url = modelUrl,
                 body = requestBody,
                 headers = headers
             )
             
+            println("HuggingFaceTranslatePlugin: Response status: ${response.statusCode}")
+            println("HuggingFaceTranslatePlugin: Response body preview: ${response.body.take(500)}")
+            
             if (response.statusCode == 401) {
+                println("HuggingFaceTranslatePlugin: ERROR 401 - Invalid API key")
                 return Result.failure(Exception("Invalid API key. Please check your Hugging Face API key."))
             }
             if (response.statusCode == 403) {
+                println("HuggingFaceTranslatePlugin: ERROR 403 - Access forbidden")
                 return Result.failure(Exception("Access forbidden. You may need to accept the model terms on Hugging Face or add an API key."))
             }
             if (response.statusCode == 429) {
+                println("HuggingFaceTranslatePlugin: ERROR 429 - Rate limit exceeded")
                 return Result.failure(Exception("Rate limit exceeded. Please add a free Hugging Face API key for higher limits."))
             }
             if (response.statusCode == 503) {
+                println("HuggingFaceTranslatePlugin: ERROR 503 - Model loading")
                 return Result.failure(Exception("Model is loading. Please try again in a few moments."))
             }
             if (response.statusCode !in 200..299) {
+                println("HuggingFaceTranslatePlugin: ERROR ${response.statusCode} - API error")
                 return Result.failure(Exception("API error: ${response.statusCode} - ${response.body.take(200)}"))
             }
             
             val translatedText = parseResponse(response.body)
+            println("HuggingFaceTranslatePlugin: SUCCESS - Translated text length: ${translatedText.length}")
+            println("HuggingFaceTranslatePlugin: Translated text preview: ${translatedText.take(100)}...")
             Result.success(translatedText)
         } catch (e: Exception) {
+            println("HuggingFaceTranslatePlugin: EXCEPTION - ${e.message}")
+            e.printStackTrace()
             Result.failure(Exception("Translation failed: ${e.message}"))
         }
     }
@@ -126,11 +158,13 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
         
         // Translate each text individually (HF API doesn't support batch well)
         val results = mutableListOf<String>()
-        for (text in texts) {
+        for ((index, text) in texts.withIndex()) {
             val result = translate(text, from, to)
             if (result.isFailure) {
-                // On failure, keep original text
-                results.add(text)
+                // Propagate the error instead of silently returning original text
+                val error = result.exceptionOrNull() ?: Exception("Unknown translation error")
+                println("HuggingFaceTranslatePlugin: Translation failed for text[$index]: ${error.message}")
+                return Result.failure(Exception("Failed to translate text ${index + 1}/${texts.size}: ${error.message}"))
             } else {
                 results.add(result.getOrThrow())
             }
