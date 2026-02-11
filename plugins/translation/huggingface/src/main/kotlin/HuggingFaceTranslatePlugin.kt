@@ -48,9 +48,6 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     }
     
     override suspend fun translate(text: String, from: String, to: String): Result<String> {
-        println("HuggingFaceTranslatePlugin: translate() called")
-        println("HuggingFaceTranslatePlugin: from=$from, to=$to, text length=${text.length}")
-        println("HuggingFaceTranslatePlugin: text preview: ${text.take(100)}...")
         
         if (text.isBlank()) {
             println("HuggingFaceTranslatePlugin: Text is blank, returning as-is")
