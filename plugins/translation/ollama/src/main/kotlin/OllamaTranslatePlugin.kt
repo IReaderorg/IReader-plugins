@@ -120,13 +120,24 @@ class OllamaTranslatePlugin : TranslationPlugin {
             max = 32000,
             description = "Maximum tokens in response"
         ),
-        PluginConfig.Action(
-            key = "test_connection",
-            name = "Test Connection",
-            description = "Verify connection to Ollama server",
-            buttonText = "Test",
-            actionType = ActionType.TEST_CONNECTION
+        PluginConfig.Divider(key = "divider1"),
+        PluginConfig.Header(
+            key = "testing_header",
+            name = "Testing Connection"
         ),
+        PluginConfig.Note(
+            key = "test_note",
+            name = "How to Test",
+            description = "To verify Ollama is running, open a terminal and run: curl http://localhost:11434/api/tags",
+            noteType = NoteType.TIP
+        ),
+        PluginConfig.Note(
+            key = "test_translation",
+            name = "Test Translation",
+            description = "The best way to test is to try translating some text in the app. If Ollama is not running, you'll see an error message.",
+            noteType = NoteType.INFO
+        ),
+        PluginConfig.Divider(key = "divider2"),
         PluginConfig.Note(
             key = "api_note",
             name = "API Endpoints",
@@ -294,7 +305,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
         
         val chatUrl = serverUrl.trimEnd('/') + "/api/chat"
         
-        val response = (httpClient as? ireader.plugin.api.HttpClient)?.post(
+        val response = (httpClient as? ireader.plugin.api.PluginHttpClientProvider)?.post(
             url = chatUrl,
             body = requestBody,
             headers = mapOf("Content-Type" to "application/json")
@@ -338,7 +349,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
         
         val generateUrl = serverUrl.trimEnd('/') + "/api/generate"
         
-        val response = (httpClient as? ireader.plugin.api.HttpClient)?.post(
+        val response = (httpClient as? ireader.plugin.api.PluginHttpClientProvider)?.post(
             url = generateUrl,
             body = requestBody,
             headers = mapOf("Content-Type" to "application/json")

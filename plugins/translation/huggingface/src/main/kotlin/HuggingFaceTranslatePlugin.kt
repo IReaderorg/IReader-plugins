@@ -37,6 +37,88 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     private var apiKey: String = ""
     private val baseUrl = "https://router.huggingface.co/hf-inference/models"
     
+    // ==================== Plugin Configuration ====================
+    
+    override fun getConfigFields(): List<PluginConfig<*>> = listOf(
+        PluginConfig.Header(
+            key = "api_header",
+            name = "API Configuration",
+            description = "Configure your Hugging Face API access"
+        ),
+        PluginConfig.Password(
+            key = "api_key",
+            name = "API Key (Optional)",
+            defaultValue = "",
+            description = "Your Hugging Face API token for higher rate limits",
+            placeholder = "hf_..."
+        ),
+        PluginConfig.Note(
+            key = "api_note",
+            name = "Free API Access",
+            description = "API key is optional but recommended. Without it, you may hit rate limits. Get a free token at huggingface.co/settings/tokens",
+            noteType = NoteType.INFO
+        ),
+        PluginConfig.Link(
+            key = "get_token",
+            name = "Get Free API Token",
+            url = "https://huggingface.co/settings/tokens",
+            description = "Create a free Hugging Face account and generate an API token",
+            linkType = LinkType.EXTERNAL
+        ),
+        PluginConfig.Divider(key = "divider1"),
+        PluginConfig.Header(
+            key = "models_header",
+            name = "Translation Models",
+            description = "Using Helsinki-NLP OPUS-MT models"
+        ),
+        PluginConfig.Note(
+            key = "models_note",
+            name = "Supported Languages",
+            description = "English, Chinese, Spanish, French, German, Japanese, Korean, Portuguese, Russian, Italian",
+            noteType = NoteType.INFO
+        ),
+        PluginConfig.Note(
+            key = "quality_note",
+            name = "Translation Quality",
+            description = "Helsinki-NLP models provide good quality translations for most language pairs. Best results for English ↔ other languages.",
+            noteType = NoteType.TIP
+        ),
+        PluginConfig.Divider(key = "divider2"),
+        PluginConfig.Header(
+            key = "limits_header",
+            name = "Rate Limits"
+        ),
+        PluginConfig.Note(
+            key = "limits_note",
+            name = "Without API Key",
+            description = "Limited to ~30 requests per hour. May experience delays when models are loading.",
+            noteType = NoteType.WARNING
+        ),
+        PluginConfig.Note(
+            key = "with_key_note",
+            name = "With Free API Key",
+            description = "Much higher rate limits (1000+ requests/hour). Faster model loading. Recommended for regular use.",
+            noteType = NoteType.SUCCESS
+        )
+    )
+    
+    override fun onConfigChanged(key: String, value: Any?) {
+        when (key) {
+            "api_key" -> {
+                val newKey = (value as? String) ?: ""
+                apiKey = newKey
+                context?.preferences?.putString("api_key", newKey)
+            }
+        }
+    }
+    
+    override fun getConfigValue(key: String): Any? {
+        return when (key) {
+            "api_key" -> apiKey
+            else -> null
+        }
+    }
+    
     override fun initialize(context: PluginContext) {
         this.context = context
         // Load API key from preferences
