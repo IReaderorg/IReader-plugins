@@ -220,8 +220,23 @@ class OllamaTranslatePlugin : TranslationPlugin {
     override fun getConfigValue(key: String): Any? {
         return when (key) {
             "server_url" -> serverUrl
-            "model" -> model
-            "custom_model" -> model
+            "api_endpoint" -> if (useGenerateEndpoint) 1 else 0
+            "model" -> {
+                // Return the index of the current model in the list
+                val models = listOf(
+                    "mistral", "llama3.3", "llama3.2", "llama3.1", "llama2", 
+                    "gemma2", "gemma", "phi4", "phi3", "qwen2.5", "qwen2", 
+                    "deepseek-r1", "deepseek-coder", "codellama", "smollm2"
+                )
+                models.indexOf(model).takeIf { it >= 0 } ?: 0
+            }
+            "custom_model" -> if (model !in listOf(
+                "mistral", "llama3.3", "llama3.2", "llama3.1", "llama2", 
+                "gemma2", "gemma", "phi4", "phi3", "qwen2.5", "qwen2", 
+                "deepseek-r1", "deepseek-coder", "codellama", "smollm2"
+            )) model else ""
+            "temperature" -> context?.preferences?.getFloat("temperature", 0.1f) ?: 0.1f
+            "max_tokens" -> context?.preferences?.getInt("max_tokens", 8192) ?: 8192
             else -> null
         }
     }
