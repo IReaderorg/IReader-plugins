@@ -13,9 +13,9 @@ class OllamaTranslatePlugin : TranslationPlugin {
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.ollama-translate",
         name = "Ollama Translation",
-        version = "1.0.0",
-        versionCode = 1,
-        description = "Local AI translation using Ollama. Run LLMs locally for private, offline translation.",
+        version = "2.0.0",
+        versionCode = 2,
+        description = "Local AI translation using Ollama. Run LLMs locally for private, offline translation. Supports both /api/chat and /api/generate endpoints.",
         author = PluginAuthor(
             name = "IReader Team",
             website = "https://github.com/IReaderorg"
@@ -34,13 +34,15 @@ class OllamaTranslatePlugin : TranslationPlugin {
             "translation.supportsContextAware" to "true",
             "translation.supportsStylePreservation" to "true",
             "translation.isOffline" to "true",
-            "translation.model" to "mistral"
+            "translation.model" to "mistral",
+            "translation.endpoints" to "chat,generate"
         )
     )
     
     private var context: PluginContext? = null
     private var serverUrl: String = "http://localhost:11434"
     private var model: String = "mistral"
+    private var useGenerateEndpoint: Boolean = false
     
     // ==================== Plugin Configuration ====================
     
@@ -60,9 +62,32 @@ class OllamaTranslatePlugin : TranslationPlugin {
             required = true
         ),
         PluginConfig.Select(
+            key = "api_endpoint",
+            name = "API Endpoint",
+            options = listOf("Chat (/api/chat)", "Generate (/api/generate)"),
+            defaultValue = 0,
+            description = "Choose which Ollama API endpoint to use"
+        ),
+        PluginConfig.Select(
             key = "model",
             name = "Model",
-            options = listOf("mistral", "llama2", "llama3", "gemma", "gemma2", "phi3", "qwen2", "codellama", "deepseek-coder"),
+            options = listOf(
+                "mistral", 
+                "llama3.3", 
+                "llama3.2", 
+                "llama3.1", 
+                "llama2", 
+                "gemma2", 
+                "gemma", 
+                "phi4",
+                "phi3", 
+                "qwen2.5",
+                "qwen2", 
+                "deepseek-r1",
+                "deepseek-coder",
+                "codellama",
+                "smollm2"
+            ),
             defaultValue = 0,
             description = "Select the LLM model to use for translation"
         ),
@@ -103,16 +128,29 @@ class OllamaTranslatePlugin : TranslationPlugin {
             actionType = ActionType.TEST_CONNECTION
         ),
         PluginConfig.Note(
+            key = "api_note",
+            name = "API Endpoints",
+            description = "Chat endpoint (/api/chat) is recommended for better context handling. Generate endpoint (/api/generate) is simpler but may produce less consistent results.",
+            noteType = NoteType.INFO
+        ),
+        PluginConfig.Note(
             key = "install_note",
             name = "Installation",
-            description = "Install Ollama from ollama.ai. Make sure the server is running before using.",
+            description = "Install Ollama from ollama.com. Make sure the server is running before using. Pull your desired model with: ollama pull <model-name>",
             noteType = NoteType.INFO
         ),
         PluginConfig.Link(
             key = "ollama_website",
             name = "Get Ollama",
-            url = "https://ollama.ai",
+            url = "https://ollama.com",
             description = "Download and install Ollama",
+            linkType = LinkType.EXTERNAL
+        ),
+        PluginConfig.Link(
+            key = "ollama_models",
+            name = "Browse Models",
+            url = "https://ollama.com/library",
+            description = "Explore available Ollama models",
             linkType = LinkType.EXTERNAL
         )
     )
@@ -123,9 +161,30 @@ class OllamaTranslatePlugin : TranslationPlugin {
                 serverUrl = (value as? String) ?: "http://localhost:11434"
                 context?.preferences?.putString("server_url", serverUrl)
             }
+            "api_endpoint" -> {
+                val endpointIndex = (value as? Int) ?: 0
+                useGenerateEndpoint = endpointIndex == 1
+                context?.preferences?.putBoolean("use_generate_endpoint", useGenerateEndpoint)
+            }
             "model" -> {
                 val modelIndex = (value as? Int) ?: 0
-                val models = listOf("mistral", "llama2", "llama3", "gemma", "gemma2", "phi3", "qwen2", "codellama", "deepseek-coder")
+                val models = listOf(
+                    "mistral", 
+                    "llama3.3", 
+                    "llama3.2", 
+                    "llama3.1", 
+                    "llama2", 
+                    "gemma2", 
+                    "gemma", 
+                    "phi4",
+                    "phi3", 
+                    "qwen2.5",
+                    "qwen2", 
+                    "deepseek-r1",
+                    "deepseek-coder",
+                    "codellama",
+                    "smollm2"
+                )
                 model = models.getOrElse(modelIndex) { "mistral" }
                 context?.preferences?.putString("model", model)
             }
@@ -135,6 +194,14 @@ class OllamaTranslatePlugin : TranslationPlugin {
                     model = customModel
                     context?.preferences?.putString("model", model)
                 }
+            }
+            "temperature" -> {
+                val temp = (value as? Float) ?: 0.1f
+                context?.preferences?.putFloat("temperature", temp)
+            }
+            "max_tokens" -> {
+                val tokens = (value as? Int) ?: 8192
+                context?.preferences?.putInt("max_tokens", tokens)
             }
         }
     }
@@ -152,6 +219,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
         this.context = context
         serverUrl = context.preferences.getString("server_url", "http://localhost:11434")
         model = context.preferences.getString("model", "mistral")
+        useGenerateEndpoint = context.preferences.getBoolean("use_generate_endpoint", false)
     }
     
     override fun cleanup() {
@@ -176,47 +244,112 @@ class OllamaTranslatePlugin : TranslationPlugin {
         val sourceLang = getLanguageName(from)
         val targetLang = getLanguageName(to)
         
-        val systemPrompt = buildSystemPrompt(sourceLang, targetLang)
-        val userPrompt = buildUserPrompt(text, sourceLang, targetLang)
-        
         return try {
-            val requestBody = """
-                {
-                    "model": "$model",
-                    "messages": [
-                        {"role": "system", "content": ${systemPrompt.escapeJson()}},
-                        {"role": "user", "content": ${userPrompt.escapeJson()}}
-                    ],
-                    "stream": false,
-                    "options": {
-                        "temperature": 0.1,
-                        "num_predict": 8192
-                    }
-                }
-            """.trimIndent()
-            
-            val chatUrl = serverUrl.trimEnd('/') + "/api/chat"
-            
-            val response = httpClient.post(
-                url = chatUrl,
-                body = requestBody,
-                headers = mapOf("Content-Type" to "application/json")
-            )
-            
-            if (response.statusCode !in 200..299) {
-                return Result.failure(Exception("Ollama API error: ${response.statusCode}. Is Ollama running?"))
+            if (useGenerateEndpoint) {
+                translateWithGenerate(httpClient, text, sourceLang, targetLang)
+            } else {
+                translateWithChat(httpClient, text, sourceLang, targetLang)
             }
-            
-            val translatedText = parseResponse(response.body)
-            Result.success(translatedText)
         } catch (e: Exception) {
             val message = when {
                 e.message?.contains("connection", ignoreCase = true) == true ->
                     "Cannot connect to Ollama. Make sure Ollama is running at $serverUrl"
+                e.message?.contains("404", ignoreCase = true) == true ->
+                    "Model '$model' not found. Pull it first with: ollama pull $model"
                 else -> "Translation failed: ${e.message}"
             }
             Result.failure(Exception(message))
         }
+    }
+    
+    /**
+     * Translate using /api/chat endpoint (recommended for conversational context)
+     */
+    private suspend fun translateWithChat(
+        httpClient: Any,
+        text: String,
+        sourceLang: String,
+        targetLang: String
+    ): Result<String> {
+        val systemPrompt = buildSystemPrompt(sourceLang, targetLang)
+        val userPrompt = buildUserPrompt(text, sourceLang, targetLang)
+        
+        val temperature = this.context?.preferences?.getFloat("temperature", 0.1f) ?: 0.1f
+        val maxTokens = this.context?.preferences?.getInt("max_tokens", 8192) ?: 8192
+        
+        val requestBody = """
+            {
+                "model": "$model",
+                "messages": [
+                    {"role": "system", "content": ${systemPrompt.escapeJson()}},
+                    {"role": "user", "content": ${userPrompt.escapeJson()}}
+                ],
+                "stream": false,
+                "options": {
+                    "temperature": $temperature,
+                    "num_predict": $maxTokens
+                }
+            }
+        """.trimIndent()
+        
+        val chatUrl = serverUrl.trimEnd('/') + "/api/chat"
+        
+        val response = (httpClient as? ireader.plugin.api.HttpClient)?.post(
+            url = chatUrl,
+            body = requestBody,
+            headers = mapOf("Content-Type" to "application/json")
+        ) ?: return Result.failure(Exception("HTTP client error"))
+        
+        if (response.statusCode !in 200..299) {
+            return Result.failure(Exception("Ollama API error: ${response.statusCode}. Is Ollama running?"))
+        }
+        
+        val translatedText = parseChatResponse(response.body)
+        return Result.success(translatedText)
+    }
+    
+    /**
+     * Translate using /api/generate endpoint (simpler, single-turn completion)
+     */
+    private suspend fun translateWithGenerate(
+        httpClient: Any,
+        text: String,
+        sourceLang: String,
+        targetLang: String
+    ): Result<String> {
+        val systemPrompt = buildSystemPrompt(sourceLang, targetLang)
+        val userPrompt = buildUserPrompt(text, sourceLang, targetLang)
+        val fullPrompt = "$systemPrompt\n\n$userPrompt"
+        
+        val temperature = this.context?.preferences?.getFloat("temperature", 0.1f) ?: 0.1f
+        val maxTokens = this.context?.preferences?.getInt("max_tokens", 8192) ?: 8192
+        
+        val requestBody = """
+            {
+                "model": "$model",
+                "prompt": ${fullPrompt.escapeJson()},
+                "stream": false,
+                "options": {
+                    "temperature": $temperature,
+                    "num_predict": $maxTokens
+                }
+            }
+        """.trimIndent()
+        
+        val generateUrl = serverUrl.trimEnd('/') + "/api/generate"
+        
+        val response = (httpClient as? ireader.plugin.api.HttpClient)?.post(
+            url = generateUrl,
+            body = requestBody,
+            headers = mapOf("Content-Type" to "application/json")
+        ) ?: return Result.failure(Exception("HTTP client error"))
+        
+        if (response.statusCode !in 200..299) {
+            return Result.failure(Exception("Ollama API error: ${response.statusCode}. Is Ollama running?"))
+        }
+        
+        val translatedText = parseGenerateResponse(response.body)
+        return Result.success(translatedText)
     }
     
     override suspend fun translateBatch(texts: List<String>, from: String, to: String): Result<List<String>> {
@@ -287,16 +420,56 @@ Text to translate:
 $text"""
     }
     
-    private fun parseResponse(body: String): String {
-        // Parse {"message": {"content": "..."}}
+    /**
+     * Parse /api/chat response format:
+     * {
+     *   "model": "...",
+     *   "created_at": "...",
+     *   "message": {
+     *     "role": "assistant",
+     *     "content": "..."
+     *   },
+     *   "done": true,
+     *   "done_reason": "stop"
+     * }
+     */
+    private fun parseChatResponse(body: String): String {
         val messageStart = body.indexOf("\"message\"")
-        if (messageStart == -1) throw Exception("Invalid response format")
+        if (messageStart == -1) throw Exception("Invalid response format: missing 'message' field")
         
         val contentStart = body.indexOf("\"content\":", messageStart)
-        if (contentStart == -1) throw Exception("Invalid response format")
+        if (contentStart == -1) throw Exception("Invalid response format: missing 'content' field")
         
         val valueStart = body.indexOf("\"", contentStart + 10) + 1
         val valueEnd = findJsonStringEnd(body, valueStart)
+        
+        if (valueStart <= 0 || valueEnd <= valueStart) {
+            throw Exception("Invalid response format: could not parse content")
+        }
+        
+        return body.substring(valueStart, valueEnd).unescapeJson().trim()
+    }
+    
+    /**
+     * Parse /api/generate response format:
+     * {
+     *   "model": "...",
+     *   "created_at": "...",
+     *   "response": "...",
+     *   "done": true,
+     *   "done_reason": "stop"
+     * }
+     */
+    private fun parseGenerateResponse(body: String): String {
+        val responseStart = body.indexOf("\"response\":")
+        if (responseStart == -1) throw Exception("Invalid response format: missing 'response' field")
+        
+        val valueStart = body.indexOf("\"", responseStart + 11) + 1
+        val valueEnd = findJsonStringEnd(body, valueStart)
+        
+        if (valueStart <= 0 || valueEnd <= valueStart) {
+            throw Exception("Invalid response format: could not parse response")
+        }
         
         return body.substring(valueStart, valueEnd).unescapeJson().trim()
     }
