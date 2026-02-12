@@ -1,6 +1,9 @@
 package io.github.ireaderorg.plugins.ollamatranslate
 
 import ireader.plugin.api.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * Ollama Local LLM Translation Plugin
@@ -13,9 +16,9 @@ class OllamaTranslatePlugin : TranslationPlugin {
     override val manifest = PluginManifest(
         id = "io.github.ireaderorg.plugins.ollama-translate",
         name = "Ollama Translation",
-        version = "2.0.0",
-        versionCode = 2,
-        description = "Local AI translation using Ollama. Run LLMs locally for private, offline translation. Supports both /api/chat and /api/generate endpoints.",
+        version = "2.1.0",
+        versionCode = 3,
+        description = "Local AI translation using Ollama. Run LLMs locally for private, offline translation. Supports both /api/chat and /api/generate endpoints. Auto-detects available models.",
         author = PluginAuthor(
             name = "IReader Team",
             website = "https://github.com/IReaderorg"
@@ -44,6 +47,24 @@ class OllamaTranslatePlugin : TranslationPlugin {
     private var model: String = "mistral"
     private var useGenerateEndpoint: Boolean = false
     
+    // Cached available models from Ollama server (thread-safe)
+    @Volatile
+    private var cachedModels: List<ModelInfo> = emptyList()
+    @Volatile
+    private var lastModelFetchTime: Long = 0
+    private val modelCacheDurationMs: Long = 60000 // 1 minute cache
+    private val modelFetchLock = Any()
+    
+    /**
+     * Model information from Ollama server
+     */
+    data class ModelInfo(
+        val name: String,
+        val displayName: String,
+        val size: String?,
+        val details: String?
+    )
+    
     // ==================== Plugin Configuration ====================
     
     override fun getConfigFields(): List<PluginConfig<*>> = listOf(
@@ -68,28 +89,18 @@ class OllamaTranslatePlugin : TranslationPlugin {
             defaultValue = 0,
             description = "Choose which Ollama API endpoint to use"
         ),
+        PluginConfig.Action(
+            key = "refresh_models",
+            name = "Refresh Models",
+            description = "Fetch available models from Ollama server",
+            buttonText = "Refresh"
+        ),
         PluginConfig.Select(
             key = "model",
             name = "Model",
-            options = listOf(
-                "mistral", 
-                "llama3.3", 
-                "llama3.2", 
-                "llama3.1", 
-                "llama2", 
-                "gemma2", 
-                "gemma", 
-                "phi4",
-                "phi3", 
-                "qwen2.5",
-                "qwen2", 
-                "deepseek-r1",
-                "deepseek-coder",
-                "codellama",
-                "smollm2"
-            ),
+            options = emptyList(), // Will be populated dynamically from preferences
             defaultValue = 0,
-            description = "Select the LLM model to use for translation"
+            description = "Select the LLM model to use for translation (click Refresh to fetch models)"
         ),
         PluginConfig.Text(
             key = "custom_model",
@@ -166,41 +177,56 @@ class OllamaTranslatePlugin : TranslationPlugin {
         )
     )
     
+    /**
+     * Get cached model options for the dropdown (thread-safe)
+     * Also loads from preferences if in-memory cache is empty
+     */
+    private fun getCachedModelOptions(): List<String> {
+        var models = synchronized(modelFetchLock) { cachedModels.toList() }
+        
+        // If in-memory cache is empty, try loading from preferences
+        if (models.isEmpty()) {
+            models = loadModelsFromPreferences()
+            if (models.isNotEmpty()) {
+                synchronized(modelFetchLock) {
+                    cachedModels = models
+                }
+            }
+        }
+        
+        // Return display names, or empty list if no models available
+        return models.map { it.displayName }
+    }
+    
     override fun onConfigChanged(key: String, value: Any?) {
         when (key) {
             "server_url" -> {
                 serverUrl = (value as? String) ?: "http://localhost:11434"
                 context?.preferences?.putString("server_url", serverUrl)
+                // Clear model cache when URL changes
+                synchronized(modelFetchLock) {
+                    cachedModels = emptyList()
+                }
             }
             "api_endpoint" -> {
                 val endpointIndex = (value as? Int) ?: 0
                 useGenerateEndpoint = endpointIndex == 1
                 context?.preferences?.putBoolean("use_generate_endpoint", useGenerateEndpoint)
             }
+            "refresh_models" -> {
+                // Trigger model refresh - use synchronous version for immediate feedback
+                fetchAvailableModelsSync()
+            }
             "model" -> {
                 val modelIndex = (value as? Int) ?: 0
-                val models = listOf(
-                    "mistral", 
-                    "llama3.3", 
-                    "llama3.2", 
-                    "llama3.1", 
-                    "llama2", 
-                    "gemma2", 
-                    "gemma", 
-                    "phi4",
-                    "phi3", 
-                    "qwen2.5",
-                    "qwen2", 
-                    "deepseek-r1",
-                    "deepseek-coder",
-                    "codellama",
-                    "smollm2"
-                )
-                model = models.getOrElse(modelIndex) { "mistral" }
-                context?.preferences?.putString("model", model)
+                val models = synchronized(modelFetchLock) { cachedModels.toList() }
+                if (models.isNotEmpty() && modelIndex < models.size) {
+                    model = models[modelIndex].name
+                    context?.preferences?.putString("model", model)
+                }
             }
             "custom_model" -> {
-                val customModel = (value as? String)
+                val customModel = (value as? String)?.trim()
                 if (!customModel.isNullOrBlank()) {
                     model = customModel
                     context?.preferences?.putString("model", model)
@@ -222,19 +248,34 @@ class OllamaTranslatePlugin : TranslationPlugin {
             "server_url" -> serverUrl
             "api_endpoint" -> if (useGenerateEndpoint) 1 else 0
             "model" -> {
-                // Return the index of the current model in the list
-                val models = listOf(
-                    "mistral", "llama3.3", "llama3.2", "llama3.1", "llama2", 
-                    "gemma2", "gemma", "phi4", "phi3", "qwen2.5", "qwen2", 
-                    "deepseek-r1", "deepseek-coder", "codellama", "smollm2"
-                )
-                models.indexOf(model).takeIf { it >= 0 } ?: 0
+                // Return the index of the current model (thread-safe)
+                val models = synchronized(modelFetchLock) { cachedModels.toList() }
+                if (models.isEmpty()) {
+                    return 0
+                }
+                
+                // Find index of current model
+                val index = models.indexOfFirst { it.name == model }
+                if (index >= 0) {
+                    index
+                } else {
+                    // Model not in list - might be custom, select first as fallback
+                    0
+                }
             }
-            "custom_model" -> if (model !in listOf(
-                "mistral", "llama3.3", "llama3.2", "llama3.1", "llama2", 
-                "gemma2", "gemma", "phi4", "phi3", "qwen2.5", "qwen2", 
-                "deepseek-r1", "deepseek-coder", "codellama", "smollm2"
-            )) model else ""
+            "custom_model" -> {
+                // Return custom model if it's not in the cached list
+                val models = synchronized(modelFetchLock) { cachedModels.toList() }
+                if (model.isNotBlank() && (models.isEmpty() || model !in models.map { it.name })) {
+                    model
+                } else {
+                    ""
+                }
+            }
+            "cached_models_list" -> {
+                // Return the list of model display names for the dropdown
+                getCachedModelOptions()
+            }
             "temperature" -> context?.preferences?.getFloat("temperature", 0.1f) ?: 0.1f
             "max_tokens" -> context?.preferences?.getInt("max_tokens", 8192) ?: 8192
             else -> null
@@ -246,10 +287,315 @@ class OllamaTranslatePlugin : TranslationPlugin {
         serverUrl = context.preferences.getString("server_url", "http://localhost:11434")
         model = context.preferences.getString("model", "mistral")
         useGenerateEndpoint = context.preferences.getBoolean("use_generate_endpoint", false)
+        
+        // Load cached models from preferences first
+        val savedModels = loadModelsFromPreferences()
+        if (savedModels.isNotEmpty()) {
+            synchronized(modelFetchLock) {
+                cachedModels = savedModels
+            }
+        }
+        
+        // Then fetch fresh models in background
+        fetchAvailableModelsAsyncSafe()
     }
     
     override fun cleanup() {
         context = null
+    }
+    
+    /**
+     * Fetch available models from Ollama server asynchronously
+     * This is called on initialization and when the refresh button is clicked
+     */
+    private suspend fun fetchAvailableModelsAsync() {
+        val ctx = context ?: return
+        val httpClient = ctx.httpClient ?: return
+        
+        try {
+            val tagsUrl = serverUrl.trimEnd('/') + "/api/tags"
+            val response = httpClient.get(
+                url = tagsUrl,
+                headers = mapOf("Content-Type" to "application/json")
+            )
+            
+            if (response.statusCode in 200..299) {
+                val models = parseModelsResponse(response.body)
+                synchronized(modelFetchLock) {
+                    cachedModels = models
+                    lastModelFetchTime = System.currentTimeMillis()
+                }
+                
+                // Save models to preferences for persistence
+                saveModelsToPreferences(models)
+                
+                // Auto-select first model if current model is not set
+                if (model.isBlank() && models.isNotEmpty()) {
+                    model = models[0].name
+                    context?.preferences?.putString("model", model)
+                }
+            }
+        } catch (e: Exception) {
+            // Silently fail - will use default models
+        }
+    }
+    
+    /**
+     * Non-suspend wrapper for fetching models (for use in initialize)
+     */
+    private fun fetchAvailableModelsAsyncSafe() {
+        // Use GlobalScope for background model fetching
+        // This is safe because we're just caching data
+        GlobalScope.launch {
+            fetchAvailableModelsAsync()
+        }
+    }
+    
+    /**
+     * Synchronous fetch for use with refresh button - blocks until complete
+     */
+    private fun fetchAvailableModelsSync(): Boolean {
+        val ctx = context ?: return false
+        val httpClient = ctx.httpClient ?: return false
+        
+        return try {
+            val tagsUrl = serverUrl.trimEnd('/') + "/api/tags"
+            
+            // Use runBlocking for synchronous execution
+            runBlocking {
+                val response = httpClient.get(
+                    url = tagsUrl,
+                    headers = mapOf("Content-Type" to "application/json")
+                )
+                
+                if (response.statusCode in 200..299) {
+                    val models = parseModelsResponse(response.body)
+                    synchronized(modelFetchLock) {
+                        cachedModels = models
+                        lastModelFetchTime = System.currentTimeMillis()
+                    }
+                    
+                    // Save models to preferences for persistence
+                    try {
+                        saveModelsToPreferences(models)
+                    } catch (e: Exception) {
+                        // Continue anyway - models are in memory
+                    }
+                    
+                    // Auto-select first model if current model is not set
+                    if (model.isBlank() && models.isNotEmpty()) {
+                        model = models[0].name
+                        try {
+                            context?.preferences?.putString("model", model)
+                        } catch (e: Exception) {
+                            // Ignore save errors
+                        }
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+    
+    /**
+     * Save models to preferences as JSON for persistence and app access
+     */
+    private fun saveModelsToPreferences(models: List<ModelInfo>) {
+        try {
+            // Format: name1|displayName1|size1;name2|displayName2|size2;...
+            val modelsData = models.joinToString(";") { model ->
+                "${model.name}|${model.displayName}|${model.size ?: ""}"
+            }
+            context?.preferences?.putString("cached_models", modelsData)
+            context?.preferences?.putLong("models_fetch_time", System.currentTimeMillis())
+        } catch (e: Exception) {
+            // Silently fail
+        }
+    }
+    
+    /**
+     * Load models from preferences
+     */
+    private fun loadModelsFromPreferences(): List<ModelInfo> {
+        return try {
+            val modelsData = context?.preferences?.getString("cached_models", "") ?: ""
+            if (modelsData.isBlank()) return emptyList()
+            
+            modelsData.split(";").mapNotNull { modelStr ->
+                val parts = modelStr.split("|")
+                if (parts.size >= 2) {
+                    ModelInfo(
+                        name = parts[0],
+                        displayName = parts[1],
+                        size = parts.getOrNull(2)?.takeIf { it.isNotBlank() },
+                        details = null
+                    )
+                } else null
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+    
+    /**
+     * Parse the /api/tags response to extract model information
+     */
+    private fun parseModelsResponse(body: String): List<ModelInfo> {
+        val models = mutableListOf<ModelInfo>()
+        
+        try {
+            // Find the "models" array
+            val modelsStart = body.indexOf("\"models\"")
+            if (modelsStart == -1) return emptyList()
+            
+            val arrayStart = body.indexOf("[", modelsStart)
+            if (arrayStart == -1) return emptyList()
+            
+            var depth = 0
+            var i = arrayStart
+            var currentModelStart = -1
+            var inModel = false
+            
+            while (i < body.length) {
+                when (body[i]) {
+                    '[' -> depth++
+                    ']' -> {
+                        depth--
+                        if (depth == 0) {
+                            // End of models array
+                            if (inModel && currentModelStart >= 0) {
+                                val modelJson = body.substring(currentModelStart, i)
+                                parseSingleModel(modelJson)?.let { models.add(it) }
+                            }
+                            break
+                        }
+                    }
+                    '{' -> {
+                        depth++
+                        if (depth == 2 && !inModel) {
+                            // Model object opening (depth 2 = inside array, at model level)
+                            currentModelStart = i
+                            inModel = true
+                        }
+                    }
+                    '}' -> {
+                        depth--
+                        if (depth == 1 && inModel) {
+                            // Model object closing
+                            val modelJson = body.substring(currentModelStart, i + 1)
+                            parseSingleModel(modelJson)?.let { models.add(it) }
+                            currentModelStart = -1
+                            inModel = false
+                        }
+                    }
+                }
+                i++
+            }
+        } catch (e: Exception) {
+            // Return empty list on parse error
+        }
+        
+        return models
+    }
+    
+    /**
+     * Parse a single model object from the JSON
+     */
+    private fun parseSingleModel(json: String): ModelInfo? {
+        try {
+            val name = extractJsonValue(json, "name") ?: return null
+            val sizeStr = extractJsonNumericValue(json, "size")
+            val size = sizeStr?.toLongOrNull()
+            
+            // Extract details if present
+            val detailsStart = json.indexOf("\"details\"")
+            var details: String? = null
+            if (detailsStart >= 0) {
+                val family = extractJsonValue(json.substring(detailsStart), "family")
+                val paramSize = extractJsonValue(json.substring(detailsStart), "parameter_size")
+                details = listOfNotNull(family, paramSize).joinToString(" ")
+            }
+            
+            // Create display name
+            val displayName = buildString {
+                append(name.removeSuffix(":latest"))
+                if (size != null) {
+                    append(" (${formatSize(size)})")
+                }
+            }
+            
+            return ModelInfo(
+                name = name,
+                displayName = displayName,
+                size = size?.let { formatSize(it) },
+                details = details
+            )
+        } catch (e: Exception) {
+            return null
+        }
+    }
+    
+    /**
+     * Extract a string value from JSON
+     */
+    private fun extractJsonValue(json: String, key: String): String? {
+        val keyStart = json.indexOf("\"$key\"")
+        if (keyStart == -1) return null
+        
+        val colonPos = json.indexOf(":", keyStart)
+        if (colonPos == -1) return null
+        
+        val valueStart = json.indexOf("\"", colonPos)
+        if (valueStart == -1) return null
+        
+        val valueEnd = findJsonStringEnd(json, valueStart + 1)
+        return json.substring(valueStart + 1, valueEnd).unescapeJson()
+    }
+    
+    /**
+     * Extract a numeric value from JSON
+     */
+    private fun extractJsonNumericValue(json: String, key: String): String? {
+        val keyStart = json.indexOf("\"$key\"")
+        if (keyStart == -1) return null
+        
+        val colonPos = json.indexOf(":", keyStart)
+        if (colonPos == -1) return null
+        
+        // Skip whitespace after colon
+        var valueStart = colonPos + 1
+        while (valueStart < json.length && json[valueStart].isWhitespace()) {
+            valueStart++
+        }
+        
+        // Find end of number (comma, closing brace, or whitespace)
+        var valueEnd = valueStart
+        while (valueEnd < json.length && 
+               json[valueEnd] != ',' && 
+               json[valueEnd] != '}' && 
+               json[valueEnd] != ']' &&
+               !json[valueEnd].isWhitespace()) {
+            valueEnd++
+        }
+        
+        if (valueStart >= valueEnd) return null
+        return json.substring(valueStart, valueEnd)
+    }
+    
+    /**
+     * Format file size in human-readable format
+     */
+    private fun formatSize(bytes: Long): String {
+        return when {
+            bytes >= 1_073_741_824 -> "%.1f GB".format(bytes / 1_073_741_824.0)
+            bytes >= 1_048_576 -> "%.1f MB".format(bytes / 1_048_576.0)
+            bytes >= 1024 -> "%.1f KB".format(bytes / 1024.0)
+            else -> "$bytes B"
+        }
     }
     
     override suspend fun translate(text: String, from: String, to: String): Result<String> {
