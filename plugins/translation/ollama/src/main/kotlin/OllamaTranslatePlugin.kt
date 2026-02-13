@@ -636,6 +636,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
     
     /**
      * Translate using /api/chat endpoint (recommended for conversational context)
+     * Uses streaming to avoid connection timeouts with long-running LLM responses
      */
     private suspend fun translateWithChat(
         httpClient: Any,
@@ -656,7 +657,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
                     {"role": "system", "content": ${systemPrompt.escapeJson()}},
                     {"role": "user", "content": ${userPrompt.escapeJson()}}
                 ],
-                "stream": false,
+                "stream": true,
                 "options": {
                     "temperature": $temperature,
                     "num_predict": $maxTokens
@@ -676,12 +677,13 @@ class OllamaTranslatePlugin : TranslationPlugin {
             return Result.failure(Exception("Ollama API error: ${response.statusCode}. Is Ollama running?"))
         }
         
-        val translatedText = parseChatResponse(response.body)
+        val translatedText = parseChatStreamResponse(response.body)
         return Result.success(translatedText)
     }
     
     /**
      * Translate using /api/generate endpoint (simpler, single-turn completion)
+     * Uses streaming to avoid connection timeouts with long-running LLM responses
      */
     private suspend fun translateWithGenerate(
         httpClient: Any,
@@ -700,7 +702,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
             {
                 "model": "$model",
                 "prompt": ${fullPrompt.escapeJson()},
-                "stream": false,
+                "stream": true,
                 "options": {
                     "temperature": $temperature,
                     "num_predict": $maxTokens
@@ -720,7 +722,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
             return Result.failure(Exception("Ollama API error: ${response.statusCode}. Is Ollama running?"))
         }
         
-        val translatedText = parseGenerateResponse(response.body)
+        val translatedText = parseGenerateStreamResponse(response.body)
         return Result.success(translatedText)
     }
     
@@ -823,6 +825,41 @@ $text"""
     }
     
     /**
+     * Parse /api/chat streaming response format (NDJSON - newline-delimited JSON)
+     * Each line is a JSON object with incremental content:
+     * {"message":{"content":"Hello"},"done":false}
+     * {"message":{"content":" world"},"done":false}
+     * {"message":{"content":"!"},"done":true}
+     */
+    private fun parseChatStreamResponse(body: String): String {
+        val result = StringBuilder()
+        
+        // Split by newlines to get individual JSON objects
+        body.lines().forEach { line ->
+            if (line.isBlank()) return@forEach
+            
+            try {
+                // Extract content from each streaming chunk
+                val contentStart = line.indexOf("\"content\":")
+                if (contentStart >= 0) {
+                    val valueStart = line.indexOf("\"", contentStart + 10) + 1
+                    if (valueStart > 0) {
+                        val valueEnd = findJsonStringEnd(line, valueStart)
+                        if (valueEnd > valueStart) {
+                            val chunk = line.substring(valueStart, valueEnd).unescapeJson()
+                            result.append(chunk)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Skip malformed chunks
+            }
+        }
+        
+        return result.toString().trim()
+    }
+    
+    /**
      * Parse /api/generate response format:
      * {
      *   "model": "...",
@@ -844,6 +881,41 @@ $text"""
         }
         
         return body.substring(valueStart, valueEnd).unescapeJson().trim()
+    }
+    
+    /**
+     * Parse /api/generate streaming response format (NDJSON - newline-delimited JSON)
+     * Each line is a JSON object with incremental content:
+     * {"response":"Hello","done":false}
+     * {"response":" world","done":false}
+     * {"response":"!","done":true}
+     */
+    private fun parseGenerateStreamResponse(body: String): String {
+        val result = StringBuilder()
+        
+        // Split by newlines to get individual JSON objects
+        body.lines().forEach { line ->
+            if (line.isBlank()) return@forEach
+            
+            try {
+                // Extract response from each streaming chunk
+                val responseStart = line.indexOf("\"response\":")
+                if (responseStart >= 0) {
+                    val valueStart = line.indexOf("\"", responseStart + 11) + 1
+                    if (valueStart > 0) {
+                        val valueEnd = findJsonStringEnd(line, valueStart)
+                        if (valueEnd > valueStart) {
+                            val chunk = line.substring(valueStart, valueEnd).unescapeJson()
+                            result.append(chunk)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Skip malformed chunks
+            }
+        }
+        
+        return result.toString().trim()
     }
     
     private fun findJsonStringEnd(json: String, start: Int): Int {
