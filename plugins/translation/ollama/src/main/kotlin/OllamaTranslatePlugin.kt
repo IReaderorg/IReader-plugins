@@ -113,6 +113,14 @@ class OllamaTranslatePlugin : TranslationPlugin {
             key = "advanced_header",
             name = "Advanced Settings"
         ),
+        PluginConfig.Text(
+            key = "custom_prompt",
+            name = "Custom Prompt",
+            defaultValue = "",
+            description = "Add custom instructions to append to translation prompts (e.g., 'Use British English', 'Keep honorifics')",
+            placeholder = "e.g., Use British English spelling, Keep Japanese honorifics",
+            inputType = TextInputType.TEXT
+        ),
         PluginConfig.Slider(
             key = "temperature",
             name = "Temperature",
@@ -232,6 +240,10 @@ class OllamaTranslatePlugin : TranslationPlugin {
                     context?.preferences?.putString("model", model)
                 }
             }
+            "custom_prompt" -> {
+                val prompt = (value as? String) ?: ""
+                context?.preferences?.putString("custom_prompt", prompt)
+            }
             "temperature" -> {
                 val temp = (value as? Float) ?: 0.1f
                 context?.preferences?.putFloat("temperature", temp)
@@ -272,6 +284,7 @@ class OllamaTranslatePlugin : TranslationPlugin {
                     ""
                 }
             }
+            "custom_prompt" -> context?.preferences?.getString("custom_prompt", "") ?: ""
             "cached_models_list" -> {
                 // Return the list of model display names for the dropdown
                 getCachedModelOptions()
@@ -773,6 +786,14 @@ class OllamaTranslatePlugin : TranslationPlugin {
     override val rateLimitDelayMs: Long = 100L
     
     private fun buildSystemPrompt(sourceLang: String, targetLang: String): String {
+        // Get custom prompt from plugin preferences
+        val customPrompt = context?.preferences?.getString("custom_prompt", "") ?: ""
+        val customInstruction = if (customPrompt.isNotBlank()) {
+            "\n\nAdditional instructions: $customPrompt"
+        } else {
+            ""
+        }
+        
         return """You are an expert literary translator. Your ONLY task is to translate text from $sourceLang to $targetLang.
 
 CRITICAL RULES:
@@ -780,7 +801,7 @@ CRITICAL RULES:
 2. Do NOT output any $sourceLang text
 3. Do NOT explain or comment - just translate
 4. Preserve paragraph structure using ---PARAGRAPH_BREAK--- as separator
-5. Maintain narrative tone and style
+5. Maintain narrative tone and style$customInstruction
 
 You are translating a novel/fiction text."""
     }

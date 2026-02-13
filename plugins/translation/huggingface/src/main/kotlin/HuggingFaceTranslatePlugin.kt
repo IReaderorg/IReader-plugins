@@ -67,6 +67,20 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
         ),
         PluginConfig.Divider(key = "divider1"),
         PluginConfig.Header(
+            key = "customization_header",
+            name = "Translation Customization",
+            description = "Customize translation behavior"
+        ),
+        PluginConfig.Text(
+            key = "custom_prompt",
+            name = "Custom Prompt",
+            defaultValue = "",
+            description = "Add custom instructions to append to translation prompts (e.g., 'Use British English', 'Keep honorifics')",
+            placeholder = "e.g., Use British English spelling, Keep Japanese honorifics",
+            inputType = TextInputType.TEXT
+        ),
+        PluginConfig.Divider(key = "divider2"),
+        PluginConfig.Header(
             key = "models_header",
             name = "Translation Models",
             description = "Using Helsinki-NLP OPUS-MT models"
@@ -83,7 +97,7 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
             description = "Helsinki-NLP models provide good quality translations for most language pairs. Best results for English ↔ other languages.",
             noteType = NoteType.TIP
         ),
-        PluginConfig.Divider(key = "divider2"),
+        PluginConfig.Divider(key = "divider3"),
         PluginConfig.Header(
             key = "limits_header",
             name = "Rate Limits"
@@ -104,10 +118,13 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     
     override fun onConfigChanged(key: String, value: Any?) {
         when (key) {
-            "api_key" -> {
-                val newKey = (value as? String) ?: ""
-                apiKey = newKey
-                context?.preferences?.putString("api_key", newKey)
+            "server_url" -> {
+                apiKey = (value as? String) ?: ""
+                context?.preferences?.putString("api_key", apiKey)
+            }
+            "custom_prompt" -> {
+                val prompt = (value as? String) ?: ""
+                context?.preferences?.putString("custom_prompt", prompt)
             }
         }
     }
@@ -115,6 +132,7 @@ class HuggingFaceTranslatePlugin : TranslationPlugin {
     override fun getConfigValue(key: String): Any? {
         return when (key) {
             "api_key" -> apiKey
+            "custom_prompt" -> context?.preferences?.getString("custom_prompt", "") ?: ""
             else -> null
         }
     }

@@ -5,8 +5,8 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.ollama-translate")
     name.set("Ollama Translation")
-    version.set("2.1.0")
-    versionCode.set(3)
+    version.set("2.2.0")
+    versionCode.set(4)
     description.set("Local AI translation using Ollama. Run LLMs locally for private, offline translation. Requires Ollama server running.")
     author.set("IReader Team")
     type.set(PluginType.TRANSLATION)

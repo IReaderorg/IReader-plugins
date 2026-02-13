@@ -153,15 +153,23 @@ class OpenAITranslatePlugin : TranslationPlugin {
             else -> ""
         }
         
+        // Get custom prompt from plugin preferences
+        val customPrompt = this.context?.preferences?.getString("custom_prompt", "") ?: ""
+        val customInstruction = if (customPrompt.isNotBlank()) {
+            " $customPrompt"
+        } else {
+            ""
+        }
+        
         val instructions = listOfNotNull(
             contentInstruction.takeIf { it.isNotEmpty() },
             toneInstruction.takeIf { it.isNotEmpty() }
         ).joinToString(" ")
         
         return if (instructions.isNotEmpty()) {
-            "Translate $sourceLang to $targetLang. $instructions Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
+            "Translate $sourceLang to $targetLang. $instructions$customInstruction Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
         } else {
-            "Translate $sourceLang to $targetLang. Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
+            "Translate $sourceLang to $targetLang.$customInstruction Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
         }
     }
     

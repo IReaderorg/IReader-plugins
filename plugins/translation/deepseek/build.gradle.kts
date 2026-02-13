@@ -5,8 +5,8 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.deepseek-translate")
     name.set("DeepSeek Translation")
-    version.set("1.0.0")
-    versionCode.set(1)
+    version.set("2.0.0")
+    versionCode.set(2)
     description.set("AI-powered translation using DeepSeek API. Supports context-aware translation with style preservation for literary content.")
     author.set("IReader Team")
     type.set(PluginType.TRANSLATION)

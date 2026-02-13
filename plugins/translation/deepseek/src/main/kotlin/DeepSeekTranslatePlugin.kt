@@ -174,8 +174,16 @@ class DeepSeekTranslatePlugin : TranslationPlugin {
         targetLang: String,
         context: TranslationContext
     ): String {
+        // Get custom prompt from plugin preferences
+        val customPrompt = this.context?.preferences?.getString("custom_prompt", "") ?: ""
+        val customInstruction = if (customPrompt.isNotBlank()) {
+            " $customPrompt"
+        } else {
+            ""
+        }
+        
         // Minimal prompt to reduce token usage
-        return "Translate $sourceLang to $targetLang. Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
+        return "Translate $sourceLang to $targetLang.$customInstruction Keep ---PARAGRAPH_BREAK--- markers. Output only translation:\n\n$text"
     }
     
     private fun buildRequestBody(prompt: String): String {
