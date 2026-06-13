@@ -49,9 +49,9 @@ tasks.named<Jar>("jar") {
 }
 
 tasks {
-    register<PatchElfPageAlignmentTask>("patchJ2V8PageAlignment") {
-        inputDir.set(layout.projectDirectory.dir("src/main/jniLibs"))
-        targetPageSize.set(16384) // Android 15+ requires 16KB page alignment
+    register<PatchJ2V8PageSizeTask>("patchJ2V8PageSize") {
+        jniLibsDir.set(layout.projectDirectory.dir("src/main/jniLibs"))
+        cacheDir.set(layout.buildDirectory.dir("download-cache"))
         dependsOn(downloadJ2V8Natives)
     }
 }
@@ -59,5 +59,5 @@ tasks {
 // Make packagePlugin depend on downloading natives and patching page alignment
 tasks.named("packagePlugin") {
     dependsOn(downloadJ2V8Natives)
-    dependsOn("patchJ2V8PageAlignment")
+    dependsOn("patchJ2V8PageSize")
 }

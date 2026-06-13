@@ -8,6 +8,7 @@ on:
       - 'annotations/**'
       - 'compiler/**'
       - 'buildSrc/**'
+      - 'scripts/**'
       - '.github/workflows/build.yml'
   pull_request:
     branches: [ master ]
@@ -29,6 +30,9 @@ jobs:
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+      
+      - name: Install LIEF for J2V8 16KB page alignment
+        run: pip install lief
       
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -65,6 +69,9 @@ jobs:
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+      
+      - name: Install LIEF for J2V8 16KB page alignment
+        run: pip install lief
       
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
