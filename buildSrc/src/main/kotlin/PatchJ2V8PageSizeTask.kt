@@ -1,7 +1,7 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -22,22 +22,24 @@ abstract class PatchJ2V8PageSizeTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val jniLibsDir: DirectoryProperty
 
-    @get:OutputDirectory
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val cacheDir: DirectoryProperty
+
+    @get:Input
+    abstract val patcherScriptPath: String
 
     @TaskAction
     fun execute() {
         val dir = jniLibsDir.get().asFile
         val cache = cacheDir.get().asFile
 
-        // Find the Python LIEF patcher script
-        val patcherScript = File(project.rootDir, "scripts/patch_j2v8_pagesize.py")
+        val patcherScript = File(patcherScriptPath)
         if (!patcherScript.exists()) {
             logger.warn("LIEF patcher script not found at ${patcherScript.absolutePath}, skipping page size patching")
             return
         }
 
-        // Verify LIEF is installed
         val pythonExec = findPython()
         if (pythonExec == null) {
             logger.warn("Python not found, skipping J2V8 page size patching")
@@ -62,7 +64,6 @@ abstract class PatchJ2V8PageSizeTask : DefaultTask() {
             dir.absolutePath,
             cache.absolutePath
         )
-            .directory(project.rootDir)
             .redirectErrorStream(true)
             .start()
 
