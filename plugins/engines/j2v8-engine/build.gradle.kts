@@ -50,10 +50,10 @@ tasks.named<Jar>("jar") {
 
 tasks {
     register<PatchJ2V8PageSizeTask>("patchJ2V8PageSize") {
-        jniLibsDir.set(layout.projectDirectory.dir("src/main/jniLibs").get().asFile.absolutePath)
-        cacheDir.set(layout.buildDirectory.dir("download-cache").get().asFile.absolutePath)
+        jniLibsDir.set(project.file("src/main/jniLibs").absolutePath)
+        cacheDir.set(project.layout.buildDirectory.dir("download-cache").get().asFile.absolutePath)
         patcherScript.set("${rootProject.projectDir}/scripts/patch_j2v8_pagesize.py")
-        markerFile.set(layout.buildDirectory.file("j2v8-patched.marker"))
+        markerFile.set(project.layout.buildDirectory.file("j2v8-patched.marker"))
         dependsOn(downloadJ2V8Natives)
     }
 }
