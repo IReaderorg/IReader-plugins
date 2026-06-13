@@ -14,9 +14,8 @@ abstract class PatchJ2V8PageSizeTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val jniLibsDir: DirectoryProperty
 
-    @get:InputDirectory
-    @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val cacheDir: DirectoryProperty
+    @get:Input
+    abstract val cacheDir: Property<String>
 
     @get:Input
     abstract val patcherScript: Property<String>
@@ -24,7 +23,7 @@ abstract class PatchJ2V8PageSizeTask : DefaultTask() {
     @TaskAction
     fun execute() {
         val dir = jniLibsDir.get().asFile
-        val cache = cacheDir.get().asFile
+        val cache = File(cacheDir.get())
 
         val script = File(patcherScript.get())
         if (!script.exists()) {
