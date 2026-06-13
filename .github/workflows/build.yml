@@ -40,6 +40,21 @@ jobs:
       - name: Build all plugins
         run: ./gradlew buildAllPlugins --no-daemon
       
+      - name: Patch J2V8 .iplugin for Android 15+ (16KB page size)
+        run: |
+          SCRIPT="$(pwd)/scripts/patch_so_pagesize.py"
+          for iplugin in plugins/engines/j2v8-engine/build/outputs/*.iplugin; do
+            [ -f "$iplugin" ] || continue
+            echo "Patching $iplugin..."
+            TMPDIR=$(mktemp -d)
+            unzip -q "$iplugin" -d "$TMPDIR"
+            python3 "$SCRIPT" "$TMPDIR"/native/android/*/libj2v8.so
+            rm "$iplugin"
+            (cd "$TMPDIR" && zip -q -r "$OLDPWD/$iplugin" .)
+            rm -rf "$TMPDIR"
+            echo "Patched: $iplugin"
+          done
+      
       - name: Generate repository index
         run: ./gradlew repo --no-daemon
       
@@ -79,6 +94,22 @@ jobs:
       - name: Build and generate repo
         run: |
           ./gradlew buildAllPlugins --no-daemon
+      
+      - name: Patch J2V8 .iplugin for Android 15+ (16KB page size)
+        run: |
+          SCRIPT="$(pwd)/scripts/patch_so_pagesize.py"
+          for iplugin in plugins/engines/j2v8-engine/build/outputs/*.iplugin; do
+            [ -f "$iplugin" ] || continue
+            echo "Patching $iplugin..."
+            TMPDIR=$(mktemp -d)
+            unzip -q "$iplugin" -d "$TMPDIR"
+            python3 "$SCRIPT" "$TMPDIR"/native/android/*/libj2v8.so
+            rm "$iplugin"
+            (cd "$TMPDIR" && zip -q -r "$OLDPWD/$iplugin" .)
+            rm -rf "$TMPDIR"
+            echo "Patched: $iplugin"
+          done
+          
           ./gradlew repo --no-daemon
       
       - name: Deploy to GitHub Pages
