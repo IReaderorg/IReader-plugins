@@ -5,8 +5,8 @@ plugins {
 pluginConfig {
     id.set("io.github.ireaderorg.plugins.j2v8-engine")
     name.set("J2V8 JavaScript Engine")
-    version.set("6.2.2")  // v6.2.2: Patched ELF for Android 15+ 16KB page alignment
-    versionCode.set(3)  // v3: Patch ELF page alignment for Android 15+ (16KB pages)
+    version.set("6.3.4")
+    versionCode.set(4)
     description.set("V8 JavaScript engine for Android - enables LNReader-compatible sources with full ES6+ support")
     author.set("IReader Team")
     type.set(PluginType.JS_ENGINE)
@@ -17,8 +17,8 @@ pluginConfig {
     tags.set(listOf("javascript", "js-engine", "android", "essential"))
 }
 
-// J2V8 version
-val j2v8Version = "6.2.1"  // Maven artifact version (unchanged - we patch the .so post-download)
+// J2V8 version — 6.3.4 includes -Wl,-z,max-page-size=16384 for Android 15+ compatibility
+val j2v8Version = "6.3.4"
 
 // Note: We don't add J2V8 as a Gradle dependency because:
 // 1. It's an AAR which JVM plugin doesn't handle well
@@ -48,18 +48,7 @@ tasks.named<Jar>("jar") {
     from(layout.buildDirectory.dir("j2v8-classes"))
 }
 
-tasks {
-    register<PatchJ2V8PageSizeTask>("patchJ2V8PageSize") {
-        jniLibsDir.set(project.file("src/main/jniLibs").absolutePath)
-        cacheDir.set(project.layout.buildDirectory.dir("download-cache").get().asFile.absolutePath)
-        patcherScript.set("${rootProject.projectDir}/scripts/patch_j2v8_pagesize.py")
-        markerFile.set(project.layout.buildDirectory.file("j2v8-patched.marker"))
-        dependsOn(downloadJ2V8Natives)
-    }
-}
-
-// Make packagePlugin depend on downloading natives and patching page alignment
+// Make packagePlugin depend on downloading natives
 tasks.named("packagePlugin") {
     dependsOn(downloadJ2V8Natives)
-    dependsOn("patchJ2V8PageSize")
 }
