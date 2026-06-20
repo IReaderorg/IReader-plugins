@@ -37,7 +37,7 @@ class VoxCPMPlugin : Plugin {
             "gradio.apiType" to "GRADIO_API_CALL",
             "gradio.audioOutputIndex" to "0",
             "gradio.languages" to "zh,en",
-            "gradio.params" to """[{"type":"text","name":"text_input"},{"type":"text","name":"control_instruction","default":"A young girl with a soft, sweet voice. Speaks slowly with a melancholic, slightly tsundere tone."},{"type":"string","name":"prompt_text_input","default":""},{"type":"float","name":"cfg_value_input","default":2.0,"min":1.0,"max":5.0}]"""
+            "gradio.params" to """[{"type":"text","name":"text_input"},{"type":"string","name":"control_instruction","default":"A young girl with a soft, sweet voice."},{"type":"audio","name":"reference_wav_path_input"},{"type":"boolean","name":"use_prompt_text","default":false},{"type":"string","name":"prompt_text_input","default":""},{"type":"number","name":"cfg_value_input","default":2.0,"min":1.0,"max":3.0},{"type":"boolean","name":"do_normalize","default":false},{"type":"boolean","name":"denoise","default":false}]"""
         )
     )
     
