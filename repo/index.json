@@ -28,8 +28,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.graalvm-engine-25.0.1.iplugin",
-            "fileSize": 27482016,
-            "checksum": "sha256:fa6a79d580f6d653333d5f511a04cada180fd5220e90b62bdc201a4ed5e33f0e",
+            "fileSize": 27482017,
+            "checksum": "sha256:fa77f72d491352964b6426a7209092c094a4de399bbded4ffaf9999a260877b3",
             "featured": true,
             "tags": [
                 "javascript",
@@ -65,8 +65,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.j2v8-engine-6.3.4.iplugin",
-            "fileSize": 50102748,
-            "checksum": "sha256:af27a26e087eec623712da2be6d527bc89976aee9eb3e27113bfe91f1d9ded22",
+            "fileSize": 50102758,
+            "checksum": "sha256:ca8b6e2686901efb61954253d9bf69098d8844372d1c8c00c0dbb57514c849b5",
             "featured": true,
             "tags": [
                 "javascript",
@@ -107,7 +107,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ai-summarizer-1.0.0.iplugin",
             "fileSize": 28094,
-            "checksum": "sha256:17b3f2b1e06d872f8c50e51b994a89288222101dbe288bdb4aff28a848f0c693",
+            "checksum": "sha256:130e779048f89e15a4aae730eb3eb00037305fb05f36f6ba8fe637c0de082668",
             "featured": false,
             "tags": [
                 "ai",
@@ -151,7 +151,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.bookmark-manager-1.0.0.iplugin",
             "fileSize": 73659,
-            "checksum": "sha256:eb1907502f24eb60a1ac20e27150e8fa43c39d3ebce7cff77afd86046e291985",
+            "checksum": "sha256:3790ae52b8e7754951d3e68d7a6e0c63c4eadfba7692ab8f8fb535b4128047c3",
             "featured": false,
             "tags": [
                 "bookmark",
@@ -193,7 +193,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.chapter-notes-1.0.0.iplugin",
             "fileSize": 46700,
-            "checksum": "sha256:98a4c1eee283128c77b82a4d8983d00e08852443381c8cbcb042e93fc2fe46c8",
+            "checksum": "sha256:24380b1899ca703abd0383b050549e105f75429796787b2ec2e844d8b4d0d31e",
             "featured": false,
             "tags": [
                 "notes",
@@ -234,7 +234,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.flaresolverr-bypass-2.0.0.iplugin",
             "fileSize": 78767,
-            "checksum": "sha256:10f7a3ae3e7bc73a81c65987d78e10a597746509ac6a0c50efd3bf2b99b3c1c0",
+            "checksum": "sha256:72afd27a012cf460d4bda7940245388907f50ba0ab27ccfcd084deab90518a9a",
             "featured": false,
             "tags": [
                 "cloudflare",
@@ -276,7 +276,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.quote-highlighter-1.0.0.iplugin",
             "fileSize": 82607,
-            "checksum": "sha256:76df6638af99828e4c5e406ce3d1df3367ff501ee1a33fb7ddb10c5bb47b5187",
+            "checksum": "sha256:37dd16639e273e1ba8dcbecc2fd9422f43db3d92c4b8fa43e8078cc20cfe707b",
             "featured": false,
             "tags": [
                 "quotes",
@@ -318,7 +318,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.reading-goals-1.0.0.iplugin",
             "fileSize": 50652,
-            "checksum": "sha256:70455d32f8de31458195afeac151c0dfd69670176bd73610b156194c2aac36cd",
+            "checksum": "sha256:72436e5cd54af9b10496cc2f71948df620f2ab1d45aa2ddc15156e7550c54d27",
             "featured": false,
             "tags": [
                 "goals",
@@ -361,7 +361,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.reading-stats-1.0.0.iplugin",
             "fileSize": 80752,
-            "checksum": "sha256:9e075e2a2e021efb02d8a1b36c9b4ee0f9cf73fe6e6613d7f155cc19cdb10f1b",
+            "checksum": "sha256:03f0a9e1de5350e8eb351e233cbe6b7e3f53c164f847f67d9b578c022c99ceef",
             "featured": false,
             "tags": [
                 "statistics",
@@ -403,8 +403,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.reading-timer-1.0.0.iplugin",
-            "fileSize": 49000,
-            "checksum": "sha256:c417d6695af91a670a699e085879317543ea0e347b0eb50b4a03346e5c3c597b",
+            "fileSize": 48995,
+            "checksum": "sha256:c274d113574194b5baf62e1fbf7f4395f74ae148c89bdb60aa158f4b01fdd27e",
             "featured": false,
             "tags": [
                 "timer",
@@ -448,7 +448,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.reading-tracker-1.0.0.iplugin",
             "fileSize": 58612,
-            "checksum": "sha256:63d66c1ca8ecac8d9468fd7a0f5a49de53978cf5a985cf4aca848dacfb20bd5b",
+            "checksum": "sha256:b720dadabfacba11cb975c1174814ed4d07016c066efcbf58fc1dcb15773baa1",
             "featured": false,
             "tags": [
                 "tracking",
@@ -492,7 +492,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.smart-dictionary-1.0.0.iplugin",
             "fileSize": 54654,
-            "checksum": "sha256:5ee908689427d39db0d6709bf551ff769ec4f418b369dabceb787415ba448aab",
+            "checksum": "sha256:c3825e2a235097c0398bdf4cbecc71b2189610e04701d8d1452795570bb0e9f3",
             "featured": false,
             "tags": [
                 "dictionary",
@@ -531,7 +531,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.arctic-aurora-1.0.0.iplugin",
             "fileSize": 10838,
-            "checksum": "sha256:6928c710b9aaf891232658073418d569d4d9b0bb181243b31633165fb243259d",
+            "checksum": "sha256:ed9a8086580dc5ececd5fd7230858ae77eb3ac042db10f23f53837f58aa3b7b9",
             "featured": false,
             "tags": null
         },
@@ -562,8 +562,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coffee-bean-1.0.0.iplugin",
-            "fileSize": 10728,
-            "checksum": "sha256:c621cfcc271101c3a775e737387ccbddf132ae8f2d826fb0778b39daa6b64418",
+            "fileSize": 10726,
+            "checksum": "sha256:cd9f6ab46ae6be07ec9b305aceed489ec91e050740d496296c1eadf16070715a",
             "featured": false,
             "tags": null
         },
@@ -595,7 +595,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.coral-reef-1.0.0.iplugin",
             "fileSize": 10754,
-            "checksum": "sha256:a9cc0ab6dacf67eaefe6f89e0859808d740a3054549245b5a9a541f170c12e79",
+            "checksum": "sha256:1033598cd47327571fb8668b1746bfae45a5232fdfb7d8974d7a754347260c21",
             "featured": false,
             "tags": null
         },
@@ -626,8 +626,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.cyber-neon-1.0.0.iplugin",
-            "fileSize": 10823,
-            "checksum": "sha256:a34241b8371b183f652df83bd68c3bfaf3b86fbfb15645b542495ff25bdc0e15",
+            "fileSize": 10822,
+            "checksum": "sha256:e484f6a30228f4ea41c9c80b744bab9294a3af0168e67bf4c7eab1bd6cdf0beb",
             "featured": false,
             "tags": null
         },
@@ -659,7 +659,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.desert-sand-1.0.0.iplugin",
             "fileSize": 10767,
-            "checksum": "sha256:cbef9dabe77827ac2b139661d2fd00aea02764fabee3e0cfa9c859d783c6d44d",
+            "checksum": "sha256:cfdd93fc205b5da888ccd67f8661f419b8614f92f7458e671790f24588c38f43",
             "featured": false,
             "tags": null
         },
@@ -691,7 +691,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.mint-fresh-1.0.0.iplugin",
             "fileSize": 10757,
-            "checksum": "sha256:3776031cfa667f1741a07043a6dea32e604ee2caec19d7e0e126ba33004bd678",
+            "checksum": "sha256:22eed8ab83d13fc5ec05f8a7500907da905906c3375ef56d913c74ef44e36795",
             "featured": false,
             "tags": null
         },
@@ -723,7 +723,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.nordic-frost-1.0.0.iplugin",
             "fileSize": 10830,
-            "checksum": "sha256:1f26ea3334854cf7d8800c0f4a7a6c8a6c0fea946f855c03547f0bdabed06053",
+            "checksum": "sha256:fa3417f11d54932b053245be6e438744ecec38969f712bbd309737e4b74ee392",
             "featured": false,
             "tags": null
         },
@@ -754,8 +754,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ocean-theme-1.0.0.iplugin",
-            "fileSize": 10760,
-            "checksum": "sha256:2ea0bf8b8ddf1e0cf78ffdefc4044e1961ff09ffe9c0be6393d3c039d68e3600",
+            "fileSize": 10759,
+            "checksum": "sha256:44c84df2945d2857d6bf9f4a10e0779c73dca9845d45cf3ef24f9297dbd68466",
             "featured": false,
             "tags": null
         },
@@ -786,8 +786,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.royal-velvet-1.0.0.iplugin",
-            "fileSize": 10724,
-            "checksum": "sha256:d55c91862ee2b6b10542489940c5f99d72008f1b4980f6ca5967c34d227881b9",
+            "fileSize": 10723,
+            "checksum": "sha256:aa5efda7f87a45c821fe44b96d91786fca438b498d9fa7e28f0205a15f195bf9",
             "featured": false,
             "tags": null
         },
@@ -819,7 +819,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.sakura-night-1.0.0.iplugin",
             "fileSize": 10804,
-            "checksum": "sha256:adf2014948eec7db19094425fee54760ff656c9bb8aafb8ad49a5c2280538c7b",
+            "checksum": "sha256:5518f610e013ac243f896f923cb6dd9199dff692412ee4c54907beff78539b5b",
             "featured": false,
             "tags": null
         },
@@ -851,7 +851,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.slate-gray-1.0.0.iplugin",
             "fileSize": 10705,
-            "checksum": "sha256:99652b18c0a92513de3430eb047e08841e2bd96a166eb263bfbbae8e3cc5f568",
+            "checksum": "sha256:cb02881c4d5b9c82633836814b36d0e75120f2b943fbc1de0cbdb93eb148ac35",
             "featured": false,
             "tags": null
         },
@@ -882,8 +882,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.vintage-sepia-1.0.0.iplugin",
-            "fileSize": 10740,
-            "checksum": "sha256:74fea76421c973152eb2960ee85b79df3383e8314db14ea0254fd88109ad80ab",
+            "fileSize": 10739,
+            "checksum": "sha256:e72628ce82911471e2c483903e033eb4432ff22ddbc7cd1bfa71b48352d958df",
             "featured": false,
             "tags": null
         },
@@ -918,7 +918,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.deepseek-translate-2.0.0.iplugin",
             "fileSize": 25811,
-            "checksum": "sha256:49c6763a973f9b698d26bb16c5656b603d9415348db465535c7d97d8c848153a",
+            "checksum": "sha256:7c09f36a73cbd3b1899c1a7b9956372938b62b30b32d3afd1b39e6d0f6eff83a",
             "featured": false,
             "tags": [
                 "translation",
@@ -958,7 +958,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.huggingface-translate-2.1.0.iplugin",
             "fileSize": 27977,
-            "checksum": "sha256:a6dcf1c6654fb0c4a4b9f4729ece4c0f9922894c77ea3af536f9394dc5d99a4c",
+            "checksum": "sha256:3a9994292cd6a8b771c1375e76b0ba336ccd18d5bd1580fa1d7a91f763eb911a",
             "featured": false,
             "tags": [
                 "translation",
@@ -998,7 +998,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.libretranslate-1.0.0.iplugin",
             "fileSize": 19412,
-            "checksum": "sha256:4e12c4fdf3eb2edb4db27a9d0541c3f0909ab88a08690f577beacea2efe2da04",
+            "checksum": "sha256:cf3324b66239272ec2deb1191c8b12b550c856f1862030f8fc410ffaeef53f52",
             "featured": false,
             "tags": [
                 "translation",
@@ -1038,7 +1038,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.ollama-translate-2.2.0.iplugin",
             "fileSize": 59579,
-            "checksum": "sha256:7aa63a6b4504cfb69154f7c8cc678b159e5307abd13477bb6cb36420e5564e24",
+            "checksum": "sha256:687e1c502860a8ea7a5f74965e888fa2c7c8070afdb4cc702d6f344c765f5909",
             "featured": false,
             "tags": [
                 "translation",
@@ -1080,8 +1080,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.openai-translate-2.0.0.iplugin",
-            "fileSize": 26528,
-            "checksum": "sha256:90d5cbc2b168ac2b11ac2a0201b392fa283c2b47927910a21ceff9d10bb5c7cc",
+            "fileSize": 26524,
+            "checksum": "sha256:db76e321bd30706df7f74489a6ea4f283f09164f7f35a5426eb4310dff5bddf6",
             "featured": false,
             "tags": [
                 "translation",
@@ -1093,11 +1093,11 @@
             ]
         },
         {
-            "id": "io.github.ireaderorg.plugins.gradio-bark-tts",
-            "name": "Bark TTS (Gradio)",
+            "id": "io.github.ireaderorg.plugins.gradio-inflect-nano",
+            "name": "Inflect Nano v1 (Gradio)",
             "version": "1.0.0",
             "versionCode": 1,
-            "description": "High-quality generative TTS by Suno. Supports multiple speaker presets.",
+            "description": "Inflect Nano v1 - Tiny on-device TTS model running entirely on CPU. Fast and lightweight.",
             "author": {
                 "name": "IReader Team",
                 "email": null,
@@ -1113,397 +1113,72 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-bark-tts.png",
+            "iconUrl": null,
             "monetization": {
                 "type": "FREE",
                 "price": null,
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-bark-tts-1.0.0.iplugin",
-            "fileSize": 5701,
-            "checksum": "sha256:64c4802d8e041351bf7f197432ec8c8a8625024f96408a0511440b93b7d50f45",
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-inflect-nano-1.0.0.iplugin",
+            "fileSize": 5274,
+            "checksum": "sha256:f6dc426e37bd55913ba7e8e172809799ca97e3403f4919d44578bce9594b2269",
             "featured": false,
             "tags": [
                 "tts",
                 "gradio",
-                "bark",
-                "suno",
-                "generative"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-edge-tts",
-            "name": "Edge TTS (Gradio)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Microsoft Edge TTS with multiple voices via Gradio. High-quality neural voices for English and other languages.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-edge-tts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-edge-tts-1.0.0.iplugin",
-            "fileSize": 5972,
-            "checksum": "sha256:353a62f180876da3e671ec05128c58a1d57376ec368419859d72a1fa860ab7f3",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "edge",
-                "microsoft",
-                "neural",
-                "multilingual"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-fish-speech",
-            "name": "Fish Speech (Gradio)",
-            "version": "1.1.0",
-            "versionCode": 2,
-            "description": "Fast multilingual TTS with natural prosody. Supports English, Chinese, Japanese, and Korean. Updated with better voice quality.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-fish-speech.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-fish-speech-1.1.0.iplugin",
-            "fileSize": 5688,
-            "checksum": "sha256:c308da3141ba9c39f2d0d286215ff0be74640875120b06699f2709d3586ed1d8",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "fish-speech",
-                "multilingual",
-                "fast"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-openvoice",
-            "name": "OpenVoice (Gradio)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Voice cloning TTS with emotion control. Supports multiple styles like whispering, shouting, excited, and more.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-openvoice.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-openvoice-1.0.0.iplugin",
-            "fileSize": 6087,
-            "checksum": "sha256:5d5ff36e85975466cbc6581b85a57403cd2997fd7a3542535ed90787c915266e",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "openvoice",
-                "voice-cloning",
-                "emotion",
-                "style"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-parler-tts",
-            "name": "Parler TTS (Gradio)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Describe the voice you want! Natural language voice description for TTS.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-parler-tts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-parler-tts-1.0.0.iplugin",
-            "fileSize": 5665,
-            "checksum": "sha256:6a6158013be9c054d51388cb6f99cf884922339ccf260e80dfd9c1cd5868747e",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "parler",
-                "voice-description"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-persian-chatterbox",
-            "name": "Persian TTS (Chatterbox - Natural)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "High-quality Persian TTS using Chatterbox neural model - natural and expressive speech.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-persian-chatterbox.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-chatterbox-1.0.0.iplugin",
-            "fileSize": 5647,
-            "checksum": "sha256:75e58bfd8eb18b6e616f39d23958abef17793e91b7615852b53d59f09d54e1a6",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "persian",
-                "farsi",
-                "chatterbox",
-                "neural"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-persian-edge-tts",
-            "name": "Persian TTS (Edge - Premium)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Premium Persian TTS using Microsoft Edge neural voices - most natural and realistic Persian speech.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-persian-edge-tts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-edge-tts-1.0.0.iplugin",
-            "fileSize": 5943,
-            "checksum": "sha256:634d3e077bd2f2a340d1de81ae069cf6197d371530282d48b0595dcdc4ff1603",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "persian",
-                "farsi",
-                "edge",
-                "microsoft",
-                "neural"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-persian-piper",
-            "name": "Persian TTS (Piper - Basic)",
-            "version": "1.1.0",
-            "versionCode": 2,
-            "description": "Persian language TTS using Piper voices via Gradio (basic quality). Updated with improved stability.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-persian-piper.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-piper-1.1.0.iplugin",
-            "fileSize": 5598,
-            "checksum": "sha256:66b7095515eb51ffab9586df74adf942517eb443095da581dbca89ac541ebd83",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "persian",
-                "farsi",
-                "piper"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-persian-xtts",
-            "name": "Persian TTS (XTTS v2 - Voice Clone)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Persian TTS with XTTS v2 - supports voice cloning for personalized voices.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-persian-xtts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-persian-xtts-1.0.0.iplugin",
-            "fileSize": 5734,
-            "checksum": "sha256:628f2d3496464e46b2d347bd2b495397f432b5dd5a423dfbb585ac34bd91bccc",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "persian",
-                "farsi",
-                "xtts",
-                "voice-cloning"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-silero-tts",
-            "name": "Silero TTS (Gradio)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "Fast and lightweight TTS with multiple languages including English, German, Spanish, French, Russian, and more.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-silero-tts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-silero-tts-1.0.0.iplugin",
-            "fileSize": 5850,
-            "checksum": "sha256:3787454ccbfb23ce4617bc52ab25932bb8c093acfa1e1a1b579ec007552611da",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "silero",
-                "fast",
+                "inflect",
+                "nano",
                 "lightweight",
+                "cpu"
+            ]
+        },
+        {
+            "id": "io.github.ireaderorg.plugins.gradio-omnivoice",
+            "name": "OmniVoice (Gradio)",
+            "version": "1.0.0",
+            "versionCode": 1,
+            "description": "OmniVoice - Multilingual TTS with voice cloning. Supports 100+ languages.",
+            "author": {
+                "name": "IReader Team",
+                "email": null,
+                "website": null
+            },
+            "type": "GRADIO_TTS",
+            "permissions": [
+                "NETWORK"
+            ],
+            "minIReaderVersion": "1.0.0",
+            "platforms": [
+                "ANDROID",
+                "IOS",
+                "DESKTOP"
+            ],
+            "iconUrl": null,
+            "monetization": {
+                "type": "FREE",
+                "price": null,
+                "currency": null,
+                "trialDays": null
+            },
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-omnivoice-1.0.0.iplugin",
+            "fileSize": 6643,
+            "checksum": "sha256:a89f3254479eb2f64ecf57d652e6c3d84066cc8f150e874694d16d3b335baaab",
+            "featured": false,
+            "tags": [
+                "tts",
+                "gradio",
+                "omnivoice",
+                "voice-clone",
                 "multilingual"
             ]
         },
         {
-            "id": "io.github.ireaderorg.plugins.gradio-style-tts-2",
-            "name": "StyleTTS 2 (Gradio)",
+            "id": "io.github.ireaderorg.plugins.gradio-qwen3-tts",
+            "name": "Qwen3 TTS (Gradio)",
             "version": "1.0.0",
             "versionCode": 1,
-            "description": "High-quality expressive TTS with style control. Adjust alpha, beta, and diffusion steps.",
+            "description": "Qwen3 TTS - High-quality TTS with voice design, voice clone, and custom voice modes.",
             "author": {
                 "name": "IReader Team",
                 "email": null,
@@ -1519,63 +1194,24 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-style-tts-2.png",
+            "iconUrl": null,
             "monetization": {
                 "type": "FREE",
                 "price": null,
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-style-tts-2-1.0.0.iplugin",
-            "fileSize": 5765,
-            "checksum": "sha256:84619989f4ea66f49e6610abe82899298387a0620168d3ab8a959f14cc72d96a",
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-qwen3-tts-1.0.0.iplugin",
+            "fileSize": 5676,
+            "checksum": "sha256:3176c8a27ea0ab82340f917a3964b076912bee1bdec1ac3bd3d59f74693a9cb3",
             "featured": false,
             "tags": [
                 "tts",
                 "gradio",
-                "styletts",
-                "expressive",
-                "style-control"
-            ]
-        },
-        {
-            "id": "io.github.ireaderorg.plugins.gradio-tortoise-tts",
-            "name": "Tortoise TTS (Gradio)",
-            "version": "1.0.0",
-            "versionCode": 1,
-            "description": "High-quality TTS with many voice options. Slower but produces excellent results.",
-            "author": {
-                "name": "IReader Team",
-                "email": null,
-                "website": null
-            },
-            "type": "GRADIO_TTS",
-            "permissions": [
-                "NETWORK"
-            ],
-            "minIReaderVersion": "1.0.0",
-            "platforms": [
-                "ANDROID",
-                "IOS",
-                "DESKTOP"
-            ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-tortoise-tts.png",
-            "monetization": {
-                "type": "FREE",
-                "price": null,
-                "currency": null,
-                "trialDays": null
-            },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-tortoise-tts-1.0.0.iplugin",
-            "fileSize": 6200,
-            "checksum": "sha256:b0e64bf6d738aba0860048c6a4da5886ab71b3a646442aa5237bda4c4651ec91",
-            "featured": false,
-            "tags": [
-                "tts",
-                "gradio",
-                "tortoise",
-                "high-quality",
-                "voices"
+                "qwen",
+                "voice-design",
+                "voice-clone",
+                "multilingual"
             ]
         },
         {
@@ -1607,8 +1243,8 @@
                 "trialDays": null
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-voxcpm-tts-1.0.0.iplugin",
-            "fileSize": 6852,
-            "checksum": "sha256:b96ff09c3b2072f8fb376e1161db27af4abcba878e459c5ba7761cd2a43cd7f6",
+            "fileSize": 6853,
+            "checksum": "sha256:d730795e46856a52b9e4a8cdfd69c07a0e5f2e4d6752c85657a844f326686c86",
             "featured": false,
             "tags": [
                 "tts",
@@ -1621,11 +1257,11 @@
             ]
         },
         {
-            "id": "io.github.ireaderorg.plugins.gradio-xtts-v2",
-            "name": "XTTS v2 (Gradio)",
+            "id": "io.github.ireaderorg.plugins.gradio-zonos2",
+            "name": "Zonos TTS v2 (Gradio)",
             "version": "1.0.0",
             "versionCode": 1,
-            "description": "Coqui's latest multilingual TTS with voice cloning support. 15+ languages including English, Spanish, French, German, and more.",
+            "description": "Zonos TTS v2 by Zyphra - High-quality TTS with voice cloning. Supports multiple languages.",
             "author": {
                 "name": "IReader Team",
                 "email": null,
@@ -1641,24 +1277,23 @@
                 "IOS",
                 "DESKTOP"
             ],
-            "iconUrl": "https://raw.githubusercontent.com/IReaderorg/IReader-plugins/gh-pages/repo/images/io.github.ireaderorg.plugins.gradio-xtts-v2.png",
+            "iconUrl": null,
             "monetization": {
                 "type": "FREE",
                 "price": null,
                 "currency": null,
                 "trialDays": null
             },
-            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-xtts-v2-1.0.0.iplugin",
-            "fileSize": 5996,
-            "checksum": "sha256:6e105b420b404dfc199a5d8fd04b12e12368a60f1d3032543f3e9fb271482ee9",
+            "downloadUrl": "plugins/io.github.ireaderorg.plugins.gradio-zonos2-1.0.0.iplugin",
+            "fileSize": 6190,
+            "checksum": "sha256:1c4c90506bc91798c5e0ec305eee732a3339971e5e69499abd82d9250714074a",
             "featured": false,
             "tags": [
                 "tts",
                 "gradio",
-                "xtts",
-                "coqui",
-                "multilingual",
-                "voice-cloning"
+                "zonos",
+                "voice-cloning",
+                "multilingual"
             ]
         },
         {
@@ -1690,7 +1325,7 @@
             },
             "downloadUrl": "plugins/io.github.ireaderorg.plugins.piper-tts-2.0.0.iplugin",
             "fileSize": 94383084,
-            "checksum": "sha256:177d2372156a56ca6e5dbdef164fc5b8b5094ae3de8d4b0c0cd217f0490cba7e",
+            "checksum": "sha256:57d3ca71b09051ae7f7b0630d58ac71de95b2898f7d73c10494b63c6c8a013b8",
             "featured": true,
             "tags": [
                 "tts",
