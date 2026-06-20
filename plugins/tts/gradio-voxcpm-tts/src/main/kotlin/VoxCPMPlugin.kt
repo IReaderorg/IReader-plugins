@@ -31,6 +31,7 @@ class VoxCPMPlugin : Plugin {
         permissions = listOf(PluginPermission.NETWORK),
         minIReaderVersion = "2.0.0",
         platforms = listOf(Platform.ANDROID, Platform.IOS, Platform.DESKTOP),
+        mainClass = "io.github.ireaderorg.plugins.gradiovoxcpm.VoxCPMPlugin",
         metadata = mapOf(
             "gradio.spaceUrl" to "https://openbmb-voxcpm-demo.hf.space",
             "gradio.apiName" to "/generate",
