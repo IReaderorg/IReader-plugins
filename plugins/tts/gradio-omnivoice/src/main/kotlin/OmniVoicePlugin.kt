@@ -1,4 +1,4 @@
-package ireader.plugin.api
+package io.github.ireaderorg.plugins.gradioomnivoice
 
 import ireader.plugin.api.*
 

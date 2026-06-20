@@ -309,6 +309,10 @@ Look at existing plugins for reference:
 
 **Note:** Other plugins (bark, edge, fish-speech, openvoice, parler, persian-*, silero, style-tts-2, tortoise, xtts-v2) were removed due to broken/unavailable Hugging Face Spaces. When creating new plugins, verify the target space is active and responding.
 
+**Important:** The package name in the Kotlin file MUST match the mainClass in build.gradle.kts. For example:
+- File: `package io.github.ireaderorg.plugins.gradioqwen3tts`
+- build.gradle: `mainClass.set("io.github.ireaderorg.plugins.gradioqwen3tts.Qwen3TTSPlugin")`
+
 ## Gradio API Response Formats
 
 ### Modern Gradio 4.x (SSE Streaming)

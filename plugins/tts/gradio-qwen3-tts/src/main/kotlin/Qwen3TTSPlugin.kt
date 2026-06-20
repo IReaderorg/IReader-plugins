@@ -1,4 +1,4 @@
-package ireader.plugin.api
+package io.github.ireaderorg.plugins.gradioqwen3tts
 
 import ireader.plugin.api.*
 

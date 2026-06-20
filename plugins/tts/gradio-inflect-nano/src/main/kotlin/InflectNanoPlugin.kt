@@ -1,4 +1,4 @@
-package ireader.plugin.api
+package io.github.ireaderorg.plugins.gradi
 
 import ireader.plugin.api.*
 
