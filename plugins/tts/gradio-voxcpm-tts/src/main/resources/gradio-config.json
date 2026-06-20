@@ -1,0 +1,93 @@
+{
+  "spaceUrl": "https://openbmb-voxcpm-demo.hf.space",
+  "apiName": "/generate",
+  "apiType": "GRADIO_API",
+  "audioOutputIndex": 0,
+  "languages": ["zh", "en"],
+  "params": [
+    {
+      "type": "text",
+      "name": "text_input",
+      "label": "Text to synthesize",
+      "required": true
+    },
+    {
+      "type": "text",
+      "name": "control_instruction",
+      "label": "Voice/Emotion Instruction",
+      "default": "A young girl with a soft, sweet voice. Speaks slowly with a melancholic, slightly tsundere tone.",
+      "description": "Describe the voice style, emotion, or character"
+    },
+    {
+      "type": "audio",
+      "name": "reference_wav_path_input",
+      "label": "Reference Audio (for voice cloning)",
+      "required": false,
+      "description": "Upload a reference audio file for voice cloning"
+    },
+    {
+      "type": "boolean",
+      "name": "use_prompt_text",
+      "label": "Use Prompt Text",
+      "default": false,
+      "description": "Enable to use text prompt instead of audio reference"
+    },
+    {
+      "type": "text",
+      "name": "prompt_text_input",
+      "label": "Prompt Text",
+      "default": "",
+      "description": "Text description of the voice (used when Use Prompt Text is enabled)"
+    },
+    {
+      "type": "number",
+      "name": "cfg_value_input",
+      "label": "CFG Value",
+      "default": 2.0,
+      "min": 1.0,
+      "max": 5.0,
+      "description": "Classifier-free guidance scale (higher = more strict adherence to prompt)"
+    },
+    {
+      "type": "boolean",
+      "name": "do_normalize",
+      "label": "Normalize Audio",
+      "default": false,
+      "description": "Normalize the output audio volume"
+    },
+    {
+      "type": "boolean",
+      "name": "denoise",
+      "label": "Denoise",
+      "default": false,
+      "description": "Apply denoising to the output audio"
+    }
+  ],
+  "voicePresets": [
+    {
+      "id": "soft_female",
+      "name": "Soft Female",
+      "instruction": "A young girl with a soft, sweet voice. Speaks slowly with a melancholic, slightly tsundere tone."
+    },
+    {
+      "id": "confident_male",
+      "name": "Confident Male",
+      "instruction": "A mature male voice with confidence and authority. Speaks clearly and steadily."
+    },
+    {
+      "id": "elderly_female",
+      "name": "Elderly Female",
+      "instruction": "An elderly woman with a gentle, warm voice. Speaks slowly with wisdom."
+    },
+    {
+      "id": "child",
+      "name": "Child",
+      "instruction": "A young child with an energetic, playful voice. Speaks quickly with excitement."
+    },
+    {
+      "id": "narrator",
+      "name": "Narrator",
+      "instruction": "A professional narrator with a neutral, clear voice. Speaks at a moderate pace."
+    }
+  ]
+}
